@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\SretoProjects\\WEB_Projekat\\KvizHub\\KvizHub\\KvizHub.csproj": {}
+    "D:\\xLOCAL DISC D\\FAKULTET\\8 semestar\\WEB\\WEB_Projekat\\KvizHub\\KvizHub\\KvizHub.csproj": {}
   },
   "projects": {
-    "E:\\SretoProjects\\WEB_Projekat\\KvizHub\\KvizHub\\KvizHub.csproj": {
+    "D:\\xLOCAL DISC D\\FAKULTET\\8 semestar\\WEB\\WEB_Projekat\\KvizHub\\KvizHub\\KvizHub.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\SretoProjects\\WEB_Projekat\\KvizHub\\KvizHub\\KvizHub.csproj",
+        "projectUniqueName": "D:\\xLOCAL DISC D\\FAKULTET\\8 semestar\\WEB\\WEB_Projekat\\KvizHub\\KvizHub\\KvizHub.csproj",
         "projectName": "KvizHub",
-        "projectPath": "E:\\SretoProjects\\WEB_Projekat\\KvizHub\\KvizHub\\KvizHub.csproj",
+        "projectPath": "D:\\xLOCAL DISC D\\FAKULTET\\8 semestar\\WEB\\WEB_Projekat\\KvizHub\\KvizHub\\KvizHub.csproj",
         "packagesPath": "C:\\Users\\Sreto\\.nuget\\packages\\",
-        "outputPath": "E:\\SretoProjects\\WEB_Projekat\\KvizHub\\KvizHub\\obj\\",
+        "outputPath": "D:\\xLOCAL DISC D\\FAKULTET\\8 semestar\\WEB\\WEB_Projekat\\KvizHub\\KvizHub\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -51,6 +51,26 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.13, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.13, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.13, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[8.0.3, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.6.2, )"
