@@ -1,4 +1,25 @@
-:root {
+body{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  font-family: Arial;
+  background-color: #1B1B23;
+  color: white;
+  /*background-color: #00a2ff;*/
+}
+:root{
+  --main-color: #00a2ff;
+  --main-color-hover: #0874b3;
+}
+#root{
+  max-width: 1920px;
+  width: 100%;
+  text-align: center;
+}
+
+/*:root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -66,3 +87,4 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+*/
