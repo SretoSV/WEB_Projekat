@@ -183,7 +183,6 @@ D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\obj\Debug\
 D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.KvizHub.props
 D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.KvizHub.props
 D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\obj\Debug\net8.0\staticwebassets.pack.json
-D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\obj\Debug\net8.0\KvizHub.csproj.Up2Date
 D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\obj\Debug\net8.0\KvizHub.genruntimeconfig.cache
 D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\obj\Debug\net8.0\ref\KvizHub.dll
