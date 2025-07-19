@@ -21,19 +21,16 @@
 
         #region Constructors
         public UserQuizResult() { }
-        public UserQuizResult(int id, int userId, User user, int quizId, Quiz quiz, int totalQuestions, int correctAnswers, double scorePercentage, DateTime submittedAt, int durationSeconds, ICollection<UserAnswer> answers)
+        public UserQuizResult(int id, int userId, int quizId, int totalQuestions, int correctAnswers, double scorePercentage, DateTime submittedAt, int durationSeconds)
         {
             Id = id;
             UserId = userId;
-            User = user;
             QuizId = quizId;
-            Quiz = quiz;
             TotalQuestions = totalQuestions;
             CorrectAnswers = correctAnswers;
             ScorePercentage = scorePercentage;
             SubmittedAt = submittedAt;
             DurationSeconds = durationSeconds;
-            Answers = answers;
         }
         #endregion
     }

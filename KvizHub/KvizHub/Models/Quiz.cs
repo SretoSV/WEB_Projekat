@@ -9,26 +9,20 @@
         public int TimeLimitSeconds { get; set; }
         public string Difficulty { get; set; }
 
-        public int CategoryId { get; set; }
-        public QuizCategory Category { get; set; }
-
+        public ICollection<AllQuizCategories> AllQuizCategories { get; set; }
         public ICollection<Question> Questions { get; set; }
         public ICollection<UserQuizResult> Results { get; set; }
         #endregion
 
         #region Constructors
         public Quiz() { }
-        public Quiz(int id, string title, string description, int timeLimitSeconds, string difficulty, int categoryId, QuizCategory category, ICollection<Question> questions, ICollection<UserQuizResult> results)
+        public Quiz(int id, string title, string description, int timeLimitSeconds, string difficulty)
         {
             Id = id;
             Title = title;
             Description = description;
             TimeLimitSeconds = timeLimitSeconds;
             Difficulty = difficulty;
-            CategoryId = categoryId;
-            Category = category;
-            Questions = questions;
-            Results = results;
         }
         #endregion
     }

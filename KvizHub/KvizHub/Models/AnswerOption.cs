@@ -13,13 +13,12 @@
 
         #region Constructors
         public AnswerOption() { }
-        public AnswerOption(int id, string text, bool isCorrect, int questionId, Question question)
+        public AnswerOption(int id, string text, bool isCorrect, int questionId)
         {
             Id = id;
             Text = text;
             IsCorrect = isCorrect;
             QuestionId = questionId;
-            Question = question;
         }
         #endregion
     }

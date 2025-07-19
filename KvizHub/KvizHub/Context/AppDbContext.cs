@@ -1,10 +1,13 @@
 ﻿using KvizHub.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace KvizHub.Context
 {
     public class AppDbContext : DbContext
     {
+        private readonly PasswordHasher<string> passwordHasher = new PasswordHasher<string>();
+
         public DbSet<User> Users { get; set; }
         public DbSet<Quiz> Quizzes { get; set; }
         public DbSet<QuizCategory> QuizCategories { get; set; }
@@ -12,6 +15,8 @@ namespace KvizHub.Context
         public DbSet<AnswerOption> AnswerOptions { get; set; }
         public DbSet<UserQuizResult> UserQuizResults { get; set; }
         public DbSet<UserAnswer> UserAnswers { get; set; }
+        public DbSet<AllQuizCategories> AllQuizCategories { get; set; }
+        public DbSet<QuestionType> QuestionTypes { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -24,6 +29,23 @@ namespace KvizHub.Context
             modelBuilder.Entity<AnswerOption>().ToTable("answer_options");
             modelBuilder.Entity<UserQuizResult>().ToTable("user_quiz_results");
             modelBuilder.Entity<UserAnswer>().ToTable("user_answers");
+            modelBuilder.Entity<AllQuizCategories>().ToTable("all_quiz_categories");
+            modelBuilder.Entity<QuestionType>().ToTable("question_types");
+
+
+            //Seed users
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = 1,
+                    Username = "Ana123",
+                    Email = "anaanic@gmail.com",
+                    PasswordHash = passwordHasher.HashPassword(null, "123"),
+                    ProfileImage = null,
+                    IsAdmin = true
+                }
+            );
+
 
             base.OnModelCreating(modelBuilder);
         }

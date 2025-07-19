@@ -16,13 +16,11 @@
 
         #region Constructors
         public UserAnswer() { }
-        public UserAnswer(int id, int resultId, UserQuizResult result, int questionId, Question question, string answerText)
+        public UserAnswer(int id, int resultId, int questionId, string answerText)
         {
             Id = id;
             ResultId = resultId;
-            Result = result;
             QuestionId = questionId;
-            Question = question;
             AnswerText = answerText;
         }
         #endregion

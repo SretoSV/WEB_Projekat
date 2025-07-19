@@ -7,7 +7,7 @@
         public string Username { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
-        public string ProfileImageUrl { get; set; }
+        public byte[]? ProfileImage { get; set; }
         public bool IsAdmin { get; set; }
 
         public ICollection<UserQuizResult> QuizResults { get; set; }
@@ -16,15 +16,14 @@
         #region Constructors
         public User() { }
 
-        public User(int id, string username, string email, string passwordHash, string profileImageUrl, bool isAdmin, ICollection<UserQuizResult> quizResults)
+        public User(int id, string username, string email, string passwordHash, byte[] profileImage, bool isAdmin)
         {
             Id = id;
             Username = username;
             Email = email;
             PasswordHash = passwordHash;
-            ProfileImageUrl = profileImageUrl;
+            ProfileImage = profileImage;
             IsAdmin = isAdmin;
-            QuizResults = quizResults;
         }
         #endregion
     }
