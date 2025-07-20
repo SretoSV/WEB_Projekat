@@ -21,7 +21,7 @@ export function LoginForm(){
             login(userData, userToken);
         } 
         catch (err: any) {
-            alert(`Error: ${err.message}`);
+            alert(`Error from server: ${err.message}`);
         }
 
     };

@@ -29,7 +29,7 @@ export function UserProvider({ children }: UserProviderProps) {
       setUser(JSON.parse(savedUser));
     }
     if (savedToken) {
-      setUser(JSON.parse(savedToken));
+      setToken(JSON.parse(savedToken));
     }
   }, []);
 

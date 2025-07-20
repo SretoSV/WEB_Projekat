@@ -34,6 +34,6 @@ export async function loginUser(loginForm: { email: string; password: string }):
         userToken: data.token
     };
     } catch (err: any) {
-    throw new Error(err.message || 'Server error. Try again later.');
+        throw new Error(err.message || 'Server error. Try again later.');
     }
 }
