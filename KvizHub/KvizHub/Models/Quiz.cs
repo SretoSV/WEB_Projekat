@@ -7,7 +7,8 @@
         public string Title { get; set; }
         public string Description { get; set; }
         public int TimeLimitSeconds { get; set; }
-        public string Difficulty { get; set; }
+        public int QuizDifficultyId { get; set; }
+        public QuizDifficulty QuizDifficulty { get; set; }
 
         public ICollection<AllQuizCategories> AllQuizCategories { get; set; }
         public ICollection<Question> Questions { get; set; }
@@ -16,13 +17,13 @@
 
         #region Constructors
         public Quiz() { }
-        public Quiz(int id, string title, string description, int timeLimitSeconds, string difficulty)
+        public Quiz(int id, string title, string description, int timeLimitSeconds, int quizDifficultyId)
         {
             Id = id;
             Title = title;
             Description = description;
             TimeLimitSeconds = timeLimitSeconds;
-            Difficulty = difficulty;
+            QuizDifficultyId = quizDifficultyId;
         }
         #endregion
     }

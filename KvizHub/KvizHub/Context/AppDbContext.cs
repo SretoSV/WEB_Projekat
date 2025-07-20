@@ -6,6 +6,8 @@ namespace KvizHub.Context
 {
     public class AppDbContext : DbContext
     {
+        //dotnet ef migrations add NameOfMigration
+        //dotnet ef database update
         private readonly PasswordHasher<string> passwordHasher = new PasswordHasher<string>();
 
         public DbSet<User> Users { get; set; }
@@ -17,6 +19,7 @@ namespace KvizHub.Context
         public DbSet<UserAnswer> UserAnswers { get; set; }
         public DbSet<AllQuizCategories> AllQuizCategories { get; set; }
         public DbSet<QuestionType> QuestionTypes { get; set; }
+        public DbSet<QuizDifficulty> QuizDifficulties { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -31,9 +34,10 @@ namespace KvizHub.Context
             modelBuilder.Entity<UserAnswer>().ToTable("user_answers");
             modelBuilder.Entity<AllQuizCategories>().ToTable("all_quiz_categories");
             modelBuilder.Entity<QuestionType>().ToTable("question_types");
+            modelBuilder.Entity<QuizDifficulty>().ToTable("quiz_difficulties");
 
 
-            //Seed users
+            //Seed Users
             modelBuilder.Entity<User>().HasData(
                 new User
                 {
@@ -46,6 +50,48 @@ namespace KvizHub.Context
                 }
             );
 
+            //Seed QuestionTypes
+            modelBuilder.Entity<QuestionType>().HasData(
+                new QuestionType
+                {
+                    Id = 1,
+                    Title = "multiple-choice",
+                },
+                new QuestionType
+                {
+                    Id = 2,
+                    Title = "multiple-correct-answers",
+                },
+                new QuestionType
+                {
+                    Id = 3,
+                    Title = "true-false",
+                },
+                new QuestionType
+                {
+                    Id = 4,
+                    Title = "fill-in-the-blank",
+                }
+            );
+
+            //Seed QuizDifficulties
+            modelBuilder.Entity<QuizDifficulty>().HasData(
+                new QuizDifficulty
+                {
+                    Id = 1,
+                    Title = "easy",
+                },
+                new QuizDifficulty
+                {
+                    Id = 2,
+                    Title = "medium",
+                },
+                new QuizDifficulty
+                {
+                    Id = 3,
+                    Title = "hard",
+                }
+            );
 
             base.OnModelCreating(modelBuilder);
         }
