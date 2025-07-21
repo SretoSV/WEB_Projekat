@@ -1,0 +1,91 @@
+.mainDiv{
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+}
+.nameDiv{
+    color: var( --primary-color);
+    font-size: 18px;
+    margin-top: -5px;
+}
+.triangleDivOuter {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent; /* Leva ivica */
+    border-right: 20px solid transparent; /* Desna ivica */
+    border-bottom: 23px solid var(--primary-color); /* Donji trougao bez bele ivice */
+    position: absolute;
+    margin-top: -33px;
+    margin-left: 160px;
+}
+
+.profileImage{
+    width: 63px;
+    height: 63px;
+    border-radius: 50px;
+    border: 2px solid var(--primary-color);
+    cursor: pointer;
+}
+
+.dropdownStyle{
+    margin-top: 15px;
+    text-align: center;
+    width: 200px;
+    height: auto;
+    position: absolute;
+    margin-left: -162px;
+    background-color: var(--background-color);
+    border: 2px solid var(--primary-color);
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.dropDownDivs, .dropDownDivsAdmin{
+    padding: 10px;
+    border: 2px solid var(--primary-color);
+    border-radius: 5px;
+}
+
+.dropDownDivsAdmin{
+    margin-top: -17px;
+}
+
+.dropDownDivs:hover, .dropDownDivsAdmin:hover{
+    background-color: var(--primary-color-hover);
+}
+
+.dropDownLinks{
+    text-decoration: none;
+    color: var(--main-text-color);
+}
+
+@media (max-width: 520px) {
+    .mainDiv{
+        width: 100%;
+    }
+    .dropdownStyle{
+        text-align: center;
+        width: 120px;
+        height: auto;
+        position: absolute;
+        margin-left: -95px;
+        background-color: var(--background-color);
+        color: var(--main-text-color);
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .profileImage{
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        margin-left: auto;
+    }
+    .triangleDivOuter{
+        margin-left: 88px;
+    }
+    .dropDownDivs{
+        padding: 7px;
+    }
+}

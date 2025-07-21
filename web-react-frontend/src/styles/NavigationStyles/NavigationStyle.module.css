@@ -1,0 +1,78 @@
+.headerDiv{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    max-width: 100%;
+}
+.profileDiv{
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.LinksDiv{
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    color: var(--main-text-color);
+    text-align: center;
+    font-size: 22px;
+}
+
+.Links{
+    width: 50%;
+    color: var(--main-text-color);
+    font-size: 22px;
+    padding: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    background-color: var(--secondary-color);
+}
+.LinksBorder{
+    border-right: 0px solid var(--main-text-color);
+}
+
+.Links:hover, .LinksOut:hover{
+    background-color: var(--main-color);
+}
+
+
+@media (max-width: 620px){
+    .LinksDiv{
+        font-size: 20px;
+    }
+    
+    .Links{
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 520px) {
+    .headerDiv{
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        max-width: 100%;
+    }
+    .LinksDiv{
+        display: flex;
+        flex-direction: column;
+        margin-top: 0px;
+    }
+    .Links, .LinksOut{
+        width: 99%;
+        color: var(--main-text-color);
+        font-size: 20px;
+        cursor: pointer;
+        text-decoration: none;
+        padding: 2px;
+    }
+    .LinksBorder{
+        border-right: 0px;
+    }
+    .logoImage{
+        margin: 0;
+    }
+}

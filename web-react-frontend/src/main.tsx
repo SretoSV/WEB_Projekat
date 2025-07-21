@@ -6,6 +6,7 @@ import { RegisterPage } from './pages/RegisterPage.tsx';
 import { UserProvider } from './context/UserContext.tsx';
 import { AdminAllQuizzesPage } from './pages/Admin/AdminAllQuizzesPage.tsx';
 import { UserAllQuizzesPage } from './pages/User/UserAllQuizzesPage.tsx';
+import { UserQuizResults } from './pages/User/UserQuizResults.tsx';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,30 @@ const router = createBrowserRouter([
   {
     path: "/UserAllQuizzesPage",
     element: <UserAllQuizzesPage />
+  },
+  {
+    path: "/UserQuizResults",
+    element: <UserQuizResults />
+  },
+  {
+    path: "/AdminAllQuizzes",
+    element: <RegisterPage />
+  },
+  {
+    path: "/AdminUsersResults",
+    element: <RegisterPage />
+  },
+  {
+    path: "/UserAllQuizzes",
+    element: <RegisterPage />
+  },
+  {
+    path: "/AllResults",
+    element: <RegisterPage />
+  },
+  {
+    path: "/GlobalRanglist",
+    element: <RegisterPage />
   },
   {
     path: "*",
