@@ -89,3 +89,23 @@ input, .inputGender{
 .customFileButton:hover {
   background-color: var(--primary-color-hover);
 }
+
+.divider {
+  height: 1px;
+  width: 100%;
+  background-color: var(--primary-color);
+  margin-top: 12px;
+  margin-bottom: 10px;
+}
+
+.loginLinkDiv {
+  display: flex;
+  align-items: center;
+}
+
+.loginLink {
+  color: var(--primary-color);
+  font-size: 16px;
+  text-decoration: underline;
+  margin-left: 5px;
+}

@@ -36,12 +36,14 @@ export function RegisterForm(){
 
     formData.append("username", form.username);
     formData.append("email", form.email);
-    formData.append("password", form.email);
+    formData.append("password", form.password);
 
     if (imageFile) {
-      formData.append("image", imageFile);
+      formData.append("profileImage", imageFile);
     }
-    
+
+    console.log(form.username, form.email, form.password, imageFile);
+    console.log(formData);
     try {
         const { message } = await registerUser(formData);
         setMessage(message);
@@ -116,6 +118,15 @@ export function RegisterForm(){
 
         {message && <p className={styles.message}>{message}</p>}
         <button className={styles.submitButton}>Register</button>
+
+        <div className={styles.divider}></div>
+
+        <div className={styles.loginLinkDiv}>
+            <div>Already have an account?</div>
+            <a href="/Login" className={styles.loginLink}>
+                Login here
+            </a>
+        </div>
       </form>
     </div>
   );

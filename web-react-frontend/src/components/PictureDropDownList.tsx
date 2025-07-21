@@ -1,7 +1,6 @@
 import styles from '../styles/NavigationStyles/PictureDropDownListStyle.module.css';
 import { useEffect, useRef, useState } from 'react';
 import { useUserContext } from '../context/UserContext';
-import { serverPath } from '../serverPath';
 import { DropDownListCard } from './DropDownListCard';
 import placeHolder from '../images/placeHolder.png';
 
@@ -32,7 +31,7 @@ export function PictureDropDownList(){
             <div ref={dropdownRef}>
                 <img
                     className={styles.profileImage}
-                    src={user?.profileImage ? serverPath()+user?.profileImage : placeHolder}
+                    src={user?.profileImage ? `data:image/png;base64,${user.profileImage}` : placeHolder}
                     alt="ProfilePicture"
                     onClick={toggleDropdown}
                 />    
