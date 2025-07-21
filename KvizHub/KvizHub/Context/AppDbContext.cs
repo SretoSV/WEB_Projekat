@@ -8,7 +8,7 @@ namespace KvizHub.Context
     {
         //dotnet ef migrations add NameOfMigration
         //dotnet ef database update
-        private readonly PasswordHasher<string> passwordHasher = new PasswordHasher<string>();
+        private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
 
         public DbSet<User> Users { get; set; }
         public DbSet<Quiz> Quizzes { get; set; }
@@ -36,19 +36,17 @@ namespace KvizHub.Context
             modelBuilder.Entity<QuestionType>().ToTable("question_types");
             modelBuilder.Entity<QuizDifficulty>().ToTable("quiz_difficulties");
 
-
             //Seed Users
-            modelBuilder.Entity<User>().HasData(
-                new User
-                {
-                    Id = 1,
-                    Username = "Ana123",
-                    Email = "anaanic@gmail.com",
-                    PasswordHash = passwordHasher.HashPassword(null, "123"),
-                    ProfileImage = null,
-                    IsAdmin = true
-                }
-            );
+            var seededUser = new User
+            {
+                Id = 1,
+                Username = "Ana123",
+                Email = "anaanic@gmail.com",
+                IsAdmin = true,
+                ProfileImage = null,
+            };
+            seededUser.PasswordHash = _passwordHasher.HashPassword(seededUser, "123");
+            modelBuilder.Entity<User>().HasData(seededUser);
 
             //Seed QuestionTypes
             modelBuilder.Entity<QuestionType>().HasData(

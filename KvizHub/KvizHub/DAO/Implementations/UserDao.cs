@@ -1,4 +1,5 @@
 ﻿using KvizHub.Context;
+using KvizHub.DTO;
 using KvizHub.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -65,9 +66,29 @@ namespace KvizHub.DAO.Implementations
         }
         #endregion
 
-        public async Task<User> GetByEmailAsync(string email)
+        public async Task<User> GetUserByUsernameOrEmailAsync(string usernameOrEmail)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == usernameOrEmail || u.Username == usernameOrEmail);
+        }
+        public async Task<bool> UserExists(string email, string username)
+        {
+            return await _context.Users
+                .AnyAsync(u => u.Email == email || u.Username == username);
+        }
+
+        public async Task<bool> RegisterUser(User user)
+        {
+            try
+            {
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
         }
     }
 }

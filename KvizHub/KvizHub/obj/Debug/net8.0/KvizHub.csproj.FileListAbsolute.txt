@@ -186,7 +186,6 @@ D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\obj\Debug\
 D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\obj\Debug\net8.0\KvizHub.csproj.Up2Date
 D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\obj\Debug\net8.0\KvizHub.genruntimeconfig.cache
 D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\obj\Debug\net8.0\ref\KvizHub.dll
-D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
 D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
@@ -197,3 +196,4 @@ D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\bin\Debug\
 D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\bin\Debug\net8.0\AutoMapper.dll
 D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+D:\xLOCAL DISC D\FAKULTET\8 semestar\WEB\WEB_Projekat\KvizHub\KvizHub\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

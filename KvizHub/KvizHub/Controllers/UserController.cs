@@ -25,5 +25,17 @@ namespace KvizHub.Controllers
             }
             return Ok(userLoginResponseDto);
         }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromForm] RegisterUserDto dto)
+        {
+            bool response = await _userService.Register(dto);
+            if (response == false)
+            {
+                return BadRequest(new { message = "User with that username or email already exists." });
+            }
+
+            return Ok(new { message = "User successfully registered." });
+        }
     }
 }

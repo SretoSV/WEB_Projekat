@@ -18,33 +18,34 @@ namespace KvizHub.Services
         private readonly IConfigurationSection _secretKey;
         private readonly IUserDao _userDao;
         private readonly IMapper _mapper;
-        private readonly PasswordHasher<string> passwordHasher = new PasswordHasher<string>();
+        private readonly IPasswordHasher<User> _passwordHasher;
 
-        public UserService(IConfiguration config, IUserDao userDao, IMapper mapper)
+        public UserService(IConfiguration config, IUserDao userDao, IMapper mapper, IPasswordHasher<User> passwordHasher)
         {
             _secretKey = config.GetSection("SecretKey");
             _userDao = userDao;
             _mapper = mapper;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<UserLoginResponseDto> Login(LoginUserDto dto)
         {
-            User user = await _userDao.GetByEmailAsync(dto.Email);
+            User user = await _userDao.GetUserByUsernameOrEmailAsync(dto.UsernameOrEmail);
 
             if (user == null)
                 return null;
 
-            var result = passwordHasher.VerifyHashedPassword(null, user.PasswordHash, dto.Password);
+            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
 
 
-            if (result == PasswordVerificationResult.Success)//Uporedjujemo hes pasvorda iz baze i unetog pasvorda
+            if (result == PasswordVerificationResult.Success)
             {
                 List<Claim> claims = new List<Claim>();
-                //Mozemo dodati Claimove u token, oni ce biti vidljivi u tokenu i mozemo ih koristiti za autorizaciju
-                if (dto.Email == "anaanic@gmail.com")
-                    claims.Add(new Claim(ClaimTypes.Role, "admin")); //Add user type to claim
+                
+                if (dto.UsernameOrEmail == "anaanic@gmail.com" || dto.UsernameOrEmail == "Ana123")
+                    claims.Add(new Claim(ClaimTypes.Role, "admin"));
                 else
-                    claims.Add(new Claim(ClaimTypes.Role, "user")); //Add user type to claim
+                    claims.Add(new Claim(ClaimTypes.Role, "user"));
 
                 SymmetricSecurityKey secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.Value));
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
@@ -66,6 +67,18 @@ namespace KvizHub.Services
             {
                 return null;
             }
+        }
+
+        public async Task<bool> Register(RegisterUserDto dto)
+        {
+            var exists = await _userDao.UserExists(dto.Email, dto.Username);
+            if (exists)
+                return false;
+
+            User user = _mapper.Map<User>(dto);
+            user.PasswordHash = _passwordHasher.HashPassword(user, dto.Password);
+
+            return await _userDao.RegisterUser(user);
         }
     }
 }
