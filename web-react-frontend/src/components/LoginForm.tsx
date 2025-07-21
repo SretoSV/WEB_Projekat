@@ -9,7 +9,7 @@ export function LoginForm(){
     const { user, login } = useUserContext();
     const navigate = useNavigate();
     const [loginForm, setLoginForm] = useState({
-        email: '',
+        usernameOrEmail: '',
         password: '',
     });
 
@@ -42,14 +42,14 @@ export function LoginForm(){
         <h1>Login</h1>
         <div className={styles.formContent}>
           <div className={styles.formLeft}>
-                <label htmlFor="email">Email</label>
+                <label htmlFor="usernameOrEmail">Email</label>
                 <input
-                    id="email"
-                    type="email"
-                    name="email"
+                    id="usernameOrEmail"
+                    type="text"
+                    name="usernameOrEmail"
                     autoComplete="off"
                     onChange={(e) => handleInputChange(e, setLoginForm)}
-                    placeholder='email'
+                    placeholder='username or email'
                     required
                 />
                 <label htmlFor="password">Password</label>
