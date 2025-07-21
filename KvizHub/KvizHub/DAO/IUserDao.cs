@@ -6,7 +6,8 @@ namespace KvizHub.DAO
     public interface IUserDao : ICRUDDao<User, int>
     {
         Task<User> GetUserByUsernameOrEmailAsync(string email);
-        Task<bool> UserExists(string email, string username);
+        Task<bool> UserExistsByUsername(string username);
+        Task<bool> UserExistsByEmail(string parameter);
         Task<bool> RegisterUser(User user);
     }
 }

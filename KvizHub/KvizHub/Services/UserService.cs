@@ -69,16 +69,21 @@ namespace KvizHub.Services
             }
         }
 
-        public async Task<bool> Register(RegisterUserDto dto)
+        public async Task<UserRegisterResponseDto> Register(RegisterUserDto dto)
         {
-            var exists = await _userDao.UserExists(dto.Email, dto.Username);
-            if (exists)
-                return false;
+            var usernameExists = await _userDao.UserExistsByUsername(dto.Username);
+            var emailExists = await _userDao.UserExistsByEmail(dto.Email);
+
+            if (usernameExists)
+                return new UserRegisterResponseDto { Success = false, Message = "User with that username already exists." };
+            else if(emailExists)
+                return new UserRegisterResponseDto { Success = false, Message = "User with that email already exists." };
+            
 
             User user = _mapper.Map<User>(dto);
             user.PasswordHash = _passwordHasher.HashPassword(user, dto.Password);
 
-            return await _userDao.RegisterUser(user);
+            return new UserRegisterResponseDto { Success = await _userDao.RegisterUser(user), Message = "User successfully registered." };
         }
     }
 }
