@@ -1,0 +1,15 @@
+.cardDiv{
+    display: flex;
+    flex-direction: column;
+    border: 3px solid var(--primary-color);
+    border-radius: 15px;
+    padding: 10px;
+    margin-bottom: 10px;
+    /*align-items: flex-start; ili ovde ovo ili width: fit-content; u .informations*/
+}
+
+.buttonsDiv{
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+}

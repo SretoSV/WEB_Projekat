@@ -2,7 +2,8 @@ import styles from '../styles/RegisterPageStyles/RegisterProfilePageStyle.module
 import { useState } from "react";
 import { handleInputChange } from '../functions/formChangeFunction';
 import placeHolderImage from '../images/placeHolder.png';
-import { registerUser } from '../services/UserService';
+import { registerUser, validateAndExtractImageFile } from '../services/UserService';
+import ButtonWithText from './ButtonWithText';
 
 export function RegisterForm(){
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -16,14 +17,17 @@ export function RegisterForm(){
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    if (e.target.files && e.target.files[0]) {
-        if (!e.target.files[0].type.startsWith("image/")) {
-            alert("Only images are allowed to be uploaded.");
-            return;
-        }
-        setImageFile(e.target.files[0]);
-        setFileName(e.target.files[0].name);
+    const file = e.target.files?.[0] || null;
+
+    const result = validateAndExtractImageFile(file);
+
+    if (!result.valid) {
+      alert(result.error);
+      return;
     }
+
+    setImageFile(result.file!);
+    setFileName(result.fileName!);
   };
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -42,8 +46,6 @@ export function RegisterForm(){
       formData.append("profileImage", imageFile);
     }
 
-    console.log(form.username, form.email, form.password, imageFile);
-    console.log(formData);
     try {
         const { message } = await registerUser(formData);
         setMessage(message);
@@ -117,7 +119,7 @@ export function RegisterForm(){
           </div>
 
         {message && <p className={styles.message}>{message}</p>}
-        <button className={styles.submitButton}>Register</button>
+        <ButtonWithText text="Register" type="submit" />
 
         <div className={styles.divider}></div>
 

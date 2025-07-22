@@ -4,14 +4,12 @@ import { useEffect, useState } from 'react';
 import { useUserContext } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/UserService';
+import ButtonWithText from './ButtonWithText';
 
 export function LoginForm(){
     const { user, login } = useUserContext();
     const navigate = useNavigate();
-    const [loginForm, setLoginForm] = useState({
-        usernameOrEmail: '',
-        password: '',
-    });
+    const [loginForm, setLoginForm] = useState({ usernameOrEmail: '', password: '', });
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -71,7 +69,8 @@ export function LoginForm(){
             </a>
           </div>
         </div>
-        <button className={styles.submitButton}>Login</button>
+        <ButtonWithText text="Login" type="submit" />
+        
     </form>
     </>
 }

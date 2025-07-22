@@ -34,7 +34,7 @@
     border-right: 0px solid var(--main-text-color);
 }
 
-.Links:hover, .LinksOut:hover{
+.Links:hover{
     background-color: var(--main-color);
 }
 
@@ -61,7 +61,7 @@
         flex-direction: column;
         margin-top: 0px;
     }
-    .Links, .LinksOut{
+    .Links{
         width: 99%;
         color: var(--main-text-color);
         font-size: 20px;

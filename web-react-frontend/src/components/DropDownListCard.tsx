@@ -1,4 +1,4 @@
-import styles from '../styles/NavigationStyles/PictureDropDownListStyle.module.css';
+import styles from '../styles/NavigationStyles/DropDownListCardStyle.module.css';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../context/UserContext';
 

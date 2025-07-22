@@ -23,7 +23,6 @@ export function Navigation(){
             <div className={styles.profileDiv}>
                 <PictureDropDownList />
             </div>
-            
         </header>
 
         <div className={styles.LinksDiv}>

@@ -46,7 +46,7 @@
   flex-direction: column;
 }
 
-input, .inputGender{
+input{
   padding: 8px;
   margin-bottom: 10px;
   background-color: var(--background-color);
@@ -54,21 +54,6 @@ input, .inputGender{
   border-radius: 5px;
   color: var(--main-text-color);
   font-size: 15px;
-}
-
-.submitButton {
-  margin: auto;
-  padding: 10px 20px;
-  background-color: var(--primary-color);
-  border: none;
-  border-radius: 5px;
-  color: var(--main-text-color);
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.submitButton:hover {
-  background-color: var(--primary-color-hover);
 }
 
 .hiddenFileInput{
@@ -82,7 +67,7 @@ input, .inputGender{
   border-radius: 4px;
   cursor: pointer;
   display: inline-block;
-  font-size: 14px;
+  font-size: 16px;
   margin-bottom: 10px;
 }
 

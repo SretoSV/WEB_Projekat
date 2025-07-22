@@ -1,0 +1,26 @@
+.informationsTitle{
+    font-size: 18px;
+}
+.inforamtions{
+    display: inline-block;
+    width: fit-content;
+    border: 2px solid var(--primary-color);
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.quizTitle{
+    font-size: 35px;
+}
+.titleContainer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+.informationsContainer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
