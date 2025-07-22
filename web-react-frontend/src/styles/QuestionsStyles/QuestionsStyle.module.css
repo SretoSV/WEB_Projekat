@@ -1,0 +1,22 @@
+.row{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    font-size: 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--primary-color);
+}
+.title{
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+.buttons{
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+}
+.answers{
+    border: 1px solid var(--primary-color);
+    width: fit-content;
+    border-radius: 5px;
+}

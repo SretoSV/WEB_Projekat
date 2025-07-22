@@ -5,7 +5,9 @@
     margin-left: 5px;
     color: var(--main-text-color);
     cursor: pointer;
-    padding: 5px 8px;
+    /*padding: 5px 8px;*/
+    width: 40px;
+    height: 40px;
 }
 
 .button:hover{

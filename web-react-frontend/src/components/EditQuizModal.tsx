@@ -10,6 +10,8 @@ import plusImage from '../images/plus.png';
 import CategoryCheckboxesCard from './CategoryCheckboxesCard';
 import { createNewCategory, fetchCategories, toggleCategorySelection } from '../services/QuizCategoryService';
 import { editQuiz } from '../services/QuizService';
+import { QuestionsEditBox } from './QuestionsEditBox';
+import { AddQuestion } from './AddQuestion';
 
 interface EditQuizModalProps {
   show: boolean;
@@ -176,6 +178,9 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
                 required
             />
         </div>
+
+        <QuestionsEditBox questions={quiz.questions} allCategories={allCategories || []}/>
+        <AddQuestion />
 
         <div className={styles.buttonsDiv}>
             <ButtonWithText onClick1={handleCancel} type="button" text="Cancel" />
