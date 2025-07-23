@@ -38,6 +38,8 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
     }
   );
   const [toggleQuestionsList, setToggleQuestionsList] = useState<boolean>(true);
+  const [addNewQuestionState, setAddNewQuestionState] = useState<boolean>(false);
+  const [editNewQuestionState, setEditNewQuestionState] = useState<boolean>(false);
   const [newCategory, setNewCategory] = useState<string>('');
   const [form, setForm] = useState({
     id: 0,
@@ -87,13 +89,22 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
     setToggleQuestionsList(current => !current);
   };
 
+  const handleAddNewQuestionState = () => {
+    setAddNewQuestionState(current => !current);
+  };
+
+  const handleEditNewQuestionState = () => {
+    setEditNewQuestionState(current => !current);
+  };
+
   const handleCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     onClose();
   };
       
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      console.log("MKL");
       await editQuiz(quiz);
       onClose();
   };
@@ -132,6 +143,13 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
     console.log(question.id + " CC " + question?.answerOptions?.[0]?.text+ " CC " + question?.answerOptions?.[0]?.isCorrect);
   }
 
+  const handleAddQuestions = (question: Question) => {
+    setForm(prevForm => ({
+        ...prevForm, questions: [...prevForm.questions, question]
+    }));
+    console.log("Add" +question.id + " CC " + question?.answerOptions?.[0]?.text+ " CC " + question?.answerOptions?.[0]?.isCorrect);
+  }
+
   useEffect(()=> {
     console.log(form);
   },[form]);
@@ -140,6 +158,7 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
   return (
     <div className={styles.modalOverlay}>
         <div className={styles.modalContent}>
+        <form onSubmit={handleSubmit}>
         <div className={styles.formModal}>
             <label htmlFor="Title">Title:</label>
             <input 
@@ -216,23 +235,29 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
         <div className={styles.toggleDiv}>
           <div className={styles.titleForQuestionsList}>Question List:</div>
           <ButtonWithText onClick={handleToggleQuestionsList} type="button" text="Toggle" />
+          <ButtonWithText onClick={handleAddNewQuestionState} type="button" text="Add" />
         </div>
+                <div className={styles.buttonsDiv}>
+            <ButtonWithText onClick1={handleCancel} type="button" text="Cancel" />
+            <ButtonWithText type="submit" text="Edit" />
+        </div>
+            </form>
         <br />
         {
           toggleQuestionsList &&
           <>
-            <QuestionsEditBox questions={form.questions} selectedCategories={form.categories || []} onSelectQuestion={handleSelectQuestion}/>
+            <QuestionsEditBox onEditNewQuestionState={handleEditNewQuestionState} questions={form.questions} selectedCategories={form.categories || []} onSelectQuestion={handleSelectQuestion}/>
             <div className={styles.addAndEditFields}>
-              <AddQuestion />
-              <EditQuestion selectedCategories={selectedCategories} selectedQuestion={selectedQuestion} onEditQuestion={handleEditQuestions} onSelectQuestion={handleSelectQuestion}/>
+              {
+              addNewQuestionState && 
+              <AddQuestion quizId={quizId} onAddNewQuestionState={handleAddNewQuestionState} onAddQuestion={handleAddQuestions} selectedCategories={selectedCategories} questions={form.questions}/>
+              }
+              {editNewQuestionState && 
+              <EditQuestion omEditNewQuestionState={handleEditNewQuestionState} selectedCategories={selectedCategories} selectedQuestion={selectedQuestion} onEditQuestion={handleEditQuestions} />
+              }
             </div>
           </>
         }
-  
-        <div className={styles.buttonsDiv}>
-            <ButtonWithText onClick1={handleCancel} type="button" text="Cancel" />
-            <ButtonWithText onClick1={handleSubmit} type="button" text="Edit" />
-        </div>
 
         </div>
     </div>

@@ -13,10 +13,9 @@ interface EditQuestionProps{
     selectedQuestion: Question;
     onEditQuestion: (question: Question) => void;
     selectedCategories: Array<QuizCategory>;
-    onSelectQuestion: (question: Question) => void; 
+    omEditNewQuestionState: () => void;
 }
 export function EditQuestion(props: EditQuestionProps){
-    const [fillInAnswer, setFillInAnswer] = useState<string>("");
     const [form, setForm] = useState<Question>({
         id: 0,
         text: "",
@@ -26,6 +25,7 @@ export function EditQuestion(props: EditQuestionProps){
         answerOptions: [] as AnswerOption[],
     });
     const [optionsForm, setOptionsForm] = useState<AnswerOption[]>([] as AnswerOption[]);
+    const [fillInAnswer, setFillInAnswer] = useState<string>("");
     useEffect(()=>{
         console.log("F:  " + form.questionTypeId + " " + form.quizCategoryId + form?.answerOptions?.[0]?.text + form?.answerOptions?.[0]?.isCorrect);
     },[form]);
@@ -41,6 +41,7 @@ export function EditQuestion(props: EditQuestionProps){
         });
 
         setOptionsForm(props.selectedQuestion.answerOptions || [] as AnswerOption[]);
+        setFillInAnswer(props.selectedQuestion.answerOptions[0]?.fieldAnswerText || "");
     }, [props.selectedQuestion]);
 
     const handleAddOptionsToQuestion = () => {
@@ -54,6 +55,7 @@ export function EditQuestion(props: EditQuestionProps){
                 ...updatedOptions[index],
                 [field]: value,
                 ["id"]: index + 1,
+                ["questionId"]: props.selectedQuestion.id,
             };
             return updatedOptions;
         });
@@ -64,9 +66,31 @@ export function EditQuestion(props: EditQuestionProps){
         handleInputChange(e, setForm, "number");
     };
 
-    return  <div className={styles.formModal}>
+    const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        props.onEditQuestion(form);
+        props.omEditNewQuestionState();
+    }
+
+    if(props.selectedQuestion.id === 0) 
+        return <div className={styles.formModal}>
             <div className={styles.title}>Edit Question: {props.selectedQuestion.id || ""}</div>
-            <label htmlFor="QuestionTypeId">Question type:</label>
+        </div>;
+
+    return  <form onSubmit={(e) => handleSend(e)}>
+            <div className={styles.formModal}>
+            <div className={styles.title}>Edit Question: {props.selectedQuestion.id || ""}</div>
+            <label htmlFor="Text">Question:</label>
+            <textarea 
+              id="Text" 
+              name="text"
+              className={styles.textInput} 
+              placeholder="Question..." 
+              value={form.text} 
+              onChange={(e) => handleInputChange(e, setForm, "string")} 
+              required
+            />
+            <label htmlFor="Text">Question type:</label>
             <br />
             <select
               id="QuestionTypeId"
@@ -217,7 +241,7 @@ export function EditQuestion(props: EditQuestionProps){
                     <input
                         type="text"
                         placeholder="Enter correct answer"
-                        value={optionsForm?.[0]?.fieldAnswerText || fillInAnswer}
+                        value={fillInAnswer}
                         className={styles.singleOption}
                         onChange={(e) => setFillInAnswer(e.target.value)}
                         required
@@ -243,6 +267,7 @@ export function EditQuestion(props: EditQuestionProps){
                 </div>
             }
             <br />
-            <ButtonWithImage title="Add" widthImage="30px" heightImage='25px' onClick={() => form && props.onEditQuestion(form)} type="button" image={plusImage} alt={"plusImage"}/>
+            <ButtonWithImage title="Add" widthImage="30px" heightImage='25px' type="submit" image={plusImage} alt={"plusImage"}/>
         </div>
+        </form>
 }

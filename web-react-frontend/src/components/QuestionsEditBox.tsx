@@ -11,8 +11,14 @@ interface QuestionsEditBoxProps {
     questions: Array<Question>;
     selectedCategories: Array<QuizCategory>;
     onSelectQuestion: (question: Question) => void; 
+    onEditNewQuestionState: () => void;
 }
 export function QuestionsEditBox(props: QuestionsEditBoxProps){
+
+    const handleEdit = (question: Question) => {
+        props.onSelectQuestion(question);
+        props.onEditNewQuestionState();
+    };
 
     useEffect(() => {
         console.log(props.questions?.[0].id + "EQEQEQ");
@@ -23,6 +29,7 @@ export function QuestionsEditBox(props: QuestionsEditBoxProps){
         console.log(props.questions?.[1]?.answerOptions?.[2]?.id + "POPOPOPO");
         console.log(props.questions?.[1]?.answerOptions?.[3]?.id + "POPOPOPO");
     },[props.questions]);
+
     return <div>
          {props.questions.map((question, index) => (
             <div key={question.id} className={styles.row}>
@@ -33,13 +40,13 @@ export function QuestionsEditBox(props: QuestionsEditBoxProps){
                 <div className={styles.answers}>
                     {question.answerOptions.map((answer, index) => (
                         <div key={answer.id}>
-                            {(index + 1 + ".") + " | " + answer.text + " | " + answer.isCorrect + " | " + answer.fieldAnswerText}
+                            {(index + 1 + ".") + " | " + answer.text + " | " + answer.isCorrect + (answer.fieldAnswerText ? " | " + answer.fieldAnswerText : "")}
                         </div>
                     ))}
                 </div>
                 </div>
                 <div className={styles.buttons}>
-                    <ButtonWithImage onClick={() => props.onSelectQuestion(question)} image={editImage} widthImage="30px" heightImage="30px" alt="edit" title="edit"/>
+                    <ButtonWithImage onClick={() => handleEdit(question)} image={editImage} widthImage="30px" heightImage="30px" alt="edit" title="edit"/>
                     <ButtonWithImage image={deleteImage} widthImage="30px" heightImage="30px" alt="delete" title="delete"/>
                 </div>
             </div>
