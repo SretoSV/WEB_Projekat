@@ -3,7 +3,9 @@ export interface AnswerOption {
   text: string;
   isCorrect: boolean;
   questionId: number;
+  fieldAnswerText?: string;
 }
+
 /*
 
   const emptyQuestion: Question = {

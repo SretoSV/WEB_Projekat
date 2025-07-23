@@ -27,8 +27,17 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
 
   const [allCategories, setAllCategories] = useState<Array<QuizCategory>>([]);
   const [selectedCategories, setSelectedCategories] = useState<QuizCategory[]>(quiz.categories);
-  const [selectedQuestion, setSelectedQuesion] = useState<Question>();
-  const [toggleQuestionsList, setToggleQuestionsList] = useState<boolean>(false);
+  const [selectedQuestion, setSelectedQuesion] = useState<Question>(
+    {
+      id: 0,
+      text: "",
+      questionTypeId: 0,
+      quizCategoryId: 0,
+      quizId: 0,
+      answerOptions: []
+    }
+  );
+  const [toggleQuestionsList, setToggleQuestionsList] = useState<boolean>(true);
   const [newCategory, setNewCategory] = useState<string>('');
   const [form, setForm] = useState({
     id: 0,
@@ -68,6 +77,10 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
 
   const handleToggleCategory = (category: QuizCategory) => {
     setSelectedCategories(prev => toggleCategorySelection(prev, category));
+    setForm(prev => ({ //setovane su kategorije ovde
+      ...prev, 
+      categories: [...prev.categories, category],
+    }));
   };
   
   const handleToggleQuestionsList = () => {
@@ -97,7 +110,7 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
 
     setSelectedCategories([...selectedCategories, newCategoryObject]);
     setAllCategories([...allCategories, newCategoryObject]);
-    setForm(prev => ({
+    setForm(prev => ({ //setovane su kategorije ovde
       ...prev, 
       categories: [...prev.categories, newCategoryObject],
     }));
@@ -110,11 +123,18 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
   }
 
   const handleEditQuestions = (question: Question) => {
-    console.log(question.id + "CC");
+    setForm(prevForm => ({
+        ...prevForm,
+        questions: prevForm.questions.map(q =>
+            q.id === question.id ? question : q
+        )
+    }));
+    console.log(question.id + " CC " + question?.answerOptions?.[0]?.text+ " CC " + question?.answerOptions?.[0]?.isCorrect);
   }
-  /*useEffect(()=> {
+
+  useEffect(()=> {
     console.log(form);
-  },[form]);*/
+  },[form]);
       
   if (!show) return null;
   return (
@@ -127,7 +147,7 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
                 name="title"
                 type="text" 
                 value={form.title} 
-                onChange={(e) => handleInputChange(e, setForm)}
+                onChange={(e) => handleInputChange(e, setForm, "string")}
                 required
             />
             <br />
@@ -148,7 +168,7 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
               <CategoryCheckboxesCard 
                 allCategories={allCategories || []}
                 quizCategories={selectedCategories} 
-                quizQuestions={quiz.questions}
+                quizQuestions={form.questions}
                 onCategoryToggle={handleToggleCategory}
               />
             </div>
@@ -162,7 +182,7 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
               className={styles.descriptionInput} 
               placeholder="Description..." 
               value={form.description} 
-              onChange={(e) => handleInputChange(e, setForm)} 
+              onChange={(e) => handleInputChange(e, setForm, "string")} 
               required
             />
             <br />
@@ -173,7 +193,7 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
               name="difficulty"
               className={styles.dropdownInput}
               value={form.difficulty}
-              onChange={(e) => handleInputChange(e, setForm)}
+              onChange={(e) => handleInputChange(e, setForm, "string")}
               required
             >
               <option value="easy" >Easy</option>
@@ -189,7 +209,7 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
                 type="number" 
                 name="timeLimit"
                 value={form.timeLimit} 
-                onChange={(e) => handleInputChange(e, setForm)}
+                onChange={(e) => handleInputChange(e, setForm, "number")}
                 required
             />
         </div>
@@ -201,10 +221,10 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
         {
           toggleQuestionsList &&
           <>
-            <QuestionsEditBox questions={quiz.questions} allCategories={allCategories || []} onSelectQuestion={handleSelectQuestion}/>
+            <QuestionsEditBox questions={form.questions} selectedCategories={form.categories || []} onSelectQuestion={handleSelectQuestion}/>
             <div className={styles.addAndEditFields}>
               <AddQuestion />
-              <EditQuestion selectedCategories={selectedCategories} selectedQuestion={selectedQuestion} onEditQuestions={handleEditQuestions} onSelectQuestion={handleSelectQuestion}/>
+              <EditQuestion selectedCategories={selectedCategories} selectedQuestion={selectedQuestion} onEditQuestion={handleEditQuestions} onSelectQuestion={handleSelectQuestion}/>
             </div>
           </>
         }

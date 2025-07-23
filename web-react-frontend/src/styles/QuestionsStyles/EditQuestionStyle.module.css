@@ -4,6 +4,7 @@
     width: fit-content;
     padding: 5px;
     border-radius: 8px;
+    width: 200px;
 }
 
 .formModal label {
@@ -74,4 +75,20 @@
 .dropdownInput option {
     background-color: var(--background-color);
     color: var(--main-text-color);
+}
+
+.optionsDiv{
+    border: 1px solid var(--primary-color);
+    padding: 5px;
+    width: 95%;
+}
+.singleOption{
+    width: 50%;
+}
+
+.optionRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
 }

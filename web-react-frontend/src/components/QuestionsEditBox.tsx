@@ -8,7 +8,7 @@ import { findQuizCategoryName, setQuestionType } from "../services/QuestionServi
 
 interface QuestionsEditBoxProps {
     questions: Array<Question>;
-    allCategories: Array<QuizCategory>;
+    selectedCategories: Array<QuizCategory>;
     onSelectQuestion: (question: Question) => void; 
 }
 export function QuestionsEditBox(props: QuestionsEditBoxProps){
@@ -19,7 +19,7 @@ export function QuestionsEditBox(props: QuestionsEditBoxProps){
                 <div>
                 <div>{index+1}. {question.text}</div>
                 <div>{"- Question type id: " + setQuestionType(question.questionTypeId)}</div>
-                <div>{"- Quiz category id: " + findQuizCategoryName(question.quizCategoryId, props.allCategories)}</div>
+                <div>{"- Quiz category id: " + findQuizCategoryName(question.quizCategoryId, props.selectedCategories)}</div>
                 <div className={styles.answers}>
                     {question.answerOptions.map((answer, index) => (
                         <div key={answer.id} >

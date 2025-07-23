@@ -68,7 +68,7 @@ export function createNewCategory(
     : 0;
 
   return {
-    id: maxId + 1,
+    id: Number(maxId + 1),
     name: newCategoryName,
   };
 }

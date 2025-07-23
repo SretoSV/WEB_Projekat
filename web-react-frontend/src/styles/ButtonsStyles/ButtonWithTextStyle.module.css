@@ -13,3 +13,19 @@
 .button:hover{
     background-color: var(--primary-color-hover);
 }
+
+.buttonLong{
+    background-color: var(--primary-color);
+    color: var(--main-text-color);
+    border: none;
+    border-radius: 5px;
+    margin-left: 5px;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 18px;
+    width: 180px;
+}
+
+.buttonLong:hover{
+    background-color: var(--primary-color-hover);
+}
