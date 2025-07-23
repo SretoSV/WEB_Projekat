@@ -11,12 +11,19 @@ interface ButtonWithImageProps{
     type?: "button" | "submit" | "reset";
 }
 export default function ButtonWithImage(props: ButtonWithImageProps){
-    return <button className={styles.button} onClick={props.onClick || props.onClick1} type={props.type}>
-        <img 
-            src={props.image}
-            alt={props.alt}
-            title={props.alt}
-            style={{width:`${props.widthImage}`, height:`${props.heightImage}`}}
-        />
-    </button>
+    return <button 
+                className={styles.button}
+                type={props.type}
+                onClick={(e) => {
+                    props.onClick?.();
+                    props.onClick1?.(e);
+                }}
+            >
+            <img 
+                src={props.image}
+                alt={props.alt}
+                title={props.alt}
+                style={{width:`${props.widthImage}`, height:`${props.heightImage}`}}
+            />
+        </button>
 }

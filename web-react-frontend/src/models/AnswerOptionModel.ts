@@ -4,3 +4,14 @@ export interface AnswerOption {
   isCorrect: boolean;
   questionId: number;
 }
+/*
+
+  const emptyQuestion: Question = {
+  id: 0,
+  text: "",
+  quizId: 0,
+  quizCategoryId: 0,
+  questionTypeId: 0,
+  answerOptions: [],
+};
+*/

@@ -9,11 +9,11 @@ import { findQuizCategoryName, setQuestionType } from "../services/QuestionServi
 interface QuestionsEditBoxProps {
     questions: Array<Question>;
     allCategories: Array<QuizCategory>;
+    onSelectQuestion: (question: Question) => void; 
 }
 export function QuestionsEditBox(props: QuestionsEditBoxProps){
- 
+
     return <div>
-        <div className={styles.title}>Question List:</div>
          {props.questions.map((question, index) => (
             <div key={question.id} className={styles.row}>
                 <div>
@@ -29,7 +29,7 @@ export function QuestionsEditBox(props: QuestionsEditBoxProps){
                 </div>
                 </div>
                 <div className={styles.buttons}>
-                    <ButtonWithImage image={editImage} widthImage="30px" heightImage="30px" alt="edit" title="edit"/>
+                    <ButtonWithImage onClick={() => props.onSelectQuestion(question)} image={editImage} widthImage="30px" heightImage="30px" alt="edit" title="edit"/>
                     <ButtonWithImage image={deleteImage} widthImage="30px" heightImage="30px" alt="delete" title="delete"/>
                 </div>
             </div>

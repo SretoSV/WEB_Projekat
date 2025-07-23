@@ -12,6 +12,7 @@ import { createNewCategory, fetchCategories, toggleCategorySelection } from '../
 import { editQuiz } from '../services/QuizService';
 import { QuestionsEditBox } from './QuestionsEditBox';
 import { AddQuestion } from './AddQuestion';
+import { EditQuestion } from './EditQuestion';
 
 interface EditQuizModalProps {
   show: boolean;
@@ -23,9 +24,11 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
   const { quizzes } = useQuizContext();
   const quiz = quizzes.find(q => q.id === quizId);
   if (!quiz) return <div>Quiz not found</div>;
-  
+
   const [allCategories, setAllCategories] = useState<Array<QuizCategory>>([]);
   const [selectedCategories, setSelectedCategories] = useState<QuizCategory[]>(quiz.categories);
+  const [selectedQuestion, setSelectedQuesion] = useState<Question>();
+  const [toggleQuestionsList, setToggleQuestionsList] = useState<boolean>(false);
   const [newCategory, setNewCategory] = useState<string>('');
   const [form, setForm] = useState({
     id: 0,
@@ -66,6 +69,10 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
   const handleToggleCategory = (category: QuizCategory) => {
     setSelectedCategories(prev => toggleCategorySelection(prev, category));
   };
+  
+  const handleToggleQuestionsList = () => {
+    setToggleQuestionsList(current => !current);
+  };
 
   const handleCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -97,6 +104,14 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
     setNewCategory("");
   };
 
+  const handleSelectQuestion = (question: Question) => {
+    setSelectedQuesion(question);
+    console.log(question.id + "BBB");
+  }
+
+  const handleEditQuestions = (question: Question) => {
+    console.log(question.id + "CC");
+  }
   /*useEffect(()=> {
     console.log(form);
   },[form]);*/
@@ -178,10 +193,22 @@ export default function EditQuizModal({ onClose, show, quizId }: EditQuizModalPr
                 required
             />
         </div>
-
-        <QuestionsEditBox questions={quiz.questions} allCategories={allCategories || []}/>
-        <AddQuestion />
-
+        <div className={styles.toggleDiv}>
+          <div className={styles.titleForQuestionsList}>Question List:</div>
+          <ButtonWithText onClick={handleToggleQuestionsList} type="button" text="Toggle" />
+        </div>
+        <br />
+        {
+          toggleQuestionsList &&
+          <>
+            <QuestionsEditBox questions={quiz.questions} allCategories={allCategories || []} onSelectQuestion={handleSelectQuestion}/>
+            <div className={styles.addAndEditFields}>
+              <AddQuestion />
+              <EditQuestion selectedCategories={selectedCategories} selectedQuestion={selectedQuestion} onEditQuestions={handleEditQuestions} onSelectQuestion={handleSelectQuestion}/>
+            </div>
+          </>
+        }
+  
         <div className={styles.buttonsDiv}>
             <ButtonWithText onClick1={handleCancel} type="button" text="Cancel" />
             <ButtonWithText onClick1={handleSubmit} type="button" text="Edit" />
