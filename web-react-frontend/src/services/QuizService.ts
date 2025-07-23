@@ -44,14 +44,11 @@ export async function fetchQuizzes(): Promise<FetchQuizzesResponse> {
             {
             id: 2,
             text: "Which planet is known as the Red Planet?",
-            questionTypeId: 1,
+            questionTypeId: 3,
             quizCategoryId: 3,
             quizId: 1,
             answerOptions: [
-                { id: 5, text: "Mars", isCorrect: true, questionId: 2 },
-                { id: 6, text: "Jupiter", isCorrect: false, questionId: 2 },
-                { id: 7, text: "Saturn", isCorrect: false, questionId: 2 },
-                { id: 8, text: "Venus", isCorrect: false, questionId: 2 }
+                { id: 1, text: "True/False Answer", isCorrect: true, questionId: 2 },
             ]
             },
             {
@@ -61,12 +58,22 @@ export async function fetchQuizzes(): Promise<FetchQuizzesResponse> {
             quizCategoryId: 3,
             quizId: 1,
             answerOptions: [
-                { id: 9, text: "William Shakespeare", isCorrect: true, questionId: 3 },
-                { id: 10, text: "Charles Dickens", isCorrect: false, questionId: 3 },
-                { id: 11, text: "Jane Austen", isCorrect: false, questionId: 3 },
-                { id: 12, text: "Mark Twain", isCorrect: false, questionId: 3 }
+                { id: 1, text: "William Shakespeare", isCorrect: true, questionId: 3 },
+                { id: 2, text: "Charles Dickens", isCorrect: false, questionId: 3 },
+                { id: 3, text: "Jane Austen", isCorrect: false, questionId: 3 },
+                { id: 4, text: "Mark Twain", isCorrect: false, questionId: 3 }
             ]
-            }
+            },
+            {
+            id: 4,
+            text: "Which planet is known as the Red Planet?",
+            questionTypeId: 4,
+            quizCategoryId: 3,
+            quizId: 1,
+            answerOptions: [
+                { id: 1, text: "Fill answer", isCorrect: true, questionId: 4, fieldAnswerText: "lopta" },
+            ]
+            },
         ];
         const quizzes: Quiz[] = [
             {

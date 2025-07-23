@@ -46,7 +46,7 @@ export function LoginForm(){
                     type="text"
                     name="usernameOrEmail"
                     autoComplete="off"
-                    onChange={(e) => handleInputChange(e, setLoginForm)}
+                    onChange={(e) => handleInputChange(e, setLoginForm, "string")}
                     placeholder='username or email'
                     required
                 />
@@ -57,7 +57,7 @@ export function LoginForm(){
                     name="password"
                     autoComplete="off"
                     placeholder='password'
-                    onChange={(e) => handleInputChange(e, setLoginForm)}
+                    onChange={(e) => handleInputChange(e, setLoginForm, "string")}
                     required
                 />
           </div>
