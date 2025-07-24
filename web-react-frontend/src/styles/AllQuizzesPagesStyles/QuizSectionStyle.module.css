@@ -1,0 +1,12 @@
+.divTop {
+    display: flex;
+    align-items: center;
+}
+
+.title {
+    font-size: 30px; 
+}
+
+.addQuizButtonDiv{
+    margin-left: auto;
+}

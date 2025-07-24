@@ -16,18 +16,15 @@ import type { Quiz } from '../models/QuizModel';
 import ButtonWithLongText from './ButtonWithLongText';
 
 interface EditQuizModalProps {
-  onClose: () => void;
-  quizId: number;
-  onEditQuiz: (quiz: Quiz) => void;
+    onClose: () => void;
+    onAddQuiz: (quiz: Quiz) => void;
 }
 
-export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizModalProps) {
+export default function AddQuizModal({ onClose, onAddQuiz }: EditQuizModalProps) {
   const { quizzes } = useQuizContext();
-  const quiz = quizzes.find(q => q.id === quizId);
-  if (!quiz) return <div>Quiz not found</div>;
 
   const [allCategories, setAllCategories] = useState<Array<QuizCategory>>([]);
-  const [selectedCategories, setSelectedCategories] = useState<QuizCategory[]>(quiz.categories);
+  const [selectedCategories, setSelectedCategories] = useState<QuizCategory[]>([] as QuizCategory[]);
   const [selectedQuestion, setSelectedQuesion] = useState<Question>(
     {
       id: 0,
@@ -43,11 +40,11 @@ export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizM
   const [editNewQuestionState, setEditNewQuestionState] = useState<boolean>(false);
   const [newCategory, setNewCategory] = useState<string>('');
   const [form, setForm] = useState<Quiz>({
-    id: 0,
+    id: quizzes.length > 0 ? Math.max(...quizzes.map(q => q.id)) + 1 : 1,
     title: '',
     description: '',
     numberOfQuestions: 0,
-    difficulty: '',
+    difficulty: 'easy',
     timeLimit: 0,
     categories: [] as QuizCategory[],
     questions: [] as Question[],
@@ -64,19 +61,6 @@ export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizM
     };
     fetchData();
   }, []);
-  
-  useEffect(() => {
-    setForm({
-      id: quiz.id,
-      title: quiz.title,
-      description: quiz.description,
-      numberOfQuestions: quiz.numberOfQuestions,
-      difficulty: quiz.difficulty,
-      timeLimit: quiz.timeLimit,
-      categories: quiz.categories,
-      questions: quiz.questions,
-    });
-  }, [quizId]);
 
   const handleToggleCategory = (category: QuizCategory) => {
     setSelectedCategories(prev => toggleCategorySelection(prev, category));
@@ -105,7 +89,7 @@ export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizM
       
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      onEditQuiz(form);
+      onAddQuiz(form);
       onClose();
   };
         
@@ -154,7 +138,7 @@ export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizM
     setForm(prevForm => ({
         ...prevForm, questions: prevForm.questions.filter(q => q.id !== question.id)
     }));
-  }
+  }  
 
   return (
     <div className={styles.modalOverlay}>
@@ -245,18 +229,30 @@ export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizM
           </div>
           <div className={styles.buttonsDiv}>
               <ButtonWithText onClick1={handleCancel} type="button" text="Cancel" />
-              <ButtonWithText type="submit" text="Edit quiz" />
+              <ButtonWithText type="submit" text="Add quiz" />
           </div>
         </form>
         <br />
         {
           toggleQuestionsList &&
           <>
-            <QuestionsEditBox onDeleteQuestion={handleDeleteQuestion} onEditNewQuestionState={handleEditNewQuestionState} questions={form.questions} selectedCategories={form.categories || []} onSelectQuestion={handleSelectQuestion}/>
+            <QuestionsEditBox 
+              onDeleteQuestion={handleDeleteQuestion} 
+              onEditNewQuestionState={handleEditNewQuestionState} 
+              questions={form.questions} 
+              selectedCategories={form.categories || []} 
+              onSelectQuestion={handleSelectQuestion}
+            />
             <div className={styles.addAndEditFields}>
               {
               addNewQuestionState && 
-              <AddQuestion quizId={quizId} onAddNewQuestionState={handleAddNewQuestionState} onAddQuestion={handleAddQuestions} selectedCategories={selectedCategories} questions={form.questions}/>
+              <AddQuestion 
+                quizId={selectedQuestion.quizId} 
+                onAddNewQuestionState={handleAddNewQuestionState} 
+                onAddQuestion={handleAddQuestions} 
+                selectedCategories={selectedCategories} 
+                questions={form.questions}
+              />
               }
               {editNewQuestionState && 
               <EditQuestion omEditNewQuestionState={handleEditNewQuestionState} selectedCategories={selectedCategories} selectedQuestion={selectedQuestion} onEditQuestion={handleEditQuestions} />

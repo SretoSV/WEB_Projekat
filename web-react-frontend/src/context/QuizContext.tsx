@@ -13,7 +13,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
 
   return (
-    <QuizContext.Provider value={{ quizzes,setQuizzes }}>
+    <QuizContext.Provider value={{ quizzes, setQuizzes }}>
       {children}
     </QuizContext.Provider>
   );

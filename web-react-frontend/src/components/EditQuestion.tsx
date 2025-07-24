@@ -26,6 +26,7 @@ export function EditQuestion(props: EditQuestionProps){
     });
     const [optionsForm, setOptionsForm] = useState<AnswerOption[]>([] as AnswerOption[]);
     const [fillInAnswer, setFillInAnswer] = useState<string>("");
+    
     useEffect(()=>{
         console.log("F:  " + form.questionTypeId + " " + form.quizCategoryId + form?.answerOptions?.[0]?.text + form?.answerOptions?.[0]?.isCorrect);
     },[form]);
@@ -62,8 +63,31 @@ export function EditQuestion(props: EditQuestionProps){
     };
 
     const handleChangeQuestionType = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setOptionsForm([] as AnswerOption[]);
+        const selectedTypeId = Number(e.target.value);
+        setOptionsForm([] as AnswerOption[]);      
         handleInputChange(e, setForm, "number");
+
+        if (selectedTypeId === 1) {
+            const newOptions: AnswerOption[] = Array.from({ length: 4 }).map((_, i) => ({
+                id: i + 1,
+                text: "",
+                isCorrect: i === 0,
+                questionId: props.selectedQuestion.id,
+            }));
+            setOptionsForm(newOptions);
+        } else {
+            setOptionsForm([]);
+        }
+
+        if (selectedTypeId === 3){
+            const newOptions: AnswerOption[] = Array.from({ length: 1 }).map((_, i) => ({
+                id: i + 1,
+                text: "True/False Answer",
+                isCorrect: false,
+                questionId: props.selectedQuestion.id,
+            }));
+            setOptionsForm(newOptions);
+        }
     };
 
     const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
@@ -166,18 +190,20 @@ export function EditQuestion(props: EditQuestionProps){
                         type="button"
                         onClick={() =>
                             setOptionsForm((prev) => [
-                            ...prev,
-                            {
-                                id: prev.length + 1,
-                                text: "",
-                                isCorrect: false,
-                                questionId: props.selectedQuestion.id,
-                            },
+                                ...prev,
+                                {
+                                    id: prev.length + 1,
+                                    text: "",
+                                    isCorrect: false,
+                                    questionId: props.selectedQuestion.id,
+                                },
                             ])
                         }
-                    >
+                        className={styles.removeAndAddButton}
+                        >
                         Add Option
                     </button>
+                    <div>Option | correct? | remove</div>
                     {optionsForm.map((option, index) => (
                     <div key={index} className={styles.optionRow}>
                         <input
@@ -198,8 +224,18 @@ export function EditQuestion(props: EditQuestionProps){
                                     handleOptionChange(index, "isCorrect", e.target.checked)
                                 }
                             />
-                            Correct
                         </label>
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setOptionsForm(prevOptions =>
+                                    prevOptions.filter((_, indexFilter) => indexFilter !== index)
+                                )
+                            }
+                            className={styles.removeAndAddButton}
+                        >
+                            x
+                        </button>
                     </div>
                     ))}
 
@@ -267,7 +303,9 @@ export function EditQuestion(props: EditQuestionProps){
                 </div>
             }
             <br />
-            <ButtonWithImage title="Add" widthImage="30px" heightImage='25px' type="submit" image={plusImage} alt={"plusImage"}/>
+            <div className={styles.plusButtonDiv}>
+                <ButtonWithImage title="Add" widthImage="30px" heightImage='25px' type="submit" image={plusImage} alt={"plusImage"}/>
+            </div>
         </div>
         </form>
 }

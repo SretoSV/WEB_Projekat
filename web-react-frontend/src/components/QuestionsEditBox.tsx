@@ -5,13 +5,13 @@ import editImage from '../images/edit.png';
 import deleteImage from '../images/reject.png';
 import type { QuizCategory } from "../models/QuizCategoryModel";
 import { findQuizCategoryName, setQuestionType } from "../services/QuestionService";
-import { useEffect } from "react";
 
 interface QuestionsEditBoxProps {
     questions: Array<Question>;
     selectedCategories: Array<QuizCategory>;
     onSelectQuestion: (question: Question) => void; 
     onEditNewQuestionState: () => void;
+    onDeleteQuestion: (question: Question) => void; 
 }
 export function QuestionsEditBox(props: QuestionsEditBoxProps){
 
@@ -20,15 +20,9 @@ export function QuestionsEditBox(props: QuestionsEditBoxProps){
         props.onEditNewQuestionState();
     };
 
-    useEffect(() => {
-        console.log(props.questions?.[0].id + "EQEQEQ");
-        console.log(props.questions?.[1].id + "EQEQEQ");
-        console.log(props.questions?.[2].id + "EQEQEQ");
-        console.log(props.questions?.[1]?.answerOptions?.[0]?.id + "POPOPOPO");
-        console.log(props.questions?.[1]?.answerOptions?.[1]?.id + "POPOPOPO");
-        console.log(props.questions?.[1]?.answerOptions?.[2]?.id + "POPOPOPO");
-        console.log(props.questions?.[1]?.answerOptions?.[3]?.id + "POPOPOPO");
-    },[props.questions]);
+    const handleDelete = (question: Question) => {
+        props.onDeleteQuestion(question);
+    };
 
     return <div>
          {props.questions.map((question, index) => (
@@ -47,7 +41,7 @@ export function QuestionsEditBox(props: QuestionsEditBoxProps){
                 </div>
                 <div className={styles.buttons}>
                     <ButtonWithImage onClick={() => handleEdit(question)} image={editImage} widthImage="30px" heightImage="30px" alt="edit" title="edit"/>
-                    <ButtonWithImage image={deleteImage} widthImage="30px" heightImage="30px" alt="delete" title="delete"/>
+                    <ButtonWithImage onClick={() => handleDelete(question)} image={deleteImage} widthImage="30px" heightImage="30px" alt="delete" title="delete"/>
                 </div>
             </div>
         ))}

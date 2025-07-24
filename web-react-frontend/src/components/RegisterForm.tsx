@@ -89,7 +89,7 @@ export function RegisterForm(){
               type="text"
               name="username"
               defaultValue={form.username}
-              onChange={(e) => handleInputChange(e, setForm)}
+              onChange={(e) => handleInputChange(e, setForm, "string")}
               autoComplete="off"
               required
             />
@@ -101,7 +101,7 @@ export function RegisterForm(){
               placeholder="name@gmail.com"
               name="email"
               defaultValue={form.email}
-              onChange={(e) => handleInputChange(e, setForm)}
+              onChange={(e) => handleInputChange(e, setForm, "string")}
               autoComplete="off"
               required
             />
@@ -112,7 +112,7 @@ export function RegisterForm(){
               type="password"
               name="password"
               defaultValue={form.password}
-              onChange={(e) => handleInputChange(e, setForm)}
+              onChange={(e) => handleInputChange(e, setForm, "string")}
               autoComplete="off"
               required
             />

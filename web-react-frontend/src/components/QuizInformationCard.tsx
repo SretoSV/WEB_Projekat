@@ -26,7 +26,7 @@ export function QuizInformationCard({ quizId } : { quizId: number }){
             <br />
             <div className={styles.informationsContainer}>
                 <div className={styles.informationsTitle}>Number of questions: </div>
-                <div className={styles.inforamtions}>{quiz.numberOfQuestions}</div>
+                <div className={styles.inforamtions}>{quiz.questions.length}</div>
             </div>
             <br />
             <div className={styles.informationsContainer}>

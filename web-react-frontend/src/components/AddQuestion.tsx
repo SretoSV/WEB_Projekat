@@ -16,21 +16,19 @@ interface EditQuestionProps{
     quizId: number;
     onAddNewQuestionState: () => void,
 }
+
 export function AddQuestion(props: EditQuestionProps){
     const [fillInAnswer, setFillInAnswer] = useState<string>("");
     const [form, setForm] = useState<Question>({
-        id: Math.max(...props.questions.map(q => q.id)) + 1,
+        id: props.questions.length > 0 ? Math.max(...props.questions.map(q => q.id)) + 1 : 1,
         text: "",
         questionTypeId: 1,
-        quizCategoryId: 1,
+        quizCategoryId: props.selectedCategories[0].id || 0,
         quizId: props.quizId,
         answerOptions: [] as AnswerOption[],
     });
+
     const [optionsForm, setOptionsForm] = useState<AnswerOption[]>([] as AnswerOption[]);
-    
-    useEffect(()=>{
-        console.log("F:  " + form.questionTypeId + " " + form.quizCategoryId + form?.answerOptions?.[0]?.text + form?.answerOptions?.[0]?.isCorrect);
-    },[form]);
 
     const handleAddOptionsToQuestion = () => {
         setForm(prev => ({ ...prev, answerOptions: optionsForm }));
@@ -50,8 +48,31 @@ export function AddQuestion(props: EditQuestionProps){
     };
 
     const handleChangeQuestionType = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedTypeId = Number(e.target.value);
         setOptionsForm([] as AnswerOption[]);
         handleInputChange(e, setForm, "number");
+
+        if (selectedTypeId === 1) {
+            const newOptions: AnswerOption[] = Array.from({ length: 4 }).map((_, i) => ({
+                id: i + 1,
+                text: "",
+                isCorrect: i === 0,
+                questionId: props.questions.length > 0 ? Math.max(...props.questions.map(q => q.id)) + 1 : 1,
+            }));
+            setOptionsForm(newOptions);
+        } else {
+            setOptionsForm([]);
+        }
+
+        if (selectedTypeId === 3){
+            const newOptions: AnswerOption[] = Array.from({ length: 1 }).map((_, i) => ({
+                id: i + 1,
+                text: "True/False Answer",
+                isCorrect: false,
+                questionId: props.questions.length > 0 ? Math.max(...props.questions.map(q => q.id)) + 1 : 1,
+            }));
+            setOptionsForm(newOptions);
+        }
     };
 
     const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
@@ -61,13 +82,27 @@ export function AddQuestion(props: EditQuestionProps){
             id: Math.max(...props.questions.map(q => q.id)) + 1,
             text: "",
             questionTypeId: 1,
-            quizCategoryId: 1,
+            quizCategoryId: props.selectedCategories[0].id || 0,
             quizId: props.quizId,
             answerOptions: [] as AnswerOption[],
         });
         setOptionsForm([] as AnswerOption[]);
         props.onAddNewQuestionState();
     }
+
+    useEffect(() => {
+
+        const newOptions: AnswerOption[] = Array.from({ length: 4 }).map((_, i) => ({
+            id: i + 1,
+            text: "",
+            isCorrect: i === 0,
+            questionId: props.questions.length > 0 ? Math.max(...props.questions.map(q => q.id)) + 1 : 1,
+        }));
+        setOptionsForm(newOptions);
+
+    }, []);
+
+
     return  <form onSubmit={(e) => handleSend(e)}>
             <div className={styles.formModal}>
             <div className={styles.title}>Add Question: </div>
@@ -166,9 +201,11 @@ export function AddQuestion(props: EditQuestionProps){
                             },
                             ])
                         }
+                        className={styles.removeAndAddButton}
                     >
                         Add Option
                     </button>
+                    <div>Option | correct? | remove</div>
                     {optionsForm.map((option, index) => (
                     <div key={index} className={styles.optionRow}>
                         <input
@@ -189,8 +226,18 @@ export function AddQuestion(props: EditQuestionProps){
                                     handleOptionChange(index, "isCorrect", e.target.checked)
                                 }
                             />
-                            Correct
                         </label>
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setOptionsForm(prevOptions =>
+                                    prevOptions.filter((_, indexFilter) => indexFilter !== index)
+                                )
+                            }
+                            className={styles.removeAndAddButton}
+                        >
+                            x
+                        </button>
                     </div>
                     ))}
 
@@ -258,7 +305,9 @@ export function AddQuestion(props: EditQuestionProps){
                 </div>
             }
             <br />
-            <ButtonWithImage title="Add" widthImage="30px" heightImage='25px' type="submit" image={plusImage} alt={"plusImage"}/>
+            <div className={styles.plusButtonDiv}>
+                <ButtonWithImage title="Add" widthImage="30px" heightImage='25px' type="submit" image={plusImage} alt={"plusImage"}/>
+            </div>
         </div>
         </form>
 }

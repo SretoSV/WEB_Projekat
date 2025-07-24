@@ -89,6 +89,7 @@
 .optionRow {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
 }
 
@@ -110,4 +111,21 @@
 
   scrollbar-width: thin;
   scrollbar-color: var(--primary-color) var(--background-color);
+}
+
+.plusButtonDiv{
+    display: flex;
+    justify-content: end;
+}
+
+.removeAndAddButton{
+    background-color: var(--primary-color);
+    color: var(--main-text-color);
+    border: none;
+    padding: 4px 8px;
+    border-radius: 5px;
+}
+
+.removeAndAddButton:hover{
+    background-color: var(--primary-color-hover);
 }
