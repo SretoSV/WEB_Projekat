@@ -1,5 +1,6 @@
 import type { Question } from "./QuestionModel";
 import type { QuizCategory } from "./QuizCategoryModel";
+import type { UserQuizResult } from "./UserQuizResultModel";
 
 export interface Quiz {
   id: number;
@@ -10,4 +11,5 @@ export interface Quiz {
   numberOfQuestions: number;
   difficulty: string;
   timeLimit: number;
+  results?: Array<UserQuizResult>;
 }

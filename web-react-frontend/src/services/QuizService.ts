@@ -115,7 +115,7 @@ export async function addQuiz(quiz: Quiz): Promise<AddQuizResponse> {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch(`${serverPath()}/api/Quiz`, {
+        const response = await fetch(`${serverPath()}/api/Quiz/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
