@@ -1,15 +1,16 @@
 import type { Question } from "../models/QuestionModel";
 import type { QuizCategory } from "../models/QuizCategoryModel";
+import { serverPath } from "../serverPath";
 
 export interface FetchCategoriesResponse {
     categories: Array<QuizCategory>;
 }
 
 export async function fetchCategories(): Promise<FetchCategoriesResponse> {
-    //const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
 
     try {
-        /*const response = await fetch(`${serverPath()}/api/Category`, {
+        const response = await fetch(`${serverPath()}/api/Category/`, {
             method: 'GET',
             headers: {
             'Content-Type': 'application/json',
@@ -21,18 +22,10 @@ export async function fetchCategories(): Promise<FetchCategoriesResponse> {
 
         if (!response.ok) {
             throw new Error(data.message || 'Login failed.');
-        }*/
-        const categories: QuizCategory[] = [
-            { id: 1, name: "General Knowledge"},
-            { id: 2, name: "Science"},
-            { id: 3, name: "History"},
-            { id: 4, name: "Sports"},
-            { id: 5, name: "Music"},
-            { id: 6, name: "Technology"},
-        ];
+        }
 
         return {
-            categories,
+            categories: data,
         };
     } catch (err: any) {
         throw new Error(err.message || 'Server error. Try again later.');
