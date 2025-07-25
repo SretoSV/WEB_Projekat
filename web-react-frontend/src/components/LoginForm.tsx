@@ -5,6 +5,7 @@ import { useUserContext } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/UserService';
 import ButtonWithText from './ButtonWithText';
+import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from '../config/constants';
 
 export function LoginForm(){
     const { user, login } = useUserContext();
@@ -13,15 +14,18 @@ export function LoginForm(){
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        try {
-            const { userData, userToken } = await loginUser(loginForm);
-            login(userData, userToken);
-        } 
-        catch (err: any) {
-            alert(`Error from server: ${err.message}`);
+        if(loginForm.password.length < MIN_PASSWORD_LENGTH || loginForm.password.length > MAX_PASSWORD_LENGTH){
+            alert(`Password length must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters!`);
         }
-
+        else{
+            try {
+                const { userData, userToken } = await loginUser(loginForm);
+                login(userData, userToken);
+            } 
+            catch (err: any) {
+                alert(`Error from server: ${err.message}`);
+            }
+        }
     };
 
     useEffect(() => {

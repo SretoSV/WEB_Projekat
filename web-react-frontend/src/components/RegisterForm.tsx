@@ -4,6 +4,7 @@ import { handleInputChange } from '../functions/formChangeFunction';
 import placeHolderImage from '../images/placeHolder.png';
 import { registerUser, validateAndExtractImageFile } from '../services/UserService';
 import ButtonWithText from './ButtonWithText';
+import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from '../config/constants';
 
 export function RegisterForm(){
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -35,6 +36,10 @@ export function RegisterForm(){
     if(!imageFile){
         alert("Profile image is required.");
         return;
+    }
+    if(form.password.length < MIN_PASSWORD_LENGTH || form.password.length < MAX_PASSWORD_LENGTH){
+      alert(`Password length must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters!`);
+      return;
     }
     const formData = new FormData();
 

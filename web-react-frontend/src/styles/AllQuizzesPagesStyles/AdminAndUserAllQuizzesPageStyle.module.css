@@ -1,7 +1,7 @@
 .mainDiv {
     background-color: var(--background-color);  
     color: var(--main-text-color);
-    padding: 20px;
+    padding: 0px 20px;
     border-radius: 10px;
     width: 850px;
     margin: 20px auto;
