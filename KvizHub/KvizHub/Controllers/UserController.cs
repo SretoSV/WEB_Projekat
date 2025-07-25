@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KvizHub.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/User")]
     [ApiController]
     public class UserController : ControllerBase
     {

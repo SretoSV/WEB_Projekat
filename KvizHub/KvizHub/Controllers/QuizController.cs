@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KvizHub.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Quiz")]
     [ApiController]
     public class QuizController : ControllerBase
     {
@@ -19,7 +19,7 @@ namespace KvizHub.Controllers
         }
 
         [Authorize(Roles = "admin")]
-        [HttpPost("/")]
+        [HttpPost]
         public async Task<IActionResult> Add([FromBody] QuizDto dto)
         {
             QuizDto quizDto = await _quizService.AddQuiz(dto);
@@ -58,7 +58,7 @@ namespace KvizHub.Controllers
         }
 
         [Authorize]
-        [HttpGet("/")]
+        [HttpGet]
         public async Task<IActionResult> GetAllQuizzes()
         {
             List<QuizDto> quizzesDtos = await _quizService.GetAllQuizzes();

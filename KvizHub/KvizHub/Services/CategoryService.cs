@@ -2,8 +2,9 @@
 using KvizHub.DAO;
 using KvizHub.DTO;
 using KvizHub.Models;
+using KvizHub.Services.Interfaces;
 
-namespace KvizHub.Services.Interfaces
+namespace KvizHub.Services
 {
     public class CategoryService : ICategoryService
     {

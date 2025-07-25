@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KvizHub.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Category")]
     [ApiController]
     public class CategoryController : ControllerBase
     {
@@ -19,7 +19,7 @@ namespace KvizHub.Controllers
         }
 
         [Authorize]
-        [HttpGet("/")]
+        [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
             List<QuizCategoryDto> dtos = await _categoryService.GetAllCategories();
