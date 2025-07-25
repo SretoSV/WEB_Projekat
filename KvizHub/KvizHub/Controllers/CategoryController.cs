@@ -18,7 +18,7 @@ namespace KvizHub.Controllers
             _categoryService = categoryService;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
@@ -27,7 +27,7 @@ namespace KvizHub.Controllers
             {
                 return BadRequest(new { message = "Failed to get categories." });
             }
-            return StatusCode(200);
+            return Ok(dtos);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace KvizHub.Controllers
             _quizService = quizService;
         }
 
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] QuizDto dto)
         {
@@ -31,21 +31,21 @@ namespace KvizHub.Controllers
             return Ok(quizDto);
         }
 
-        [Authorize(Roles = "admin")]
-        [HttpPut("/{id}")]
-        public async Task<IActionResult> Edit(int id)
+        //[Authorize(Roles = "admin")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Edit([FromBody] QuizDto dto, int id)
         {
-            Quiz quiz = await _quizService.EditQuiz(id);
+            QuizDto quizDto = await _quizService.EditQuiz(dto, id);
 
-            if (quiz == null)
+            if (quizDto == null)
             {
                 return BadRequest(new { message = "Failed to edit quiz." });
             }
-            return Ok(quiz);
+            return Ok(quizDto);
         }
 
-        [Authorize(Roles = "admin")]
-        [HttpDelete("/{id}")]
+        //[Authorize(Roles = "admin")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             int returnedId = await _quizService.DeleteQuiz(id);
@@ -57,7 +57,7 @@ namespace KvizHub.Controllers
             return Ok(returnedId);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllQuizzes()
         {
@@ -66,7 +66,8 @@ namespace KvizHub.Controllers
             {
                 return BadRequest(new { message = "Failed to get quizzes." });
             }
-            return StatusCode(200);
+
+            return Ok(quizzesDtos);
         }
 
     }

@@ -52,11 +52,16 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<IUserDao, UserDao>();
 builder.Services.AddScoped<IQuizDao, QuizDao>();
+builder.Services.AddScoped<ICategoryDao, CategoryDao>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 builder.Services.AddAutoMapper(typeof(UserProfile));
+builder.Services.AddAutoMapper(typeof(QuizProfile));
+builder.Services.AddAutoMapper(typeof(QuizCategoryProfile));
+builder.Services.AddAutoMapper(typeof(QuestionProfile));
 
 // Add services to the container.
 

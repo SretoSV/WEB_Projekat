@@ -8,19 +8,30 @@ namespace KvizHub.Profiles
     {
         public QuizProfile() {
             CreateMap<QuizDto, Quiz>()
-            .ForMember(dest => dest.AllQuizCategories,
-                opt => opt.MapFrom(src =>
-                    src.AllQuizCategories.Select(qc => new AllQuizCategories
-                    {
-                        QuizCategoryId = qc.Id
-                    }).ToList()
-                ));
+            .ForMember(dest => dest.AllQuizCategories, opt => opt.Ignore())
+            .ForMember(dest => dest.Questions, opt => opt.Ignore())
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Results, opt => opt.Ignore());
 
             CreateMap<Quiz, QuizDto>()
                 .ForMember(dest => dest.AllQuizCategories,
                     opt => opt.MapFrom(src => src.AllQuizCategories.Select(ac => ac.QuizCategory)))
                 .ForMember(dest => dest.Questions, opt => opt.MapFrom(src => src.Questions))
                 .ForMember(dest => dest.Results, opt => opt.MapFrom(src => src.Results));
+
+
+            /*
+            CreateMap<QuizDto, Quiz>()
+            .ForMember(dest => dest.AllQuizCategories,
+                opt => opt.MapFrom(src =>
+                    src.AllQuizCategories.Select(qc => new AllQuizCategories
+                    {
+                        QuizCategoryId = qc.Id
+                    }).ToList()
+                ))
+            .ForMember(dest => dest.Questions, opt => opt.Ignore())
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
+            */
         }
     }
 }

@@ -10,8 +10,8 @@ namespace KvizHub.DTO
         public int TimeLimitSeconds { get; set; }
         public int QuizDifficultyId { get; set; }
 
-        public ICollection<QuizCategory> AllQuizCategories { get; set; }
-        public ICollection<Question> Questions { get; set; }
-        public ICollection<UserQuizResult> Results { get; set; }
+        public ICollection<QuizCategoryDto> AllQuizCategories { get; set; }
+        public ICollection<QuestionDto> Questions { get; set; }
+        public ICollection<UserQuizResultDto>? Results { get; set; }
     }
 }

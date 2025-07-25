@@ -6,7 +6,7 @@ namespace KvizHub.Services.Interfaces
     public interface IQuizService
     {
         Task<QuizDto> AddQuiz(QuizDto dto);
-        Task<Quiz> EditQuiz(int id);
+        Task<QuizDto> EditQuiz(QuizDto dto, int id);
         Task<int> DeleteQuiz(int id);
         Task<List<QuizDto>> GetAllQuizzes();
 

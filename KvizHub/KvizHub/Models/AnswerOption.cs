@@ -6,7 +6,7 @@
         public int Id { get; set; }
         public string Text { get; set; }
         public bool IsCorrect { get; set; }
-        public bool? FieldAnswerText { get; set; }
+        public string? FieldAnswerText { get; set; }
 
         public int QuestionId { get; set; }
         public Question Question { get; set; }

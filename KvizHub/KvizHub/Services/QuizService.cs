@@ -26,27 +26,34 @@ namespace KvizHub.Services
         public async Task<QuizDto> AddQuiz(QuizDto dto)
         {
             Quiz quiz = _mapper.Map<Quiz>(dto); //dobijem quiz bez id-a
+            quiz.Id = 0;
+
+            quiz.Questions = null;
+            quiz.AllQuizCategories = null;
+            quiz.Results = null;
+
             quiz = await _quizDao.AddQuizAsync(quiz); //dodam quiz u bazu i dobijem id
-            dto.Id = quiz.Id;
 
             if (quiz == null || quiz.Id <= 0)
             {
                 return null;
             }
 
-            foreach (var ac in quiz.AllQuizCategories)
-            {
-                ac.QuizId = quiz.Id;
-            }
+            dto.Id = quiz.Id;
 
-            quiz = await _quizDao.SaveAllQuizCategoriesAsync(quiz);
+            await SetFields(dto, quiz.Id);
 
             return dto;
         }
 
-        public async Task<Quiz> EditQuiz(int id)
+        public async Task<QuizDto> EditQuiz(QuizDto dto, int id)
         {
-            return new Quiz();
+            if (await _quizDao.EditQuizFields(dto, id)) {
+                await _quizDao.ClearQuizDependenciesAsync(id);
+
+                await SetFields(dto, id);
+            }
+            return dto;
         }
         public async Task<int> DeleteQuiz(int id)
         {
@@ -65,5 +72,52 @@ namespace KvizHub.Services
             var quizDtos = _mapper.Map<List<QuizDto>>(quizzes);
             return quizDtos;
         }
+
+        #region Helpers
+        private async Task SetFields(QuizDto dto, int quizId) {
+            await _quizDao.AddQuizCategoriesAsync(dto.AllQuizCategories);
+            List<QuizCategory> categoriesIds = await _quizDao.GetQuizCategoriesByQuizCategoryNameAsync(dto.AllQuizCategories);
+            await _quizDao.AddCategoryIdsToAllQuizCategoriesTableByQuizId(quizId, categoriesIds);
+
+            var nameIdMap = categoriesIds.ToDictionary(cat => cat.Name.ToLower(), cat => cat.Id);
+            foreach (var dtoCat in dto.AllQuizCategories)
+            {
+                var nameKey = dtoCat.Name.ToLower();
+
+                if (nameIdMap.TryGetValue(nameKey, out int id))
+                {
+                    dtoCat.Id = id;
+                }
+            }
+
+            foreach (var question in dto.Questions)
+            {
+                question.QuizId = quizId;
+            }
+
+            List<Question> questionsFromDatabase = await _quizDao.AddQuestionsAsync(dto.Questions);
+
+            var dtoList = dto.Questions.ToList();
+            var dbList = questionsFromDatabase.ToList();
+
+            for (int i = 0; i < dtoList.Count; i++)
+            {
+                dtoList[i].Id = dbList[i].Id;
+            }
+
+            dto.Questions = dtoList;
+
+            foreach (var question in dto.Questions)
+            {
+                foreach (var answer in question.AnswerOptions)
+                {
+                    answer.QuestionId = question.Id;
+                }
+
+            }
+
+            await _quizDao.AddAnswerOptionsAsync(dto.Questions.ToList());
+        }
+        #endregion
     }
 }
