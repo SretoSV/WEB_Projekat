@@ -8,16 +8,16 @@ interface CategoryCheckboxesCardProps{
     allCategories: Array<QuizCategory>;
     quizCategories: Array<QuizCategory>;
     quizQuestions: Array<Question>;
-    onCategoryToggle: (category: QuizCategory) => void;
+    onCategoryToggle: (category: QuizCategory, checked: boolean) => void;
 }
 export default function CategoryCheckboxesCard(props: CategoryCheckboxesCardProps){
     
-    const handleCheckboxChange = (category: QuizCategory) => {
+    const handleCheckboxChange = (category: QuizCategory, isChecked: boolean) => {
         const canToggle = canToggleCategory(category, props.quizCategories, props.quizQuestions);
 
         if (!canToggle) return;
 
-        props.onCategoryToggle(category);
+        props.onCategoryToggle(category, isChecked);
     };
 
     return <>
@@ -29,7 +29,7 @@ export default function CategoryCheckboxesCard(props: CategoryCheckboxesCardProp
                     name={category.name + category.id} 
                     checked={props.quizCategories.some(qc => qc.id === category.id && qc.name === category.name)}
                     className={styles.checkBox}
-                    onChange={() => handleCheckboxChange(category)}
+                    onChange={(e) => handleCheckboxChange(category, e.target.checked)}
                 />
                 <label 
                     htmlFor={category.name + category.id}

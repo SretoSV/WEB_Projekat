@@ -10,13 +10,17 @@ export async function fetchCategories(): Promise<FetchCategoriesResponse> {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch(`${serverPath()}/api/Category/`, {
+        const response = await fetch(`${serverPath()}/api/Category`, {
             method: 'GET',
             headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
             }
         });
+
+        if (response.status === 204) {
+            return { categories: [] };
+        }
 
         const data = await response.json();
 
@@ -30,19 +34,6 @@ export async function fetchCategories(): Promise<FetchCategoriesResponse> {
     } catch (err: any) {
         throw new Error(err.message || 'Server error. Try again later.');
     }
-}
-
-export function toggleCategorySelection(
-  currentSelected: QuizCategory[],
-  categoryToToggle: QuizCategory
-): QuizCategory[] {
-  const isSelected = currentSelected.some(c => c.id === categoryToToggle.id);
-
-  if (isSelected) {
-    return currentSelected.filter(c => c.id !== categoryToToggle.id);
-  } else {
-    return [...currentSelected, categoryToToggle];
-  }
 }
 
 export function createNewCategory(

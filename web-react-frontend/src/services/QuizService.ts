@@ -9,7 +9,7 @@ export async function fetchQuizzes(): Promise<FetchQuizzesResponse> {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch(`${serverPath()}/api/Quiz/`, {
+        const response = await fetch(`${serverPath()}/api/Quiz`, {
             method: 'GET',
             headers: {
             'Content-Type': 'application/json',
@@ -17,6 +17,9 @@ export async function fetchQuizzes(): Promise<FetchQuizzesResponse> {
             }
         });
 
+        if (response.status === 204) {
+            return { quizzes: [] };
+        }
         const data = await response.json();
 
         if (!response.ok) {
@@ -127,4 +130,19 @@ export async function deleteQuiz(quizId: number): Promise<DeleteQuizResponse> {
     } catch (err: any) {
         throw new Error(err.message || "Something went wrong while deleting the quiz.");
     }
+}
+
+export function setQuizDifficultyText(
+  quizDifficultyId: number
+): string {
+    switch(quizDifficultyId){
+        case 1:
+            return "easy";
+        case 2:
+            return "medium";
+        case 3:
+            return "hard";
+
+    }
+    return "";
 }

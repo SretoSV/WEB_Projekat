@@ -8,7 +8,7 @@ import type { Question } from '../models/QuestionModel';
 import ButtonWithImage from './ButtonWithImage';
 import plusImage from '../images/plus.png';
 import CategoryCheckboxesCard from './CategoryCheckboxesCard';
-import { createNewCategory, fetchCategories, toggleCategorySelection } from '../services/QuizCategoryService';
+import { createNewCategory, fetchCategories } from '../services/QuizCategoryService';
 import { QuestionsEditBox } from './QuestionsEditBox';
 import { AddQuestion } from './AddQuestion';
 import { EditQuestion } from './EditQuestion';
@@ -43,10 +43,9 @@ export default function AddQuizModal({ onClose, onAddQuiz }: EditQuizModalProps)
     id: quizzes.length > 0 ? Math.max(...quizzes.map(q => q.id)) + 1 : 1,
     title: '',
     description: '',
-    numberOfQuestions: 0,
-    difficulty: 'easy',
-    timeLimit: 0,
-    categories: [] as QuizCategory[],
+    quizDifficultyId: 1,
+    timeLimitSeconds: 0,
+    allQuizCategories: [] as QuizCategory[],
     questions: [] as Question[],
   });
 
@@ -62,11 +61,18 @@ export default function AddQuizModal({ onClose, onAddQuiz }: EditQuizModalProps)
     fetchData();
   }, []);
 
-  const handleToggleCategory = (category: QuizCategory) => {
-    setSelectedCategories(prev => toggleCategorySelection(prev, category));
-    setForm(prev => ({ //setovane su kategorije ovde
-      ...prev, 
-      categories: [...prev.categories, category],
+  const handleToggleCategory = (category: QuizCategory, checked: boolean) => {
+    setSelectedCategories(prev => 
+      checked 
+        ? [...prev, category] 
+        : prev.filter(c => c.id !== category.id)
+    );
+
+    setForm(prev => ({
+      ...prev,
+      allQuizCategories: checked
+        ? [...prev.allQuizCategories, category]
+        : prev.allQuizCategories.filter(c => c.id !== category.id),
     }));
   };
   
@@ -96,20 +102,22 @@ export default function AddQuizModal({ onClose, onAddQuiz }: EditQuizModalProps)
   const handleAddCategory = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    const newCategoryObject = createNewCategory(allCategories, selectedCategories, newCategory);
+    if(newCategory !== ""){
+      const newCategoryObject = createNewCategory(allCategories, selectedCategories, newCategory);
 
-    if (!newCategoryObject) {
-      alert("This Category already exists!");
-      return;
+      if (!newCategoryObject) {
+        alert("This Category already exists!");
+        return;
+      }
+
+      setSelectedCategories([...selectedCategories, newCategoryObject]);
+      setAllCategories([...allCategories, newCategoryObject]);
+      setForm(prev => ({ //setovane su kategorije ovde
+        ...prev, 
+        allQuizCategories: [...prev.allQuizCategories, newCategoryObject],
+      }));
+      setNewCategory("");
     }
-
-    setSelectedCategories([...selectedCategories, newCategoryObject]);
-    setAllCategories([...allCategories, newCategoryObject]);
-    setForm(prev => ({ //setovane su kategorije ovde
-      ...prev, 
-      categories: [...prev.categories, newCategoryObject],
-    }));
-    setNewCategory("");
   };
 
   const handleSelectQuestion = (question: Question) => {
@@ -191,28 +199,28 @@ export default function AddQuizModal({ onClose, onAddQuiz }: EditQuizModalProps)
               />
               <br />
               <br />
-              <label htmlFor="Difficulty">Difficulty:</label>
+              <label htmlFor="QuizDifficultyId">Difficulty:</label>
               <select
-                id="Difficulty"
-                name="difficulty"
+                id="QuizDifficultyId"
+                name="quizDifficultyId"
                 className={styles.dropdownInput}
-                value={form.difficulty}
-                onChange={(e) => handleInputChange(e, setForm, "string")}
+                value={form.quizDifficultyId}
+                onChange={(e) => handleInputChange(e, setForm, "number")}
                 required
               >
-                <option value="easy" >easy</option>
-                <option value="medium" >medium</option>
-                <option value="hard" >hard</option>
+                <option value={1} >easy</option>
+                <option value={2} >medium</option>
+                <option value={3} >hard</option>
               </select>
 
               <br />
 
-              <label htmlFor="TimeLimit">Time limit(sec):</label>
+              <label htmlFor="TimeLimitSeconds">Time limit(sec):</label>
               <input 
-                  id="TimeLimit" 
+                  id="TimeLimitSeconds" 
                   type="number" 
-                  name="timeLimit"
-                  value={form.timeLimit} 
+                  name="timeLimitSeconds"
+                  value={form.timeLimitSeconds} 
                   onChange={(e) => handleInputChange(e, setForm, "number")}
                   required
               />
@@ -240,7 +248,7 @@ export default function AddQuizModal({ onClose, onAddQuiz }: EditQuizModalProps)
               onDeleteQuestion={handleDeleteQuestion} 
               onEditNewQuestionState={handleEditNewQuestionState} 
               questions={form.questions} 
-              selectedCategories={form.categories || []} 
+              selectedCategories={form.allQuizCategories || []} 
               onSelectQuestion={handleSelectQuestion}
             />
             <div className={styles.addAndEditFields}>

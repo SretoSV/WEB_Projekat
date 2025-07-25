@@ -22,7 +22,7 @@ export function QuizCard({ quizId }: { quizId: number }){
         try {
             const { editedQuiz } = await editQuiz(quiz);
             const updatedQuizzes = quizzes.map(q => 
-                q.id === editedQuiz.id ? quiz : q
+                q.id === editedQuiz.id ? editedQuiz : q
             );
             setQuizzes(updatedQuizzes);
         } catch (err) {

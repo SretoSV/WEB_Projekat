@@ -1,4 +1,5 @@
 import { useQuizContext } from '../context/QuizContext';
+import { setQuizDifficultyText } from '../services/QuizService';
 import styles from '../styles/AllQuizzesPagesStyles/QuizInforamtionCardStyle.module.css';
 
 export function QuizInformationCard({ quizId } : { quizId: number }){
@@ -17,7 +18,7 @@ export function QuizInformationCard({ quizId } : { quizId: number }){
             <br />
             <div className={styles.informationsTitle}>Categories:</div>
             <div className={styles.inforamtions}>
-                {quiz.categories.map(catergory => (
+                {quiz.allQuizCategories.map(catergory => (
                     <div key={catergory.id} >
                         - {catergory.name}
                     </div>
@@ -32,12 +33,12 @@ export function QuizInformationCard({ quizId } : { quizId: number }){
             <div className={styles.informationsContainer}>
 
                 <div className={styles.informationsTitle}>Difficulty: </div>
-                <div className={styles.inforamtions}>{quiz.difficulty}</div>
+                <div className={styles.inforamtions}>{setQuizDifficultyText(quiz.quizDifficultyId)}</div>
             </div>
             <br />
             <div className={styles.informationsContainer}>
                 <div className={styles.informationsTitle}>Time limit: </div>
-                <div className={styles.inforamtions}>{quiz.timeLimit} sec | {quiz.timeLimit/60} min</div>
+                <div className={styles.inforamtions}>{quiz.timeLimitSeconds} sec | {quiz.timeLimitSeconds/60} min</div>
             </div>
 
     </>

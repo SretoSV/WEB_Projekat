@@ -6,10 +6,9 @@ export interface Quiz {
   id: number;
   title: string;
   description: string;
-  categories: Array<QuizCategory>;
+  timeLimitSeconds: number;
+  allQuizCategories: Array<QuizCategory>;
   questions: Array<Question>;
-  numberOfQuestions: number;
-  difficulty: string;
-  timeLimit: number;
+  quizDifficultyId: number;
   results?: Array<UserQuizResult>;
 }
