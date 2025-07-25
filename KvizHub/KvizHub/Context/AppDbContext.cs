@@ -36,6 +36,24 @@ namespace KvizHub.Context
             modelBuilder.Entity<QuestionType>().ToTable("question_types");
             modelBuilder.Entity<QuizDifficulty>().ToTable("quiz_difficulties");
 
+            modelBuilder.Entity<Question>()
+                .HasOne(q => q.Quiz)
+                .WithMany(qz => qz.Questions)
+                .HasForeignKey(q => q.QuizId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AllQuizCategories>()
+                .HasOne(ac => ac.Quiz)
+                .WithMany(qz => qz.AllQuizCategories)
+                .HasForeignKey(ac => ac.QuizId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserQuizResult>()
+                .HasOne(r => r.Quiz)
+                .WithMany(q => q.Results)
+                .HasForeignKey(r => r.QuizId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             //Seed Users
             var seededUser = new User
             {

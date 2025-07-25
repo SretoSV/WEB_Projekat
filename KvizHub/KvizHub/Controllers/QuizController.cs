@@ -22,13 +22,13 @@ namespace KvizHub.Controllers
         [HttpPost("/")]
         public async Task<IActionResult> Add([FromBody] QuizDto dto)
         {
-            Quiz quiz = await _quizService.AddQuiz(dto);
+            QuizDto quizDto = await _quizService.AddQuiz(dto);
 
-            if (quiz == null)
+            if (quizDto == null)
             {
                 return BadRequest(new { message = "Failed to add quiz." });
             }
-            return Ok(quiz);
+            return Ok(quizDto);
         }
 
         [Authorize(Roles = "admin")]
@@ -48,21 +48,24 @@ namespace KvizHub.Controllers
         [HttpDelete("/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            Quiz quiz = await _quizService.DeleteQuiz(id);
+            int returnedId = await _quizService.DeleteQuiz(id);
 
-            if (quiz == null)
+            if (returnedId <= 0)
             {
                 return BadRequest(new { message = "Failed to delete quiz." });
             }
-            return Ok(quiz);
+            return Ok(returnedId);
         }
 
         [Authorize]
-        [HttpGet("quizzes")]
-        public async Task<IActionResult> GetLastXQuizzes(int limit = 30, DateTime? before = null)
+        [HttpGet("/")]
+        public async Task<IActionResult> GetAllQuizzes()
         {
-            List<Quiz> quizzes = await _quizService.GetLastXQuizzes(limit, before);
-
+            List<QuizDto> quizzesDtos = await _quizService.GetAllQuizzes();
+            if (quizzesDtos == null)
+            {
+                return BadRequest(new { message = "Failed to get quizzes." });
+            }
             return StatusCode(200);
         }
 

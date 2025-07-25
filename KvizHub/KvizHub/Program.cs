@@ -51,7 +51,9 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddScoped<IUserDao, UserDao>();
+builder.Services.AddScoped<IQuizDao, QuizDao>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IQuizService, QuizService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 builder.Services.AddAutoMapper(typeof(UserProfile));

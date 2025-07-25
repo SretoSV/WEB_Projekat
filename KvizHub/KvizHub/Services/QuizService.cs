@@ -23,23 +23,47 @@ namespace KvizHub.Services
             _mapper = mapper;
         }
 
-        public async Task<Quiz> AddQuiz(QuizDto dto)
+        public async Task<QuizDto> AddQuiz(QuizDto dto)
         {
-            return new Quiz();
+            Quiz quiz = _mapper.Map<Quiz>(dto); //dobijem quiz bez id-a
+            quiz = await _quizDao.AddQuizAsync(quiz); //dodam quiz u bazu i dobijem id
+            dto.Id = quiz.Id;
+
+            if (quiz == null || quiz.Id <= 0)
+            {
+                return null;
+            }
+
+            foreach (var ac in quiz.AllQuizCategories)
+            {
+                ac.QuizId = quiz.Id;
+            }
+
+            quiz = await _quizDao.SaveAllQuizCategoriesAsync(quiz);
+
+            return dto;
         }
 
         public async Task<Quiz> EditQuiz(int id)
         {
             return new Quiz();
         }
-        public async Task<Quiz> DeleteQuiz(int id)
+        public async Task<int> DeleteQuiz(int id)
         {
-            return new Quiz();
+            if (await _quizDao.DeleteQuizByIdAsync(id))
+            {
+                return id;
+            }
+            else { 
+                return 0;
+            }
         }
 
-        public async Task<List<Quiz>> GetLastXQuizzes(int limit, DateTime? before)
+        public async Task<List<QuizDto>> GetAllQuizzes()
         {
-            return new List<Quiz>();
+            List<Quiz> quizzes = await _quizDao.GetAllQuizzesAsync();
+            var quizDtos = _mapper.Map<List<QuizDto>>(quizzes);
+            return quizDtos;
         }
     }
 }
