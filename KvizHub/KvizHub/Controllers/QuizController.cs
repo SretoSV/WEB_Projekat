@@ -18,7 +18,7 @@ namespace KvizHub.Controllers
             _quizService = quizService;
         }
 
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] QuizDto dto)
         {
@@ -31,7 +31,7 @@ namespace KvizHub.Controllers
             return Ok(quizDto);
         }
 
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Edit([FromBody] QuizDto dto, int id)
         {
@@ -44,7 +44,7 @@ namespace KvizHub.Controllers
             return Ok(quizDto);
         }
 
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -57,7 +57,7 @@ namespace KvizHub.Controllers
             return Ok(returnedId);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllQuizzes()
         {

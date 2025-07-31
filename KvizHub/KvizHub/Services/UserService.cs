@@ -40,12 +40,18 @@ namespace KvizHub.Services
 
             if (result == PasswordVerificationResult.Success)
             {
-                List<Claim> claims = new List<Claim>();
+                List<Claim> claims = new List<Claim>
+{
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Username),
+                    new Claim(ClaimTypes.Role, user.IsAdmin ? "admin" : "user")
+                };
+                /*List<Claim> claims = new List<Claim>();
                 
                 if (dto.UsernameOrEmail == "anaanic@gmail.com" || dto.UsernameOrEmail == "Ana123")
                     claims.Add(new Claim(ClaimTypes.Role, "admin"));
                 else
-                    claims.Add(new Claim(ClaimTypes.Role, "user"));
+                    claims.Add(new Claim(ClaimTypes.Role, "user"));*/
 
                 SymmetricSecurityKey secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.Value));
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);

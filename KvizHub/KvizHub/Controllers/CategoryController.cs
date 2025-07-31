@@ -18,7 +18,7 @@ namespace KvizHub.Controllers
             _categoryService = categoryService;
         }
 
-        //[Authorize]
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
