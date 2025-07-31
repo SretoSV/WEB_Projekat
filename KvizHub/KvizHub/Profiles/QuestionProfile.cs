@@ -12,6 +12,7 @@ namespace KvizHub.Profiles
             .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Text))
             .ForMember(dest => dest.QuestionTypeId, opt => opt.MapFrom(src => src.QuestionTypeId))
             .ForMember(dest => dest.QuizCategoryId, opt => opt.MapFrom(src => src.QuizCategoryId))
+            .ForMember(dest => dest.QuestionDifficultyId, opt => opt.MapFrom(src => src.QuestionDifficultyId))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
 
             CreateMap<AnswerOptionDto, AnswerOption>();
@@ -21,6 +22,7 @@ namespace KvizHub.Profiles
             .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Text))
             .ForMember(dest => dest.QuestionTypeId, opt => opt.MapFrom(src => src.QuestionTypeId))
             .ForMember(dest => dest.QuizCategoryId, opt => opt.MapFrom(src => src.QuizCategoryId))
+            .ForMember(dest => dest.QuestionDifficultyId, opt => opt.MapFrom(src => src.QuestionDifficultyId))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
 
             CreateMap<AnswerOption, AnswerOptionDto>();

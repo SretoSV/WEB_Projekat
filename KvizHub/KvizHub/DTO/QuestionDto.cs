@@ -8,6 +8,7 @@ namespace KvizHub.DTO
         public string Text { get; set; }
         public int QuestionTypeId { get; set; }
         public int QuizCategoryId { get; set; }
+        public int QuestionDifficultyId { get; set; }
         public int QuizId { get; set; }
 
         public ICollection<AnswerOptionDto> AnswerOptions { get; set; }

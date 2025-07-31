@@ -263,6 +263,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "questionDifficultyId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "quizId": {
             "type": "integer",
             "format": "int32"

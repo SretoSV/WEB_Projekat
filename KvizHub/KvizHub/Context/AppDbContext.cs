@@ -20,6 +20,7 @@ namespace KvizHub.Context
         public DbSet<AllQuizCategories> AllQuizCategories { get; set; }
         public DbSet<QuestionType> QuestionTypes { get; set; }
         public DbSet<QuizDifficulty> QuizDifficulties { get; set; }
+        public DbSet<QuestionDifficulty> QuestionDifficulties { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -35,6 +36,7 @@ namespace KvizHub.Context
             modelBuilder.Entity<AllQuizCategories>().ToTable("all_quiz_categories");
             modelBuilder.Entity<QuestionType>().ToTable("question_types");
             modelBuilder.Entity<QuizDifficulty>().ToTable("quiz_difficulties");
+            modelBuilder.Entity<QuestionDifficulty>().ToTable("question_difficulties");
 
             modelBuilder.Entity<Question>()
                 .HasOne(q => q.Quiz)
@@ -53,6 +55,10 @@ namespace KvizHub.Context
                 .WithMany(q => q.Results)
                 .HasForeignKey(r => r.QuizId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Question>()
+                .Property(q => q.QuestionDifficultyId)
+                .HasDefaultValue(1);
 
             //Seed Users
             var seededUser = new User
@@ -103,6 +109,25 @@ namespace KvizHub.Context
                     Title = "medium",
                 },
                 new QuizDifficulty
+                {
+                    Id = 3,
+                    Title = "hard",
+                }
+            );
+
+            //Seed QuestionDifficulties
+            modelBuilder.Entity<QuestionDifficulty>().HasData(
+                new QuestionDifficulty
+                {
+                    Id = 1,
+                    Title = "easy",
+                },
+                new QuestionDifficulty
+                {
+                    Id = 2,
+                    Title = "medium",
+                },
+                new QuestionDifficulty
                 {
                     Id = 3,
                     Title = "hard",

@@ -9,6 +9,9 @@
         public QuestionType QuestionType { get; set; }
         public int QuizCategoryId { get; set; }
         public QuizCategory QuizCategory { get; set; }
+        public int QuestionDifficultyId { get; set; }
+        public QuestionDifficulty QuestionDifficulty { get; set; }
+
         public int QuizId { get; set; }
         public Quiz Quiz { get; set; }
 

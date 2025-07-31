@@ -108,6 +108,7 @@ namespace KvizHub.DAO.Implementations
                 Text = dto.Text,
                 QuestionTypeId = dto.QuestionTypeId,
                 QuizCategoryId = dto.QuizCategoryId,
+                QuestionDifficultyId = dto.QuestionDifficultyId,
                 QuizId = dto.QuizId
             }).ToList();
 
