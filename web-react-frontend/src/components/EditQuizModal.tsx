@@ -14,6 +14,7 @@ import { AddQuestion } from './AddQuestion';
 import { EditQuestion } from './EditQuestion';
 import type { Quiz } from '../models/QuizModel';
 import ButtonWithLongText from './ButtonWithLongText';
+import type { UserQuizResult } from '../models/UserQuizResultModel';
 
 interface EditQuizModalProps {
   onClose: () => void;
@@ -34,6 +35,7 @@ export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizM
       text: "",
       questionTypeId: 0,
       quizCategoryId: 0,
+      questionDifficultyId: 1,
       quizId: 0,
       answerOptions: []
     }
@@ -50,6 +52,7 @@ export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizM
     timeLimitSeconds: 0,
     allQuizCategories: [] as QuizCategory[],
     questions: [] as Question[],
+    results: [] as UserQuizResult[],
   });
 
   useEffect(() => {
@@ -73,6 +76,7 @@ export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizM
       timeLimitSeconds: quiz.timeLimitSeconds,
       allQuizCategories: quiz.allQuizCategories,
       questions: quiz.questions,
+      results: quiz.results,
     });
   }, [quizId]);
 

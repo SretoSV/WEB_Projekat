@@ -55,7 +55,7 @@ export function QuizCard({ quizId }: { quizId: number }){
             <div className={styles.buttonsDiv}>
             {user && user.isAdmin ? 
                 <>
-                    { (quiz && quiz.results?.length === 0) &&
+                    { (quiz && quiz.results.length === 0) &&
                         <ButtonWithImage title="Edit" onClick={() => setShowEditQuizModal(true)} image={editImage} widthImage={"30px"} heightImage={"30px"} alt={"Edit"}/>
                     }
                     {showEditQuizModal && 

@@ -10,5 +10,5 @@ export interface Quiz {
   allQuizCategories: Array<QuizCategory>;
   questions: Array<Question>;
   quizDifficultyId: number;
-  results?: Array<UserQuizResult>;
+  results: Array<UserQuizResult>;
 }

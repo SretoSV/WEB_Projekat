@@ -8,6 +8,7 @@ import type { AnswerOption } from "../models/AnswerOptionModel";
 import plusImage from '../images/plus.png';
 import ButtonWithImage from "./ButtonWithImage";
 import ButtonWithLongText from "./ButtonWithLongText";
+import { setQuizDifficultyText } from "../services/QuizService";
 
 interface EditQuestionProps{
     selectedQuestion: Question;
@@ -21,6 +22,7 @@ export function EditQuestion(props: EditQuestionProps){
         text: "",
         questionTypeId: 0,
         quizCategoryId: 0,
+        questionDifficultyId: 1,
         quizId: 0,
         answerOptions: [] as AnswerOption[],
     });
@@ -37,6 +39,7 @@ export function EditQuestion(props: EditQuestionProps){
             text: props.selectedQuestion.text || "",
             questionTypeId: props.selectedQuestion.questionTypeId || 0,
             quizCategoryId: props.selectedQuestion.quizCategoryId || 0,
+            questionDifficultyId: props.selectedQuestion.questionDifficultyId || 1,
             quizId: props.selectedQuestion.quizId || 0,
             answerOptions: props.selectedQuestion.answerOptions || [] as AnswerOption[],
         });
@@ -128,6 +131,22 @@ export function EditQuestion(props: EditQuestionProps){
               <option value={2} >{setQuestionType(2)}</option>
               <option value={3} >{setQuestionType(3)}</option>
               <option value={4} >{setQuestionType(4)}</option>
+            </select>
+            <br />
+
+            <label htmlFor="QuestionDifficultyId">Question difficulty:</label>
+            <br />
+            <select
+              id="QuestionDifficultyId"
+              name="questionDifficultyId"
+              className={styles.dropdownInput}
+              value={form.questionDifficultyId}
+              onChange={(e) => handleInputChange(e, setForm, "number")}
+              required
+            >
+              <option value={1} >{setQuizDifficultyText(1)}</option>
+              <option value={2} >{setQuizDifficultyText(2)}</option>
+              <option value={3} >{setQuizDifficultyText(3)}</option>
             </select>
             <br />
 

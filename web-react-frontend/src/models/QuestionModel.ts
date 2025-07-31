@@ -5,6 +5,7 @@ export interface Question {
   text: string;
   questionTypeId: number;
   quizCategoryId: number;
+  questionDifficultyId: number;
   quizId: number;
   answerOptions: Array<AnswerOption>;
 }

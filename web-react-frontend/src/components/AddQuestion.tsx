@@ -8,6 +8,7 @@ import type { AnswerOption } from "../models/AnswerOptionModel";
 import plusImage from '../images/plus.png';
 import ButtonWithImage from "./ButtonWithImage";
 import ButtonWithLongText from "./ButtonWithLongText";
+import { setQuizDifficultyText } from "../services/QuizService";
 
 interface EditQuestionProps{
     onAddQuestion: (question: Question) => void;
@@ -24,6 +25,7 @@ export function AddQuestion(props: EditQuestionProps){
         text: "",
         questionTypeId: 1,
         quizCategoryId: props.selectedCategories[0].id || 0,
+        questionDifficultyId: 1,
         quizId: props.quizId,
         answerOptions: [] as AnswerOption[],
     });
@@ -83,6 +85,7 @@ export function AddQuestion(props: EditQuestionProps){
             text: "",
             questionTypeId: 1,
             quizCategoryId: props.selectedCategories[0].id || 0,
+            questionDifficultyId: 1,
             quizId: props.quizId,
             answerOptions: [] as AnswerOption[],
         });
@@ -130,6 +133,22 @@ export function AddQuestion(props: EditQuestionProps){
               <option value={2} >{setQuestionType(2)}</option>
               <option value={3} >{setQuestionType(3)}</option>
               <option value={4} >{setQuestionType(4)}</option>
+            </select>
+            <br />
+
+            <label htmlFor="QuestionDifficultyId">Question difficulty:</label>
+            <br />
+            <select
+              id="QuestionDifficultyId"
+              name="questionDifficultyId"
+              className={styles.dropdownInput}
+              value={form.questionDifficultyId}
+              onChange={(e) => handleInputChange(e, setForm, "number")}
+              required
+            >
+              <option value={1} >{setQuizDifficultyText(1)}</option>
+              <option value={2} >{setQuizDifficultyText(2)}</option>
+              <option value={3} >{setQuizDifficultyText(3)}</option>
             </select>
             <br />
 

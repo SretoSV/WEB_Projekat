@@ -5,6 +5,7 @@ import editImage from '../images/edit.png';
 import deleteImage from '../images/reject.png';
 import type { QuizCategory } from "../models/QuizCategoryModel";
 import { findQuizCategoryName, setQuestionType } from "../services/QuestionService";
+import { setQuizDifficultyText } from "../services/QuizService";
 
 interface QuestionsEditBoxProps {
     questions: Array<Question>;
@@ -28,8 +29,9 @@ export function QuestionsEditBox(props: QuestionsEditBoxProps){
          {props.questions.map((question, index) => (
             <div key={question.id} className={styles.row}>
                 <div>
-                <div>{index+1}. {question.text}</div>
-                <div>{"- Question type id: " + setQuestionType(question.questionTypeId)}</div>
+                <div>{index + 1}. {question.text}</div>
+                <div>{"- Question type: " + setQuestionType(question.questionTypeId)}</div>
+                <div>{"- Question difficulty: " + setQuizDifficultyText(question.questionDifficultyId)}</div>
                 <div>{"- Quiz category id: " + findQuizCategoryName(question.quizCategoryId, props.selectedCategories)}</div>
                 <div className={styles.answers}>
                     {question.answerOptions.map((answer, index) => (
