@@ -140,8 +140,21 @@ namespace KvizHub.DAO.Implementations
             _context.AnswerOptions.AddRange(allAnswerOptions);
             await _context.SaveChangesAsync();
         }
-
-        public async Task<List<Quiz>> GetAllQuizzesAsync() {
+        public async Task<List<Quiz>> GetAllQuizzesAsync()
+        {
+            return await _context.Quizzes
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.AnswerOptions)
+                .Include(q => q.AllQuizCategories)
+                    .ThenInclude(aqc => aqc.QuizCategory)
+                .Include(q => q.QuizDifficulty)
+                .Include(q => q.Results)
+                    .ThenInclude(r => r.User)
+                .Include(q => q.Results)
+                    .ThenInclude(r => r.Answers)
+                .ToListAsync();
+        }
+        /*public async Task<List<Quiz>> GetAllQuizzesAsync() {
             return await _context.Quizzes
                 .Include(q => q.Questions)
                     .ThenInclude(q => q.AnswerOptions)
@@ -149,7 +162,7 @@ namespace KvizHub.DAO.Implementations
                     .ThenInclude(aqc => aqc.QuizCategory)
                 .Include(q => q.QuizDifficulty)
                 .ToListAsync();
-        }
+        }*/
         #endregion
 
         #region Edit

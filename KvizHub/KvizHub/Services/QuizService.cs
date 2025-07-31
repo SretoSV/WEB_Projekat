@@ -48,10 +48,13 @@ namespace KvizHub.Services
 
         public async Task<QuizDto> EditQuiz(QuizDto dto, int id)
         {
-            if (await _quizDao.EditQuizFields(dto, id)) {
+            if (await _quizDao.EditQuizFields(dto, id))
+            {
                 await _quizDao.ClearQuizDependenciesAsync(id);
-
                 await SetFields(dto, id);
+            }
+            else {
+                return null;
             }
             return dto;
         }

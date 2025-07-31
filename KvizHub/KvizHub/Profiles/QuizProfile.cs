@@ -19,6 +19,19 @@ namespace KvizHub.Profiles
                 .ForMember(dest => dest.Questions, opt => opt.MapFrom(src => src.Questions))
                 .ForMember(dest => dest.Results, opt => opt.MapFrom(src => src.Results));
 
+            CreateMap<UserQuizResult, UserQuizResultDto>()
+                .ForMember(dest => dest.Answers, opt => opt.MapFrom(src => src.Answers))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.QuizId, opt => opt.MapFrom(src => src.QuizId))
+                .ForMember(dest => dest.TotalQuestions, opt => opt.MapFrom(src => src.TotalQuestions))
+                .ForMember(dest => dest.CorrectAnswers, opt => opt.MapFrom(src => src.CorrectAnswers))
+                .ForMember(dest => dest.ScorePercentage, opt => opt.MapFrom(src => src.ScorePercentage))
+                .ForMember(dest => dest.SubmittedAt, opt => opt.MapFrom(src => src.SubmittedAt))
+                .ForMember(dest => dest.DurationSeconds, opt => opt.MapFrom(src => src.DurationSeconds))
+                .ForSourceMember(src => src.User, opt => opt.DoNotValidate())
+                .ForSourceMember(src => src.Quiz, opt => opt.DoNotValidate());
+
+            CreateMap<UserAnswer, UserAnswerDto>();
 
             /*
             CreateMap<QuizDto, Quiz>()
