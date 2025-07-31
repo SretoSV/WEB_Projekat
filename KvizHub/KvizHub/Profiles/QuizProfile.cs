@@ -26,8 +26,9 @@ namespace KvizHub.Profiles
                 .ForMember(dest => dest.TotalQuestions, opt => opt.MapFrom(src => src.TotalQuestions))
                 .ForMember(dest => dest.CorrectAnswers, opt => opt.MapFrom(src => src.CorrectAnswers))
                 .ForMember(dest => dest.ScorePercentage, opt => opt.MapFrom(src => src.ScorePercentage))
+                .ForMember(dest => dest.StartedAt, opt => opt.MapFrom(src => src.StartedAt))
                 .ForMember(dest => dest.SubmittedAt, opt => opt.MapFrom(src => src.SubmittedAt))
-                .ForMember(dest => dest.DurationSeconds, opt => opt.MapFrom(src => src.DurationSeconds))
+                .ForMember(dest => dest.IsStarted, opt => opt.MapFrom(src => src.IsStarted))
                 .ForSourceMember(src => src.User, opt => opt.DoNotValidate())
                 .ForSourceMember(src => src.Quiz, opt => opt.DoNotValidate());
 

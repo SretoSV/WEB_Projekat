@@ -391,13 +391,16 @@
             "type": "number",
             "format": "double"
           },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
           "submittedAt": {
             "type": "string",
             "format": "date-time"
           },
-          "durationSeconds": {
-            "type": "integer",
-            "format": "int32"
+          "isStarted": {
+            "type": "boolean"
           },
           "answers": {
             "type": "array",

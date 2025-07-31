@@ -70,5 +70,12 @@ namespace KvizHub.Controllers
             return Ok(quizzesDtos);
         }
 
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> StartQuiz([FromBody] StartQuizDto dto)
+        {
+            return Ok();
+        }
+
     }
 }
