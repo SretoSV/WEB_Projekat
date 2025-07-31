@@ -29,7 +29,7 @@ export function UserProvider({ children }: UserProviderProps) {
       setUser(JSON.parse(savedUser));
     }
     if (savedToken) {
-      setToken(JSON.parse(savedToken));
+      setToken(savedToken);
     }
   }, []);
 
@@ -37,7 +37,7 @@ export function UserProvider({ children }: UserProviderProps) {
     setUser(userData);
     setToken(userToken);
     localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('token', JSON.stringify(userToken));
+    localStorage.setItem('token', userToken);
   };
 
   const logout = () => {

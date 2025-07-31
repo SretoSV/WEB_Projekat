@@ -44,7 +44,7 @@ export function LoginForm(){
         <h1>Login</h1>
         <div className={styles.formContent}>
           <div className={styles.formLeft}>
-                <label htmlFor="usernameOrEmail">Email</label>
+                <label htmlFor="usernameOrEmail">Username or Email</label>
                 <input
                     id="usernameOrEmail"
                     type="text"

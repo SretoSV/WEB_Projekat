@@ -12,8 +12,8 @@ export async function fetchQuizzes(): Promise<FetchQuizzesResponse> {
         const response = await fetch(`${serverPath()}/api/Quiz`, {
             method: 'GET',
             headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
             }
         });
 
