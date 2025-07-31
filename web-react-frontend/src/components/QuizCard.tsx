@@ -18,6 +18,9 @@ export function QuizCard({ quizId }: { quizId: number }){
     const { quizzes, setQuizzes } = useQuizContext();
     const [showEditQuizModal, setShowEditQuizModal] = useState(false);
 
+    const quiz = quizzes.find(q => q.id === quizId);
+    if (!quiz) return <div>Quiz not found</div>;
+    
     const handleEditQuiz = async (quiz: Quiz) => {
         try {
             const { editedQuiz } = await editQuiz(quiz);
@@ -52,8 +55,9 @@ export function QuizCard({ quizId }: { quizId: number }){
             <div className={styles.buttonsDiv}>
             {user && user.isAdmin ? 
                 <>
-                    <ButtonWithImage title="Edit" onClick={() => setShowEditQuizModal(true)} image={editImage} widthImage={"30px"} heightImage={"30px"} alt={"Edit"}/>
-                    
+                    { (quiz && quiz.results?.length === 0) &&
+                        <ButtonWithImage title="Edit" onClick={() => setShowEditQuizModal(true)} image={editImage} widthImage={"30px"} heightImage={"30px"} alt={"Edit"}/>
+                    }
                     {showEditQuizModal && 
                     <EditQuizModal
                         onClose={() => setShowEditQuizModal(false)}
