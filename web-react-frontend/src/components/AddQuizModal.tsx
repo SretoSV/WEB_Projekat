@@ -267,10 +267,12 @@ export default function AddQuizModal({ onClose, onAddQuiz }: EditQuizModalProps)
               }
               {editNewQuestionState && 
               <EditQuestion 
-                omEditNewQuestionState={handleEditNewQuestionState} 
+                onEditNewQuestionState={handleEditNewQuestionState} 
                 selectedCategories={selectedCategories} 
                 selectedQuestion={selectedQuestion} 
-                onEditQuestion={handleEditQuestions} />
+                onEditQuestion={handleEditQuestions} 
+                questions={form.questions}                
+                />
               }
             </div>
           </>

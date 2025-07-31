@@ -13,3 +13,19 @@
     flex-direction: row;
     margin-left: auto;
 }
+
+.link{
+    background-color: var(--primary-color);
+    color: var(--main-text-color);
+    border: none;
+    border-radius: 5px;
+    margin-left: 5px;
+    cursor: pointer;
+    padding: 13px 30px;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.link:hover{
+    background-color: var(--primary-color-hover);
+}

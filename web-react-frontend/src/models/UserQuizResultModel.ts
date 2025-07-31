@@ -7,7 +7,8 @@ export interface UserQuizResult{
     totalQuestions: number,
     correctAnswers: number,
     scorePercentage: number,
+    startedAt: Date,
     submittedAt: Date,
-    durationSeconds: number,
+    isStarted: boolean,
     answers: Array<UserAnswer>,
 }

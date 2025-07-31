@@ -5,12 +5,12 @@ import { useState } from 'react';
 import ButtonWithImage from './ButtonWithImage';
 import { QuizInformationCard } from './QuizInformationCard';
 import { useUserContext } from '../context/UserContext';
-import ButtonWithText from './ButtonWithText';
 import { motion } from "framer-motion";
 import EditQuizModal from './EditQuizModal';
 import type { Quiz } from '../models/QuizModel';
 import { useQuizContext } from '../context/QuizContext';
 import { deleteQuiz, editQuiz } from '../services/QuizService';
+import { Link } from 'react-router-dom';
 
 export function QuizCard({ quizId }: { quizId: number }){
     
@@ -68,7 +68,7 @@ export function QuizCard({ quizId }: { quizId: number }){
                     <ButtonWithImage title="Delete" onClick={() => handleDeleteQuiz(quizId)} image={rejectImage} widthImage={"30px"} heightImage={"30px"} alt={"Delete"}/>
                 </>
                 :
-                <ButtonWithText text="Start" />
+                <Link className={styles.link} to={`/StartQuizPage/${encodeURIComponent(quizId)}`}>Start quiz</Link>
             }
             </div>
 

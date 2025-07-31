@@ -14,7 +14,8 @@ interface EditQuestionProps{
     selectedQuestion: Question;
     onEditQuestion: (question: Question) => void;
     selectedCategories: Array<QuizCategory>;
-    omEditNewQuestionState: () => void;
+    onEditNewQuestionState: () => void;
+    questions: Array<Question>;
 }
 export function EditQuestion(props: EditQuestionProps){
     const [form, setForm] = useState<Question>({
@@ -96,17 +97,19 @@ export function EditQuestion(props: EditQuestionProps){
     const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         props.onEditQuestion(form);
-        props.omEditNewQuestionState();
+        props.onEditNewQuestionState();
     }
 
     if(props.selectedQuestion.id === 0) 
         return <div className={styles.formModal}>
-            <div className={styles.title}>Edit Question: {props.selectedQuestion.id || ""}</div>
+            <div className={styles.title}>Edit Question: 0</div>
         </div>;
 
     return  <form onSubmit={(e) => handleSend(e)}>
             <div className={styles.formModal}>
-            <div className={styles.title}>Edit Question: {props.selectedQuestion.id || ""}</div>
+            <div className={styles.title}>Edit Question: 
+                {props.questions.findIndex(question => question.id === props.selectedQuestion.id) + 1}
+            </div>
             <label htmlFor="Text">Question:</label>
             <textarea 
               id="Text" 

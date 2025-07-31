@@ -267,10 +267,21 @@ export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizM
             <div className={styles.addAndEditFields}>
               {
               addNewQuestionState && 
-              <AddQuestion quizId={quizId} onAddNewQuestionState={handleAddNewQuestionState} onAddQuestion={handleAddQuestions} selectedCategories={selectedCategories} questions={form.questions}/>
+              <AddQuestion 
+                quizId={quizId} 
+                onAddNewQuestionState={handleAddNewQuestionState} 
+                onAddQuestion={handleAddQuestions} 
+                selectedCategories={selectedCategories} 
+                questions={form.questions}/>
               }
               {editNewQuestionState && 
-              <EditQuestion omEditNewQuestionState={handleEditNewQuestionState} selectedCategories={selectedCategories} selectedQuestion={selectedQuestion} onEditQuestion={handleEditQuestions} />
+              <EditQuestion 
+                onEditNewQuestionState={handleEditNewQuestionState} 
+                selectedCategories={selectedCategories} 
+                selectedQuestion={selectedQuestion} 
+                onEditQuestion={handleEditQuestions} 
+                questions={form.questions}
+                />
               }
             </div>
           </>

@@ -37,15 +37,17 @@ export function QuizzesSection() {
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-      const { categories } = await fetchCategories();
-      setAllCategories(categories);
-      } catch (err: any) {
-        alert(err.message);
-      }
-    };
-    fetchData();
+    if(user && user.isAdmin){
+      const fetchData = async () => {
+        try {
+        const { categories } = await fetchCategories();
+        setAllCategories(categories);
+        } catch (err: any) {
+          alert(err.message);
+        }
+      };
+      fetchData();
+    }
   }, []);
 
   const handleAddQuiz = async (quiz: Quiz) => {
