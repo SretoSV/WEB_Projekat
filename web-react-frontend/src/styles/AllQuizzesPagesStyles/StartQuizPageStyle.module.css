@@ -1,0 +1,57 @@
+.mainDiv {
+    background-color: var(--background-color);  
+    color: var(--main-text-color);
+    padding: 0px 20px;
+    border-radius: 10px;
+    width: 850px;
+   display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    border: 3px solid var(--primary-color);
+}
+.informationsTitle{
+    font-size: 20px;
+}
+.inforamtions{
+    display: inline-block;
+    width: fit-content;
+    border: 2px solid var(--primary-color);
+    padding: 5px;
+    border-radius: 8px;
+    font-size: 20px;
+}
+
+.quizTitle{
+    font-size: 40px;
+}
+.titleContainer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+.informationsContainer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+.startButton{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 300px;
+    height: 150px;
+    background-color: var(--primary-color);  
+    color: var(--main-text-color);
+    font-size: 60px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+}
+.startButton:hover{
+    background-color: var(--primary-color-hover);  
+}

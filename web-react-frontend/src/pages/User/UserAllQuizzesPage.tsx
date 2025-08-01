@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Navigation } from "../../components/Navigation";
 import { QuizzesSection } from "../../components/QuizSection";
-import { QuizProvider } from "../../context/QuizContext";
 import { useUserContext } from "../../context/UserContext";
 import styles from "../../styles/AllQuizzesPagesStyles/AdminAndUserAllQuizzesPageStyle.module.css";
 import { useEffect } from "react";
@@ -18,9 +17,7 @@ export function UserAllQuizzesPage(){
     return <>
         <Navigation />
         <div className={styles.mainDiv}>
-            <QuizProvider>
-                <QuizzesSection />
-            </QuizProvider>
+            <QuizzesSection />
         </div>
     </>
 }

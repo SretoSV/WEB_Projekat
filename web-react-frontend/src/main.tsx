@@ -8,6 +8,7 @@ import { AdminAllQuizzesPage } from './pages/Admin/AdminAllQuizzesPage.tsx';
 import { UserAllQuizzesPage } from './pages/User/UserAllQuizzesPage.tsx';
 import { UserQuizResults } from './pages/User/UserQuizResults.tsx';
 import { StartQuizPage } from './pages/User/StartQuizPage.tsx';
+import { QuizProvider } from './context/QuizContext.tsx';
 
 const router = createBrowserRouter([
   {
@@ -56,7 +57,9 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <UserProvider>
+    <QuizProvider>
     <RouterProvider router={router} />
+    </QuizProvider>
   </UserProvider>
 )
 

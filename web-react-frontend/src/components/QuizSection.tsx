@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { QuizCard } from './QuizCard';
 import { useQuizContext } from '../context/QuizContext';
-import { addQuiz, fetchQuizzes } from '../services/QuizService';
+import { addQuiz } from '../services/QuizService';
 import styles from "../styles/AllQuizzesPagesStyles/QuizSectionStyle.module.css";
 import ButtonWithLongText from './ButtonWithLongText';
 import type { Quiz } from '../models/QuizModel';
@@ -14,27 +14,11 @@ import { fetchCategories } from '../services/QuizCategoryService';
 export function QuizzesSection() {
   const { user } = useUserContext();
   const { quizzes, setQuizzes } = useQuizContext();
-  const [isLoading, setIsLoading] = useState(true);
   const [showAddQuizModal, setShowAddQuizModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [allCategories, setAllCategories] = useState<Array<QuizCategory>>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('');
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { quizzes } = await fetchQuizzes();
-        setQuizzes(quizzes);
-      } catch (err: any) {
-        alert(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   useEffect(() => {
     if(user && user.isAdmin){
@@ -64,7 +48,6 @@ export function QuizzesSection() {
   const step3filteredQuizzes: Quiz[] = filterForQuizzesDropDown(step2filteredQuizzes, selectedDifficulty, "difficulty");
 
   return (
-    isLoading ? <div>Loading...</div> : 
     <>
         <div className={styles.divTop}>
           <h1 className={styles.title}>Quizzes</h1>

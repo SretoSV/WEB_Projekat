@@ -1,4 +1,5 @@
 import type { Quiz } from "../models/QuizModel";
+import type { UserQuizResult } from "../models/UserQuizResultModel";
 import { serverPath } from "../serverPath";
 
 export interface FetchQuizzesResponse {
@@ -129,6 +130,38 @@ export async function deleteQuiz(quizId: number): Promise<DeleteQuizResponse> {
 
     } catch (err: any) {
         throw new Error(err.message || "Something went wrong while deleting the quiz.");
+    }
+}
+
+export interface StartQuizResponse {
+    startedUserQuizResult: UserQuizResult;
+}
+
+export async function startQuiz(quizId: number): Promise<StartQuizResponse> {
+    const token = localStorage.getItem('token');
+
+    try {
+        const response = await fetch(`${serverPath()}/api/Quiz/start/${quizId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "Failed to start quiz");
+        }
+
+        const data = await response.json();
+
+        return {
+            startedUserQuizResult: data,
+        };
+
+    } catch (err: any) {
+        throw new Error(err.message || "Something went wrong while starting the quiz.");
     }
 }
 

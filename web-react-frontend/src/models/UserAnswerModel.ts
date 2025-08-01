@@ -1,6 +1,7 @@
 export interface UserAnswer{
     id: number,
+    quizId: number,
     resultId: number,
     questionId: number,
-    answerText: string,
+    userId: string,
 }

@@ -31,14 +31,17 @@ export function QuizInformationCard({ quizId } : { quizId: number }){
             </div>
             <br />
             <div className={styles.informationsContainer}>
-
                 <div className={styles.informationsTitle}>Difficulty: </div>
                 <div className={styles.inforamtions}>{setQuizDifficultyText(quiz.quizDifficultyId)}</div>
             </div>
             <br />
             <div className={styles.informationsContainer}>
                 <div className={styles.informationsTitle}>Time limit: </div>
-                <div className={styles.inforamtions}>{quiz.timeLimitSeconds} sec | {quiz.timeLimitSeconds/60} min</div>
+                <div className={styles.inforamtions}>
+                    {quiz.timeLimitSeconds} {"sec | "}
+                    {String(Math.floor(quiz.timeLimitSeconds / 60)).padStart(2, '0')}:
+                    {String(quiz.timeLimitSeconds % 60).padStart(2, '0')} min
+                </div>
             </div>
 
     </>
