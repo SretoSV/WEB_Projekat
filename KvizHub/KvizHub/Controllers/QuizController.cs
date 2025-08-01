@@ -71,10 +71,15 @@ namespace KvizHub.Controllers
         }
 
         [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> StartQuiz([FromBody] StartQuizDto dto)
+        [HttpPost("start/{quizId}")]
+        public async Task<IActionResult> StartQuiz(int quizId)
         {
-            return Ok();
+            UserQuizResultDto quizzesDtos = await _quizService.StartQuiz(quizId);
+            if (quizzesDtos == null)
+            {
+                return BadRequest(new { message = "Failed to start quiz." });
+            }
+            return Ok(quizzesDtos);
         }
 
     }

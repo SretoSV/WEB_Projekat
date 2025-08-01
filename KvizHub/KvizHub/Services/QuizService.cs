@@ -16,11 +16,13 @@ namespace KvizHub.Services
     {
         private readonly IQuizDao _quizDao;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public QuizService(IQuizDao quizDao, IMapper mapper)
+        public QuizService(IQuizDao quizDao, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _quizDao = quizDao;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<QuizDto> AddQuiz(QuizDto dto)
@@ -45,7 +47,6 @@ namespace KvizHub.Services
 
             return dto;
         }
-
         public async Task<QuizDto> EditQuiz(QuizDto dto, int id)
         {
             if (await _quizDao.EditQuizFields(dto, id))
@@ -64,16 +65,27 @@ namespace KvizHub.Services
             {
                 return id;
             }
-            else { 
+            else {
                 return 0;
             }
         }
-
         public async Task<List<QuizDto>> GetAllQuizzes()
         {
             List<Quiz> quizzes = await _quizDao.GetAllQuizzesAsync();
             var quizDtos = _mapper.Map<List<QuizDto>>(quizzes);
             return quizDtos;
+        }
+        public async Task<UserQuizResultDto> StartQuiz(int quizId) 
+        {
+            int userId = GetUserId();
+            UserQuizResult userQuizResult = await _quizDao.StartQuiz(quizId, userId);
+            UserQuizResultDto userQuizResultDto = _mapper.Map<UserQuizResultDto>(userQuizResult);
+            List<Question> questions = await _quizDao.GetQuestionsByQuizId(quizId);
+
+            List<UserAnswer> userAnswers = await _quizDao.CreateUserAnswers(quizId, userQuizResult.Id, questions, userId);
+            userQuizResultDto.Answers = _mapper.Map<List<UserAnswerDto>>(userAnswers);
+
+            return userQuizResultDto;
         }
 
         #region Helpers
@@ -120,6 +132,12 @@ namespace KvizHub.Services
             }
 
             await _quizDao.AddAnswerOptionsAsync(dto.Questions.ToList());
+        }
+
+        private int GetUserId()
+        {
+            var claim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier);
+            return int.Parse(claim?.Value ?? throw new Exception("User ID not found in claims"));
         }
         #endregion
     }

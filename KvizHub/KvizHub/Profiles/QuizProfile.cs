@@ -34,6 +34,8 @@ namespace KvizHub.Profiles
 
             CreateMap<UserAnswer, UserAnswerDto>();
 
+            CreateMap<UserAnswerOption, UserAnswerOptionDto>();
+
             /*
             CreateMap<QuizDto, Quiz>()
             .ForMember(dest => dest.AllQuizCategories,

@@ -73,6 +73,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "KvizHub.Controllers.QuizController",
+    "Method": "StartQuiz",
+    "RelativePath": "api/Quiz/start/{quizId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "quizId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "KvizHub.Controllers.UserController",
     "Method": "Login",
     "RelativePath": "api/User/login",

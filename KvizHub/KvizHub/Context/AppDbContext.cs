@@ -17,6 +17,7 @@ namespace KvizHub.Context
         public DbSet<AnswerOption> AnswerOptions { get; set; }
         public DbSet<UserQuizResult> UserQuizResults { get; set; }
         public DbSet<UserAnswer> UserAnswers { get; set; }
+        public DbSet<UserAnswerOption> UserAnswerOptions { get; set; }
         public DbSet<AllQuizCategories> AllQuizCategories { get; set; }
         public DbSet<QuestionType> QuestionTypes { get; set; }
         public DbSet<QuizDifficulty> QuizDifficulties { get; set; }
@@ -33,6 +34,7 @@ namespace KvizHub.Context
             modelBuilder.Entity<AnswerOption>().ToTable("answer_options");
             modelBuilder.Entity<UserQuizResult>().ToTable("user_quiz_results");
             modelBuilder.Entity<UserAnswer>().ToTable("user_answers");
+            modelBuilder.Entity<UserAnswerOption>().ToTable("user_answer_options");
             modelBuilder.Entity<AllQuizCategories>().ToTable("all_quiz_categories");
             modelBuilder.Entity<QuestionType>().ToTable("question_types");
             modelBuilder.Entity<QuizDifficulty>().ToTable("quiz_difficulties");

@@ -20,6 +20,9 @@ namespace KvizHub.DAO
 
         Task<bool> DeleteQuizByIdAsync(int id);
 
+        Task<UserQuizResult> StartQuiz(int quizId, int userId);
+        Task<List<Question>> GetQuestionsByQuizId(int quizId);
+        Task<List<UserAnswer>> CreateUserAnswers(int quizId, int resultId, List<Question> questions, int userId);
 
     }
 }

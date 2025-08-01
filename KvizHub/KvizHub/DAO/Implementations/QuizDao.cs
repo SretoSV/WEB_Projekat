@@ -13,6 +13,7 @@ namespace KvizHub.DAO.Implementations
         {
             _context = context;
         }
+
         #region Add
         public async Task<Quiz> AddQuizAsync(Quiz quiz)
         {
@@ -224,6 +225,72 @@ namespace KvizHub.DAO.Implementations
             _context.Quizzes.Remove(quiz);
             await _context.SaveChangesAsync();
             return true;
+        }
+        #endregion
+
+        #region Start
+        public async Task<UserQuizResult> StartQuiz(int quizId, int userId) 
+        {
+
+            var newResult = new UserQuizResult
+            {
+                UserId = userId,
+                QuizId = quizId,
+                StartedAt = DateTime.UtcNow,
+                IsStarted = true
+            };
+
+            _context.UserQuizResults.Add(newResult);
+            await _context.SaveChangesAsync();
+
+            return newResult;
+        }
+
+        public async Task<List<Question>> GetQuestionsByQuizId(int quizId)
+        {
+            return await _context.Questions
+                .Where(q => q.QuizId == quizId)
+                .Include(q => q.AnswerOptions)
+                .ToListAsync();
+        }
+
+        public async Task<List<UserAnswer>> CreateUserAnswers(int quizId, int resultId, List<Question> questions, int userId)
+        {
+            var userAnswers = new List<UserAnswer>();
+
+            foreach (var question in questions)
+            {
+                var userAnswer = new UserAnswer
+                {
+                    QuizId = quizId,
+                    ResultId = resultId,
+                    QuestionId = question.Id,
+                    UserId = userId,
+                    UserAnswerOptions = new List<UserAnswerOption>()
+                };
+
+                // Za svaki AnswerOption iz pitanja, napravi UserAnswerOption
+                foreach (var option in question.AnswerOptions)
+                {
+                    var userAnswerOption = new UserAnswerOption
+                    {
+                        Text = option.Text,
+                        IsCorrect = null,
+                        FieldAnswerText = null
+                        // UserAnswerId će EF postaviti automatski zbog veze
+                    };
+
+                    userAnswer.UserAnswerOptions.Add(userAnswerOption);
+                }
+
+                userAnswers.Add(userAnswer);
+            }
+
+            // Dodaj sve u bazu i sačuvaj
+            _context.UserAnswers.AddRange(userAnswers);
+            await _context.SaveChangesAsync();
+
+            return userAnswers;
         }
         #endregion
     }
