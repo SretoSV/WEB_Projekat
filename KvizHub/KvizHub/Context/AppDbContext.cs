@@ -62,6 +62,10 @@ namespace KvizHub.Context
                 .Property(q => q.QuestionDifficultyId)
                 .HasDefaultValue(1);
 
+            modelBuilder.Entity<UserAnswer>()
+                .Property(q => q.IsTrue)
+                .HasDefaultValue(false);
+
             //Seed Users
             var seededUser = new User
             {

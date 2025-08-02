@@ -12,6 +12,7 @@
         public Question Question { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
+        public bool IsTrue { get; set; }
 
         public ICollection<UserAnswerOption> UserAnswerOptions { get; set; }
 

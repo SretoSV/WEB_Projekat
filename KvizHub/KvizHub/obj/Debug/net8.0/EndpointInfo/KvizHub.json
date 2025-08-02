@@ -388,6 +388,9 @@
             "type": "integer",
             "format": "int32"
           },
+          "isTrue": {
+            "type": "boolean"
+          },
           "userAnswerOptions": {
             "type": "array",
             "items": {

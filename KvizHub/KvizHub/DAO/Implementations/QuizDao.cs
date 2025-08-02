@@ -266,6 +266,7 @@ namespace KvizHub.DAO.Implementations
                     ResultId = resultId,
                     QuestionId = question.Id,
                     UserId = userId,
+                    IsTrue = false,
                     UserAnswerOptions = new List<UserAnswerOption>()
                 };
 
