@@ -32,7 +32,7 @@ export function QuestionsEditBox(props: QuestionsEditBoxProps){
                 <div>{index + 1}. {question.text}</div>
                 <div>{"- Question type: " + setQuestionType(question.questionTypeId)}</div>
                 <div>{"- Question difficulty: " + setQuizDifficultyText(question.questionDifficultyId)}</div>
-                <div>{"- Quiz category id: " + findQuizCategoryName(question.quizCategoryId, props.selectedCategories)}</div>
+                <div>{"- Quiz category: " + findQuizCategoryName(question.quizCategoryId, props.selectedCategories)}</div>
                 <div className={styles.answers}>
                     {question.answerOptions.map((answer, index) => (
                         <div key={answer.id}>

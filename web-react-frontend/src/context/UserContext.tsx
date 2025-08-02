@@ -44,8 +44,9 @@ export function UserProvider({ children }: UserProviderProps) {
     setUser(null);
     localStorage.removeItem('user');
     localStorage.removeItem('token');
-    localStorage.removeItem('quizResult');
-    localStorage.removeItem('currentUserAnswerIndex');
+    //localStorage.removeItem('quizResult');
+    //localStorage.setItem('quizResult',  JSON.stringify(null));
+    //localStorage.removeItem('currentUserAnswerIndex');
   };
 
   return (
@@ -62,3 +63,4 @@ export const useUserContext = () => {
   }
   return context;
 };
+

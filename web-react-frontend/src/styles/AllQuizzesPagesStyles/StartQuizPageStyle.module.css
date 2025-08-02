@@ -128,3 +128,10 @@
 .selectedQuestion{
     background-color: var(--primary-color);
 }
+
+.optionRow{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+}
