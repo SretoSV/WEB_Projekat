@@ -137,7 +137,7 @@ export interface StartQuizResponse {
     startedUserQuizResult: UserQuizResult;
 }
 
-export async function startQuiz(quizId: number): Promise<StartQuizResponse> {
+export async function startQuizFetch(quizId: number): Promise<StartQuizResponse> {
     const token = localStorage.getItem('token');
 
     try {
