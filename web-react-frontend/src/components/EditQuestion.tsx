@@ -7,8 +7,11 @@ import type { QuizCategory } from "../models/QuizCategoryModel";
 import type { AnswerOption } from "../models/AnswerOptionModel";
 import plusImage from '../images/plus.png';
 import ButtonWithImage from "./ButtonWithImage";
-import ButtonWithLongText from "./ButtonWithLongText";
 import { setQuizDifficultyText } from "../services/QuizService";
+import { MultipleChoiceQuestion } from "./AddAndEditQuestionComponents/MultipleChoiceQuestion";
+import { MultipleCorrectAnswersQuestion } from "./AddAndEditQuestionComponents/MultipleCorrectAnswersQuestion";
+import { TrueFalseQuestion } from "./AddAndEditQuestionComponents/TrueFalseQuestion";
+import { FillInTheBlankQuestion } from "./AddAndEditQuestionComponents/FillInTheBlankQuestion";
 
 interface EditQuestionProps{
     selectedQuestion: Question;
@@ -169,160 +172,44 @@ export function EditQuestion(props: EditQuestionProps){
             </select>
             {
                 Number(form.questionTypeId) === 1 && 
-                <div className={styles.optionsDiv}>
-                    <div>multiple-choice</div>
-                    {
-                        Array.from({ length: 4 }).map((_, index) => (
-                            <div key={index + 1} className={styles.optionRow}>
-                                <label htmlFor={`Option${index + 1}`}></label>
-                                <input
-                                    id={`Option${index + 1}`}
-                                    type="text"
-                                    value={optionsForm?.[index]?.text || ""}
-                                    className={styles.singleOption}
-                                    onChange={(e) => handleOptionChange(index, "text", e.target.value)}
-                                    required
-                                />
-                                <input
-                                    type="radio"
-                                    name="correctOption"
-                                    checked={optionsForm?.[index]?.isCorrect || false}
-                                    onChange={() => {
-                                        setOptionsForm(prevOptions =>
-                                            prevOptions.map((opt, i) => ({
-                                                ...opt,
-                                                isCorrect: i === index
-                                            }))
-                                        );
-                                    }}
-                                />
-                            </div>
-                            
-                        ))
-                    }
-                    
-                    <ButtonWithLongText onClick1={handleAddOptionsToQuestion} type="button" text="Edit options" />
-                </div>
+                <MultipleChoiceQuestion 
+                    optionsForm={optionsForm} 
+                    onOptionChange={handleOptionChange}
+                    setOptionsForm={setOptionsForm}
+                    onAddOptionsToQuestion={handleAddOptionsToQuestion}
+                />
             }
             {
                 Number(form.questionTypeId) === 2 && 
-                <div className={styles.optionsDiv}>
-                    <div>multiple-correct-answers</div>
-                    <button
-                        type="button"
-                        onClick={() =>
-                            setOptionsForm((prev) => [
-                                ...prev,
-                                {
-                                    id: prev.length + 1,
-                                    text: "",
-                                    isCorrect: false,
-                                    questionId: props.selectedQuestion.id,
-                                },
-                            ])
-                        }
-                        className={styles.removeAndAddButton}
-                        >
-                        Add Option
-                    </button>
-                    <div>Option | correct? | remove</div>
-                    {optionsForm.map((option, index) => (
-                    <div key={index} className={styles.optionRow}>
-                        <input
-                            type="text"
-                            value={option.text}
-                            className={styles.singleOption}
-                            onChange={(e) =>
-                                handleOptionChange(index, "text", e.target.value)
-                            }
-                            placeholder={`Option ${index + 1}`}
-                            required
-                        />
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={option.isCorrect}
-                                onChange={(e) =>
-                                    handleOptionChange(index, "isCorrect", e.target.checked)
-                                }
-                            />
-                        </label>
-                        <button
-                            type="button"
-                            onClick={() =>
-                                setOptionsForm(prevOptions =>
-                                    prevOptions.filter((_, indexFilter) => indexFilter !== index)
-                                )
-                            }
-                            className={styles.removeAndAddButton}
-                        >
-                            x
-                        </button>
-                    </div>
-                    ))}
-
-                    <ButtonWithLongText onClick1={handleAddOptionsToQuestion} type="button" text="Set options" />
-                </div>
+                <MultipleCorrectAnswersQuestion 
+                    optionsForm={optionsForm} 
+                    onOptionChange={handleOptionChange}
+                    setOptionsForm={setOptionsForm}
+                    onAddOptionsToQuestion={handleAddOptionsToQuestion} 
+                    form={form}
+                />
             }
             
             {
                Number(form.questionTypeId)=== 3 && 
-                <div>
-                    <div>true-false</div>
-                    <label>
-                    <input
-                        type="checkbox"
-                        checked={optionsForm[0]?.isCorrect || false}
-                        onChange={(e) => {
-                            const updatedOption: AnswerOption = {
-                                id: 1,
-                                text: "True/False Answer",
-                                isCorrect: e.target.checked,
-                                questionId: props.selectedQuestion.id,
-                            };
-                            setOptionsForm([updatedOption]);
-                            setForm(prev => ({
-                                ...prev,
-                                answerOptions: [updatedOption]
-                            }));
-                        }}
-                        />
-                    Is this statement true?
-                    </label>
-                    <ButtonWithLongText onClick1={handleAddOptionsToQuestion} type="button" text="Set answer" />
-                </div>
+                <TrueFalseQuestion 
+                    optionsForm={optionsForm} 
+                    setOptionsForm={setOptionsForm}
+                    onAddOptionsToQuestion={handleAddOptionsToQuestion} 
+                    form={form}
+                    setForm={setForm}
+                />
             }
             {
                 Number(form.questionTypeId) === 4 && 
-                <div className={styles.optionsDiv}>
-                    <div>fill-in-the-blank</div>
-                    <input
-                        type="text"
-                        placeholder="Enter correct answer"
-                        value={fillInAnswer}
-                        className={styles.singleOption}
-                        onChange={(e) => setFillInAnswer(e.target.value)}
-                        required
-                    />
-                    <ButtonWithLongText
-                        type="button"
-                        text="Set answer"
-                        onClick1={() => {
-                            const answer: AnswerOption = {
-                                id: 1,
-                                text: "Fill-answer",
-                                isCorrect: true,
-                                questionId: props.selectedQuestion.id,
-                                fieldAnswerText: fillInAnswer
-                            };
-                            setOptionsForm([answer]);
-                            setForm(prev => ({
-                                ...prev,
-                                answerOptions: [answer]
-                            }));
-                        }}
-                    />
-                </div>
+                <FillInTheBlankQuestion
+                    optionsForm={optionsForm} 
+                    setOptionsForm={setOptionsForm}
+                    form={form}
+                    setForm={setForm}
+                    fillInAnswer={fillInAnswer}
+                    setFillInAnswer={setFillInAnswer}
+                />
             }
             <br />
             <div className={styles.plusButtonDiv}>
