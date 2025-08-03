@@ -165,6 +165,40 @@ export async function startQuizFetch(quizId: number): Promise<StartQuizResponse>
     }
 }
 
+
+export interface FinishQuizResponse {
+    returnedQuizResult: UserQuizResult;
+}
+
+export async function finishQuizFetch(quizResult: UserQuizResult): Promise<FinishQuizResponse> {
+    const token = localStorage.getItem('token');
+
+    try {
+        const response = await fetch(`${serverPath()}/api/Quiz/finish`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(quizResult),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "Failed to finish quiz");
+        }
+
+        const data = await response.json();
+
+        return {
+            returnedQuizResult: data,
+        };
+
+    } catch (err: any) {
+        throw new Error(err.message || "Something went wrong while finishing the quiz.");
+    }
+}
+
 export function setQuizDifficultyText(
   quizDifficultyId: number
 ): string {
@@ -179,3 +213,124 @@ export function setQuizDifficultyText(
     }
     return "";
 }
+
+//UserAnswerOptions Functions
+
+export function onChangeIDontKnowCheckbox(
+    isChecked :boolean, 
+    currentUserAnswerIndex: number, 
+    setIDontKnowStates: React.Dispatch<React.SetStateAction<boolean[]>>,
+    setFillInAnswer: React.Dispatch<React.SetStateAction<string>>,
+    setQuizResult: React.Dispatch<React.SetStateAction<UserQuizResult | null>>
+) {
+    setIDontKnowStates(prev => {
+        const updated = [...prev];
+        updated[currentUserAnswerIndex] = isChecked;
+        return updated;
+    });
+
+    if (isChecked) {
+        setQuizResult(prev => {
+            if (!prev || !prev.answers) return prev;
+            const updatedAnswers = [...prev.answers];
+            updatedAnswers[currentUserAnswerIndex] = {
+                ...updatedAnswers[currentUserAnswerIndex],
+                userAnswerOptions: updatedAnswers[currentUserAnswerIndex]?.userAnswerOptions?.map(opt => ({
+                    ...opt,
+                    isCorrect: null,
+                    fieldAnswerText: null
+                }))
+            };
+            return { ...prev, answers: updatedAnswers };
+        });
+        setFillInAnswer("");
+    }
+}
+
+export function onChangeMultipleChoice(
+    setQuizResult: React.Dispatch<React.SetStateAction<UserQuizResult | null>>,
+    currentUserAnswerIndex: number, 
+    index: number,
+) {
+    setQuizResult(prev => {
+        if (!prev || !prev.answers) return prev;
+        const updatedAnswers = [...prev.answers];
+        const newOptions = updatedAnswers[currentUserAnswerIndex]?.userAnswerOptions?.map((opt, i) => ({
+        ...opt,
+        isCorrect: i === index
+        }));
+        updatedAnswers[currentUserAnswerIndex] = {
+            ...updatedAnswers[currentUserAnswerIndex],
+            userAnswerOptions: newOptions
+        };
+        return { ...prev, answers: updatedAnswers };
+    });
+}
+
+export function onChangMultipleCorrectAnswers(
+    setQuizResult: React.Dispatch<React.SetStateAction<UserQuizResult | null>>,
+    currentUserAnswerIndex: number, 
+    index: number,
+    isChecked: boolean,
+) {
+    setQuizResult(prev => {
+        if (!prev || !prev.answers) return prev;
+        const updatedAnswers = [...prev.answers];
+        const currentAnswer = updatedAnswers[currentUserAnswerIndex];
+
+        if (!currentAnswer || !currentAnswer.userAnswerOptions) return prev;
+
+        const updatedOptions = [...currentAnswer.userAnswerOptions];
+        updatedOptions[index] = {
+            ...updatedOptions[index],
+            isCorrect: isChecked
+        };
+
+        updatedAnswers[currentUserAnswerIndex] = {
+            ...currentAnswer,
+            userAnswerOptions: updatedOptions
+        };
+
+        return { ...prev, answers: updatedAnswers };
+    });
+}
+
+export function onChangTrueFalse(
+    setQuizResult: React.Dispatch<React.SetStateAction<UserQuizResult | null>>,
+    currentUserAnswerIndex: number, 
+    option: boolean,
+) {
+    setQuizResult(prev => {
+        if (!prev || !prev.answers) return prev;
+        const updatedAnswers = [...prev.answers];
+        updatedAnswers[currentUserAnswerIndex] = {
+            ...updatedAnswers[currentUserAnswerIndex],
+            userAnswerOptions: updatedAnswers[currentUserAnswerIndex]?.userAnswerOptions?.map(opt => ({
+                ...opt,
+                isCorrect: option
+            }))
+        };
+        return { ...prev, answers: updatedAnswers };
+    });
+}
+
+export function onChangFillInTheBlank(
+    setQuizResult: React.Dispatch<React.SetStateAction<UserQuizResult | null>>,
+    currentUserAnswerIndex: number, 
+    newValue: string,
+) {
+    setQuizResult(prev => {
+        if (!prev || !prev.answers) return prev;
+        const updatedAnswers = [...prev.answers];
+        updatedAnswers[currentUserAnswerIndex] = {
+            ...updatedAnswers[currentUserAnswerIndex],
+            userAnswerOptions: updatedAnswers[currentUserAnswerIndex]?.userAnswerOptions?.map(opt => ({
+                ...opt,
+                isCorrect: false,
+                fieldAnswerText: newValue
+            }))
+        };
+        return { ...prev, answers: updatedAnswers };
+    });
+}
+

@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { ReactNode } from 'react';
 import type { Quiz } from "../models/QuizModel";
-import { fetchQuizzes } from "../services/QuizService";
+import { fetchQuizzes, finishQuizFetch } from "../services/QuizService";
 import { useUserContext } from "./UserContext";
 import type { UserQuizResult } from "../models/UserQuizResultModel";
 
@@ -11,7 +11,9 @@ interface QuizContextType {
   startQuiz: (quizResult: UserQuizResult) => void;
   finishQuiz: () => void;
   quizResult: UserQuizResult | null;
+  finishedQuizResult: UserQuizResult | null;
   setQuizResult: React.Dispatch<React.SetStateAction<UserQuizResult | null>>;
+  setFinishedQuizResult: React.Dispatch<React.SetStateAction<UserQuizResult | null>>;
   currentUserAnswerIndex: number;
   incrementIndex: () => void;
   decrementIndex: () => void;
@@ -27,6 +29,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useUserContext();
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [quizResult, setQuizResult] = useState<UserQuizResult | null>(null);
+  const [finishedQuizResult, setFinishedQuizResult] = useState<UserQuizResult | null>(null);
   const [currentUserAnswerIndex, setCurrentUserAnswerIndex] = useState<number>(0);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -62,6 +65,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
     if (savedCurrentUserAnswerIndex) {
       setCurrentUserAnswerIndex(JSON.parse(savedCurrentUserAnswerIndex));
     }
+
   }, []);
 
   const startQuiz = (quizResult: UserQuizResult) => {
@@ -71,12 +75,17 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem('currentUserAnswerIndex', JSON.stringify(0));
   };
 
-  const finishQuiz = () => {
+  const finishQuiz = async () => {
     const savedQuizResult = localStorage.getItem('quizResult');
     if (savedQuizResult) {
-      console.log(JSON.parse(savedQuizResult));
+      try {
+        const { returnedQuizResult } = await finishQuizFetch(JSON.parse(savedQuizResult));
+        setFinishedQuizResult(returnedQuizResult);
+      } catch (err) {
+        alert("Error finishing quiz!");
+      }
     }
-    
+
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
@@ -182,7 +191,9 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
       quizzes, 
       setQuizzes, 
       quizResult, 
+      finishedQuizResult,
       setQuizResult, 
+      setFinishedQuizResult,
       startQuiz, 
       finishQuiz,
       currentUserAnswerIndex,

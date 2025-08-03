@@ -6,14 +6,24 @@ import { setQuizDifficultyText, startQuizFetch } from "../../services/QuizServic
 import { StartQuizInfo } from "../../components/StartQuizInfo";
 import ButtonWithText from "../../components/ButtonWithText";
 import { formatTime } from "../../functions/formatTimeFunction";
+import { FinishedQuizResult } from "../../components/FinishedQuizResults";
+import { IDontKnow } from "../../components/UserAnswerOptionsComponents/IDontKnow";
+import { MultipleChoice } from "../../components/UserAnswerOptionsComponents/MultipleChoice";
+import { MultipleCorrectAnswers } from "../../components/UserAnswerOptionsComponents/MultipleCorrectAnswers";
+import { TrueFalse } from "../../components/UserAnswerOptionsComponents/TrueFalse";
+import { FillInTheBlank } from "../../components/UserAnswerOptionsComponents/FillInTheBlank";
 
 export function StartQuizPage() {
     const { quizId } = useParams();
-    const { quizzes, quizResult, startQuiz, currentUserAnswerIndex, timeLeft, setQuizResult, restoreTimer, initializeTimer, handleSetIndex, finishQuiz, incrementIndex, decrementIndex } = useQuizContext();
+    const { quizzes, quizResult, startQuiz, setFinishedQuizResult, currentUserAnswerIndex, timeLeft, restoreTimer, initializeTimer, handleSetIndex, finishQuiz, incrementIndex, decrementIndex, finishedQuizResult } = useQuizContext();
 
     const [fillInAnswer, setFillInAnswer] = useState<string>("");
     const [iDontKnowStates, setIDontKnowStates] = useState<boolean[]>([]);
     const quiz = quizzes.find(q => q.id === parseInt(quizId ?? "0"));
+
+    useEffect(() => {
+        setFinishedQuizResult(null);
+    }, []);
 
     useEffect(() => {
         //setujem i dont know za svako pitanje
@@ -56,15 +66,23 @@ export function StartQuizPage() {
         <>
         <div>
             { quizResult === null ? 
-                <StartQuizInfo quiz={quiz} onStartQuiz={handleStartQuiz}/>
+            <>
+                {   finishedQuizResult === null ? 
+                    <StartQuizInfo quiz={quiz} onStartQuiz={handleStartQuiz}/>
+                    :
+                    <FinishedQuizResult />
+                }
+            </>
             :
             <div className={styles.mainDiv}>
                 <div className={styles.timerDiv}>
                     {timeLeft !== null ? formatTime(timeLeft) : "00:00"}
                 </div>
-                {currentUserAnswerIndex === quiz.questions.length ? 
-                <div>
-                    Are you sure?
+                {
+                currentUserAnswerIndex === quiz.questions.length ? 
+                
+                <div className={styles.finishQuizDiv}>
+                    Finish quiz?
                 </div>
                 : 
                 <>
@@ -74,201 +92,29 @@ export function StartQuizPage() {
                 </div>
                 <div className={styles.answersDiv}>
 
-                    <div className={styles.optionRow}>
-                        <label htmlFor="iDontKnow">I don't know</label>
-                        <input
-                            id="iDontKnow"
-                            type="checkbox"
-                            checked={iDontKnowStates[currentUserAnswerIndex] || false}
-                            name="idontknow"
-                            onChange={(e) => {
-                                const isChecked = e.target.checked;
-                                setIDontKnowStates(prev => {
-                                    const updated = [...prev];
-                                    updated[currentUserAnswerIndex] = isChecked;
-                                    return updated;
-                                });
-
-                                if (isChecked) {
-                                    setQuizResult(prev => {
-                                        if (!prev || !prev.answers) return prev;
-                                        const updatedAnswers = [...prev.answers];
-                                        updatedAnswers[currentUserAnswerIndex] = {
-                                            ...updatedAnswers[currentUserAnswerIndex],
-                                            userAnswerOptions: updatedAnswers[currentUserAnswerIndex]?.userAnswerOptions?.map(opt => ({
-                                                ...opt,
-                                                isCorrect: null,
-                                                fieldAnswerText: null
-                                            }))
-                                        };
-                                        return { ...prev, answers: updatedAnswers };
-                                    });
-                                    setFillInAnswer("");
-                                }
-                            }}
-                        />
-                    </div>
+                    <IDontKnow setIDontKnowStates={setIDontKnowStates} iDontKnowStates={iDontKnowStates} setFillInAnswer={setFillInAnswer}/>
                     
                     { !iDontKnowStates[currentUserAnswerIndex] &&
                         <div>
                             {
                                 quiz.questions[currentUserAnswerIndex].questionTypeId === 1
                                 && 
-                                <div>
-                                    {
-                                        quizResult.answers?.[currentUserAnswerIndex]?.userAnswerOptions?.map((option, index) => (
-                                            <div key={option.id} className={styles.optionRow}>
-                                                <label htmlFor={`inputradio-${option.id}`}>{option.text}</label>
-                                                <input
-                                                    id={`inputradio-${option.id}`}
-                                                    type="radio"
-                                                    name={`radio-group-${currentUserAnswerIndex}`}
-                                                    checked={quizResult.answers?.[currentUserAnswerIndex]?.userAnswerOptions?.[index]?.isCorrect || false}
-                                                    onChange={() => {
-                                                    setQuizResult(prev => {
-                                                        if (!prev || !prev.answers) return prev;
-                                                        const updatedAnswers = [...prev.answers];
-                                                        const newOptions = updatedAnswers[currentUserAnswerIndex]?.userAnswerOptions?.map((opt, i) => ({
-                                                        ...opt,
-                                                        isCorrect: i === index
-                                                        }));
-                                                        updatedAnswers[currentUserAnswerIndex] = {
-                                                            ...updatedAnswers[currentUserAnswerIndex],
-                                                            userAnswerOptions: newOptions
-                                                        };
-                                                        return { ...prev, answers: updatedAnswers };
-                                                    });
-                                                }}
-                                                />
-                                            </div>
-                                        ))
-                                    }
-                                </div>
+                                <MultipleChoice quizResult={quizResult}/>
                             }
                             {
                                 quiz.questions[currentUserAnswerIndex].questionTypeId === 2
                                 && 
-                                <div>
-                                    {
-                                        quizResult.answers?.[currentUserAnswerIndex]?.userAnswerOptions?.map((option, index) => (
-                                            <div key={option.id} className={styles.optionRow}>
-                                            <label htmlFor={`inputcheck-${option.id}`}>{option.text}</label>
-                                            <input
-                                                id={`inputcheck-${option.id}`}
-                                                type="checkbox"
-                                                checked={quizResult.answers?.[currentUserAnswerIndex]?.userAnswerOptions?.[index]?.isCorrect || false}
-                                                onChange={(e) => {
-                                                    const isChecked = e.target.checked;
-                                                    setQuizResult(prev => {
-                                                        if (!prev || !prev.answers) return prev;
-                                                        const updatedAnswers = [...prev.answers];
-                                                        const currentAnswer = updatedAnswers[currentUserAnswerIndex];
-
-                                                        if (!currentAnswer || !currentAnswer.userAnswerOptions) return prev;
-
-                                                        const updatedOptions = [...currentAnswer.userAnswerOptions];
-                                                        updatedOptions[index] = {
-                                                            ...updatedOptions[index],
-                                                            isCorrect: isChecked
-                                                        };
-
-                                                        updatedAnswers[currentUserAnswerIndex] = {
-                                                            ...currentAnswer,
-                                                            userAnswerOptions: updatedOptions
-                                                        };
-
-                                                        return { ...prev, answers: updatedAnswers };
-                                                    });
-                                                }}
-                                            />
-                                            </div>
-                                        ))
-                                    }
-                                </div>
+                                <MultipleCorrectAnswers quizResult={quizResult}/>
                             }
                             {
                                 quiz.questions[currentUserAnswerIndex].questionTypeId === 3
                                 && 
-                                <div>
-                                    <div className={styles.optionRow}>
-                                        <label htmlFor={`inputradio-1-true/false`}>True</label>
-                                        <input
-                                            id={`inputradio-1-true/false`}
-                                            type="radio"
-                                            checked={quizResult.answers?.[currentUserAnswerIndex]?.userAnswerOptions?.[0]?.isCorrect === true}
-                                            value="True"
-                                            name="trueFalseStatement"
-                                            onChange={() => {
-                                                setQuizResult(prev => {
-                                                    if (!prev || !prev.answers) return prev;
-                                                    const updatedAnswers = [...prev.answers];
-                                                    updatedAnswers[currentUserAnswerIndex] = {
-                                                        ...updatedAnswers[currentUserAnswerIndex],
-                                                        userAnswerOptions: updatedAnswers[currentUserAnswerIndex]?.userAnswerOptions?.map(opt => ({
-                                                            ...opt,
-                                                            isCorrect: true
-                                                        }))
-                                                    };
-                                                    return { ...prev, answers: updatedAnswers };
-                                                });
-                                            }}
-                                        />
-                                    </div>
-                                    <div className={styles.optionRow}>
-                                        <label htmlFor={`inputradio-2-true/false`}>False</label>
-                                        <input
-                                            id={`inputradio-2-true/false`}
-                                            type="radio"
-                                            checked={quizResult.answers?.[currentUserAnswerIndex]?.userAnswerOptions?.[0]?.isCorrect === false}
-                                            value="False"
-                                            name="trueFalseStatement"
-                                            onChange={() => {
-                                            setQuizResult(prev => {
-                                                if (!prev || !prev.answers) return prev;
-                                                const updatedAnswers = [...prev.answers];
-                                                updatedAnswers[currentUserAnswerIndex] = {
-                                                    ...updatedAnswers[currentUserAnswerIndex],
-                                                    userAnswerOptions: updatedAnswers[currentUserAnswerIndex]?.userAnswerOptions?.map(opt => ({
-                                                        ...opt,
-                                                        isCorrect: false
-                                                    }))
-                                                };
-                                                return { ...prev, answers: updatedAnswers };
-                                            });
-                                        }}
-                                        />
-                                    </div>
-                                </div>
+                                <TrueFalse quizResult={quizResult}/>
                             }
                             {
                                 quiz.questions[currentUserAnswerIndex].questionTypeId === 4
                                 && 
-                                <div>
-                                    <div>fill-in-the-blank</div>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter correct answer"
-                                        value={fillInAnswer}
-                                        className={styles.singleOption}
-                                        onChange={(e) => {
-                                            const newValue = e.target.value;
-                                            setFillInAnswer(newValue);
-                                            setQuizResult(prev => {
-                                                if (!prev || !prev.answers) return prev;
-                                                const updatedAnswers = [...prev.answers];
-                                                updatedAnswers[currentUserAnswerIndex] = {
-                                                    ...updatedAnswers[currentUserAnswerIndex],
-                                                    userAnswerOptions: updatedAnswers[currentUserAnswerIndex]?.userAnswerOptions?.map(opt => ({
-                                                        ...opt,
-                                                        isCorrect: false,
-                                                        fieldAnswerText: newValue
-                                                    }))
-                                                };
-                                                return { ...prev, answers: updatedAnswers };
-                                            });
-                                        }}
-                                    />
-                                </div>
+                                <FillInTheBlank fillInAnswer={fillInAnswer} setFillInAnswer={setFillInAnswer}/>
                             }
                         </div>
                     }
@@ -276,7 +122,8 @@ export function StartQuizPage() {
 
 
                 </div>
-                </>}
+                </>
+                }
 
                 <div className={styles.bottomDiv}>
                     {currentUserAnswerIndex > 0 ?
