@@ -74,6 +74,22 @@
   },
   {
     "ContainingType": "KvizHub.Controllers.QuizController",
+    "Method": "FinishQuiz",
+    "RelativePath": "api/Quiz/finish",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userQuizResultDto",
+        "Type": "KvizHub.DTO.UserQuizResultDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KvizHub.Controllers.QuizController",
     "Method": "StartQuiz",
     "RelativePath": "api/Quiz/start/{quizId}",
     "HttpMethod": "POST",

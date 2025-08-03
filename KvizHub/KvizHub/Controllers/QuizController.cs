@@ -82,5 +82,15 @@ namespace KvizHub.Controllers
             return Ok(quizzesDtos);
         }
 
+        [Authorize]
+        [HttpPut("finish")]
+        public async Task<IActionResult> FinishQuiz(UserQuizResultDto userQuizResultDto)
+        {
+            Console.WriteLine("AAA: " + userQuizResultDto.QuizId + " : " + userQuizResultDto?.Answers.ToString());
+            userQuizResultDto.CorrectAnswers = 7;
+
+            return Ok(userQuizResultDto);
+        }
+
     }
 }
