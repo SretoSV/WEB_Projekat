@@ -4,7 +4,6 @@ import type { Quiz } from "../models/QuizModel";
 import { fetchQuizzes } from "../services/QuizService";
 import { useUserContext } from "./UserContext";
 import type { UserQuizResult } from "../models/UserQuizResultModel";
-import type { UserAnswerOption } from "../models/UserAnswerOptionModel";
 
 interface QuizContextType {
   quizzes: Quiz[];
@@ -16,7 +15,6 @@ interface QuizContextType {
   currentUserAnswerIndex: number;
   incrementIndex: () => void;
   decrementIndex: () => void;
-  handleSetWholeNewUserQuizResult: (userAnswerOptions: Array<UserAnswerOption>) => void;
   handleSetIndex: (index: number) => void;
   timeLeft: number | null;
   initializeTimer: (durationSeconds: number) => void;
@@ -65,21 +63,6 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
       setCurrentUserAnswerIndex(JSON.parse(savedCurrentUserAnswerIndex));
     }
   }, []);
-  
-  const handleSetWholeNewUserQuizResult = (userAnswerOptions: Array<UserAnswerOption>) => {
-    setQuizResult(prev => {
-      if (!prev || !prev.answers) return prev;
-
-      const updatedAnswers = [...prev.answers];
-      const updatedAnswer = { ...updatedAnswers[currentUserAnswerIndex], userAnswerOptions };
-      updatedAnswers[currentUserAnswerIndex] = updatedAnswer;
-
-      return {
-        ...prev,
-        answers: updatedAnswers
-      };
-    });
-  };
 
   const startQuiz = (quizResult: UserQuizResult) => {
       setQuizResult(quizResult);
@@ -89,6 +72,15 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const finishQuiz = () => {
+    const savedQuizResult = localStorage.getItem('quizResult');
+    if (savedQuizResult) {
+      console.log(JSON.parse(savedQuizResult));
+    }
+    
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
     setQuizResult(null);
     setCurrentUserAnswerIndex(0);
     setTimeLeft(null);
@@ -154,6 +146,10 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
 
       if (remaining <= 0) {
           setTimeLeft(0);
+          if (timerRef.current) {
+              clearInterval(timerRef.current);
+              timerRef.current = null;
+          }
           finishQuiz();
           localStorage.removeItem("quizStartTime");
       } else {
@@ -163,7 +159,10 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
               const newRemaining = durationSeconds - newElapsed;
               if (newRemaining <= 0) {
                   setTimeLeft(0);
-                  clearInterval(timerRef.current!);
+                  if (timerRef.current) {
+                    clearInterval(timerRef.current);
+                    timerRef.current = null;
+                  }
                   finishQuiz();
               } else {
                   setTimeLeft(newRemaining);
@@ -189,7 +188,6 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
       currentUserAnswerIndex,
       incrementIndex,
       decrementIndex,
-      handleSetWholeNewUserQuizResult,
       handleSetIndex,
       timeLeft,
       initializeTimer,

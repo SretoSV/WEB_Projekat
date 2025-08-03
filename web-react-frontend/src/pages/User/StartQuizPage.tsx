@@ -1,25 +1,22 @@
 import { useParams } from "react-router-dom";
 import { useQuizContext } from "../../context/QuizContext";
-//import { Navigation } from "../../components/Navigation";
 import styles from "../../styles/AllQuizzesPagesStyles/StartQuizPageStyle.module.css";
 import { useState, useEffect } from "react";
 import { setQuizDifficultyText, startQuizFetch } from "../../services/QuizService";
 import { StartQuizInfo } from "../../components/StartQuizInfo";
 import ButtonWithText from "../../components/ButtonWithText";
-import type { UserAnswerOption } from "../../models/UserAnswerOptionModel";
 import { formatTime } from "../../functions/formatTimeFunction";
 
 export function StartQuizPage() {
     const { quizId } = useParams();
-    const { quizzes, quizResult, startQuiz, currentUserAnswerIndex, timeLeft, restoreTimer, initializeTimer, handleSetIndex, finishQuiz, handleSetWholeNewUserQuizResult, incrementIndex, decrementIndex } = useQuizContext();
+    const { quizzes, quizResult, startQuiz, currentUserAnswerIndex, timeLeft, setQuizResult, restoreTimer, initializeTimer, handleSetIndex, finishQuiz, incrementIndex, decrementIndex } = useQuizContext();
 
-    const [optionsForm, setOptionsForm] = useState<UserAnswerOption[]>([] as UserAnswerOption[]);
     const [fillInAnswer, setFillInAnswer] = useState<string>("");
     const [iDontKnowStates, setIDontKnowStates] = useState<boolean[]>([]);
     const quiz = quizzes.find(q => q.id === parseInt(quizId ?? "0"));
 
     useEffect(() => {
-        setOptionsForm(quizResult?.answers?.[currentUserAnswerIndex]?.userAnswerOptions || [] as UserAnswerOption[]);
+        //setujem i dont know za svako pitanje
         setIDontKnowStates(prev => {
             const copy = [...prev];
             while (copy.length <= currentUserAnswerIndex) {
@@ -27,10 +24,14 @@ export function StartQuizPage() {
             }
             return copy;
         });
+        //ucitavam u fillInAnswer ono sto je uneto vec pri refreshu
+        const answer = quizResult?.answers?.[currentUserAnswerIndex];
+        const answerText = answer?.userAnswerOptions?.[0]?.fieldAnswerText ?? "";
+        setFillInAnswer(answerText);
     },[currentUserAnswerIndex, quizResult]);
 
     useEffect(() => {
-        if (quizResult && quiz?.timeLimitSeconds) {
+        if (quizResult && quiz?.timeLimitSeconds && timeLeft === null) {
             restoreTimer(quiz.timeLimitSeconds);
         }
     }, [quizResult, quiz?.timeLimitSeconds]);
@@ -44,36 +45,29 @@ export function StartQuizPage() {
             initializeTimer(quiz?.timeLimitSeconds || 0);
 
             startQuiz(startedUserQuizResult);
-            setOptionsForm(startedUserQuizResult?.answers?.[currentUserAnswerIndex]?.userAnswerOptions || [] as UserAnswerOption[]);
         } catch (err) {
             alert("Error starting quiz!");
         }
-    }
-
-    const handleNext = () => {
-        handleSetWholeNewUserQuizResult(optionsForm);
-        incrementIndex();
-    }
-    
-    const handleButtonClick = (index: number) => {
-        handleSetWholeNewUserQuizResult(optionsForm);
-        handleSetIndex(index);
     }
 
     if(!quiz) return <div>Quiz not found</div>
 
     return (
         <>
-        {/*<Navigation />*/}
         <div>
             { quizResult === null ? 
                 <StartQuizInfo quiz={quiz} onStartQuiz={handleStartQuiz}/>
             :
             <div className={styles.mainDiv}>
-
                 <div className={styles.timerDiv}>
                     {timeLeft !== null ? formatTime(timeLeft) : "00:00"}
                 </div>
+                {currentUserAnswerIndex === quiz.questions.length ? 
+                <div>
+                    Are you sure?
+                </div>
+                : 
+                <>
                 <div className={styles.questionDiv}>
                     <div>Difficulty: {setQuizDifficultyText(quiz.questions[currentUserAnswerIndex].questionDifficultyId)}</div>
                     <div>{(currentUserAnswerIndex + 1) + ". " + quiz.questions[currentUserAnswerIndex].text}</div>
@@ -96,16 +90,21 @@ export function StartQuizPage() {
                                 });
 
                                 if (isChecked) {
-                                    setOptionsForm(prevOptions =>
-                                        prevOptions.map((opt) => ({
-                                            ...opt,
-                                            isCorrect: null,
-                                            fieldAnswerText: null
-                                        }))
-                                    );
+                                    setQuizResult(prev => {
+                                        if (!prev || !prev.answers) return prev;
+                                        const updatedAnswers = [...prev.answers];
+                                        updatedAnswers[currentUserAnswerIndex] = {
+                                            ...updatedAnswers[currentUserAnswerIndex],
+                                            userAnswerOptions: updatedAnswers[currentUserAnswerIndex]?.userAnswerOptions?.map(opt => ({
+                                                ...opt,
+                                                isCorrect: null,
+                                                fieldAnswerText: null
+                                            }))
+                                        };
+                                        return { ...prev, answers: updatedAnswers };
+                                    });
+                                    setFillInAnswer("");
                                 }
-                                handleSetWholeNewUserQuizResult(optionsForm);
-                                setFillInAnswer("");
                             }}
                         />
                     </div>
@@ -124,15 +123,22 @@ export function StartQuizPage() {
                                                     id={`inputradio-${option.id}`}
                                                     type="radio"
                                                     name={`radio-group-${currentUserAnswerIndex}`}
-                                                    checked={optionsForm?.[index]?.isCorrect || false}
+                                                    checked={quizResult.answers?.[currentUserAnswerIndex]?.userAnswerOptions?.[index]?.isCorrect || false}
                                                     onChange={() => {
-                                                        setOptionsForm(prevOptions =>
-                                                            prevOptions.map((opt, i) => ({
-                                                                ...opt,
-                                                                isCorrect: i === index
-                                                            }))
-                                                        );
-                                                    }}
+                                                    setQuizResult(prev => {
+                                                        if (!prev || !prev.answers) return prev;
+                                                        const updatedAnswers = [...prev.answers];
+                                                        const newOptions = updatedAnswers[currentUserAnswerIndex]?.userAnswerOptions?.map((opt, i) => ({
+                                                        ...opt,
+                                                        isCorrect: i === index
+                                                        }));
+                                                        updatedAnswers[currentUserAnswerIndex] = {
+                                                            ...updatedAnswers[currentUserAnswerIndex],
+                                                            userAnswerOptions: newOptions
+                                                        };
+                                                        return { ...prev, answers: updatedAnswers };
+                                                    });
+                                                }}
                                                 />
                                             </div>
                                         ))
@@ -150,19 +156,29 @@ export function StartQuizPage() {
                                             <input
                                                 id={`inputcheck-${option.id}`}
                                                 type="checkbox"
-                                                checked={optionsForm[index]?.isCorrect || false}
+                                                checked={quizResult.answers?.[currentUserAnswerIndex]?.userAnswerOptions?.[index]?.isCorrect || false}
                                                 onChange={(e) => {
                                                     const isChecked = e.target.checked;
+                                                    setQuizResult(prev => {
+                                                        if (!prev || !prev.answers) return prev;
+                                                        const updatedAnswers = [...prev.answers];
+                                                        const currentAnswer = updatedAnswers[currentUserAnswerIndex];
 
-                                                    setOptionsForm(prevOptions => {
-                                                        const updatedOptions = [...prevOptions];
+                                                        if (!currentAnswer || !currentAnswer.userAnswerOptions) return prev;
+
+                                                        const updatedOptions = [...currentAnswer.userAnswerOptions];
                                                         updatedOptions[index] = {
-                                                            ...option,
+                                                            ...updatedOptions[index],
                                                             isCorrect: isChecked
                                                         };
 
-                                                    return updatedOptions;
-                                                });
+                                                        updatedAnswers[currentUserAnswerIndex] = {
+                                                            ...currentAnswer,
+                                                            userAnswerOptions: updatedOptions
+                                                        };
+
+                                                        return { ...prev, answers: updatedAnswers };
+                                                    });
                                                 }}
                                             />
                                             </div>
@@ -179,16 +195,22 @@ export function StartQuizPage() {
                                         <input
                                             id={`inputradio-1-true/false`}
                                             type="radio"
-                                            checked={optionsForm?.[0]?.isCorrect === true}
+                                            checked={quizResult.answers?.[currentUserAnswerIndex]?.userAnswerOptions?.[0]?.isCorrect === true}
                                             value="True"
                                             name="trueFalseStatement"
                                             onChange={() => {
-                                                setOptionsForm(prevOptions =>
-                                                    prevOptions.map((opt) => ({
-                                                        ...opt,
-                                                        isCorrect: true
-                                                    }))
-                                                );
+                                                setQuizResult(prev => {
+                                                    if (!prev || !prev.answers) return prev;
+                                                    const updatedAnswers = [...prev.answers];
+                                                    updatedAnswers[currentUserAnswerIndex] = {
+                                                        ...updatedAnswers[currentUserAnswerIndex],
+                                                        userAnswerOptions: updatedAnswers[currentUserAnswerIndex]?.userAnswerOptions?.map(opt => ({
+                                                            ...opt,
+                                                            isCorrect: true
+                                                        }))
+                                                    };
+                                                    return { ...prev, answers: updatedAnswers };
+                                                });
                                             }}
                                         />
                                     </div>
@@ -197,17 +219,23 @@ export function StartQuizPage() {
                                         <input
                                             id={`inputradio-2-true/false`}
                                             type="radio"
-                                            checked={optionsForm?.[0]?.isCorrect === false}
+                                            checked={quizResult.answers?.[currentUserAnswerIndex]?.userAnswerOptions?.[0]?.isCorrect === false}
                                             value="False"
                                             name="trueFalseStatement"
                                             onChange={() => {
-                                                setOptionsForm(prevOptions =>
-                                                    prevOptions.map((opt) => ({
+                                            setQuizResult(prev => {
+                                                if (!prev || !prev.answers) return prev;
+                                                const updatedAnswers = [...prev.answers];
+                                                updatedAnswers[currentUserAnswerIndex] = {
+                                                    ...updatedAnswers[currentUserAnswerIndex],
+                                                    userAnswerOptions: updatedAnswers[currentUserAnswerIndex]?.userAnswerOptions?.map(opt => ({
                                                         ...opt,
                                                         isCorrect: false
                                                     }))
-                                                );
-                                            }}
+                                                };
+                                                return { ...prev, answers: updatedAnswers };
+                                            });
+                                        }}
                                         />
                                     </div>
                                 </div>
@@ -225,14 +253,19 @@ export function StartQuizPage() {
                                         onChange={(e) => {
                                             const newValue = e.target.value;
                                             setFillInAnswer(newValue);
-
-                                            setOptionsForm(prevOptions =>
-                                                prevOptions.map((opt) => ({
-                                                    ...opt,
-                                                    isCorrect: false,
-                                                    fieldAnswerText: newValue
-                                                }))
-                                            );
+                                            setQuizResult(prev => {
+                                                if (!prev || !prev.answers) return prev;
+                                                const updatedAnswers = [...prev.answers];
+                                                updatedAnswers[currentUserAnswerIndex] = {
+                                                    ...updatedAnswers[currentUserAnswerIndex],
+                                                    userAnswerOptions: updatedAnswers[currentUserAnswerIndex]?.userAnswerOptions?.map(opt => ({
+                                                        ...opt,
+                                                        isCorrect: false,
+                                                        fieldAnswerText: newValue
+                                                    }))
+                                                };
+                                                return { ...prev, answers: updatedAnswers };
+                                            });
                                         }}
                                     />
                                 </div>
@@ -243,6 +276,8 @@ export function StartQuizPage() {
 
 
                 </div>
+                </>}
+
                 <div className={styles.bottomDiv}>
                     {currentUserAnswerIndex > 0 ?
                         <div className={styles.backButtonDiv}><ButtonWithText onClick={decrementIndex} text="Back"/></div>
@@ -253,17 +288,24 @@ export function StartQuizPage() {
                         {Array.from({ length: quiz.questions.length }).map((_, index) => (
                             <button 
                             key={index}
-                            onClick={() => handleButtonClick(index)}
+                            onClick={() => handleSetIndex(index)}
                             className={`${styles.questionNumber} ${currentUserAnswerIndex === index && styles.selectedQuestion}`} 
                             >
                                 {index+1}
                             </button>
                         ))}
                     </div>
+                    {
+                    currentUserAnswerIndex === quiz.questions.length ? 
+                    <div className={styles.nextButtonDiv}><ButtonWithText onClick={finishQuiz} text="Finish"/></div>
+                    :
+                    <>
                     {currentUserAnswerIndex !== (quiz.questions.length - 1) ?
-                        <div className={styles.nextButtonDiv}><ButtonWithText onClick={handleNext} text="Next"/></div>
+                        <div className={styles.nextButtonDiv}><ButtonWithText onClick={incrementIndex} text="Next"/></div>
                         :
-                        <div className={styles.nextButtonDiv}><ButtonWithText onClick={finishQuiz} text="Finish"/></div>
+                        <div className={styles.nextButtonDiv}><ButtonWithText onClick={incrementIndex} text="Finish"/></div>
+                    }
+                    </>
                     }
                 </div>
 
