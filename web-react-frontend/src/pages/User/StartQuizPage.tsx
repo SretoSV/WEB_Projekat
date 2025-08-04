@@ -70,7 +70,7 @@ export function StartQuizPage() {
                 {   finishedQuizResult === null ? 
                     <StartQuizInfo quiz={quiz} onStartQuiz={handleStartQuiz}/>
                     :
-                    <FinishedQuizResult />
+                    <FinishedQuizResult quiz={quiz}/>
                 }
             </>
             :
