@@ -10,5 +10,6 @@ namespace KvizHub.Services.Interfaces
         Task<int> DeleteQuiz(int id);
         Task<List<QuizDto>> GetAllQuizzes();
         Task<UserQuizResultDto> StartQuiz(int quizId);
+        Task<UserQuizResultDto> FinishQuiz(UserQuizResultDto userQuizResultDto);
     }
 }

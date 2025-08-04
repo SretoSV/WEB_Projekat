@@ -293,6 +293,10 @@ namespace KvizHub.DAO.Implementations
 
             return userAnswers;
         }
+
+        public async Task<UserQuizResultDto> FinishQuiz(UserQuizResultDto userQuizResultDto) {
+            return null;
+        }
         #endregion
     }
 }

@@ -88,6 +88,60 @@ namespace KvizHub.Services
             return userQuizResultDto;
         }
 
+        public async Task<UserQuizResultDto> FinishQuiz(UserQuizResultDto userQuizResultDto)
+        {
+            List <UserAnswerDto> userAnswerDtos = userQuizResultDto.Answers.ToList();
+            List<Question> questions = await _quizDao.GetQuestionsByQuizId(userQuizResultDto.QuizId);
+            userQuizResultDto.CorrectAnswers = 0;
+            userQuizResultDto.ScorePercentage = 0;
+            bool isTrue;
+
+            for (int i = 0; i < questions.Count; i++) {
+                isTrue = true;
+                List<AnswerOption> questionAnswerOptions = questions[i].AnswerOptions.ToList();
+                List<UserAnswerOptionDto> userAnswerOptions = userAnswerDtos[i].UserAnswerOptions.ToList();
+
+                for (int j = 0; j < questionAnswerOptions.Count; j++) {
+
+                    if (questionAnswerOptions[j].FieldAnswerText != null) {
+                        if (!questionAnswerOptions[j].FieldAnswerText.Equals(userAnswerOptions[j].FieldAnswerText, StringComparison.OrdinalIgnoreCase))
+                        {
+                            isTrue = false;
+                            userAnswerDtos[i].IsTrue = false;
+                            break;
+                        }
+                        else { 
+                            userAnswerDtos[i].UserAnswerOptions = userAnswerOptions;
+                            userAnswerOptions[j].IsCorrect = true;
+                            break;
+                        }
+                    }
+                    else if(questionAnswerOptions[j].IsCorrect != userAnswerOptions[j].IsCorrect) {
+                        isTrue = false;
+                        userAnswerDtos[i].IsTrue = false;
+                        break;
+                    }
+                }
+                if (isTrue) { 
+                    userAnswerDtos[i].IsTrue = true;
+                    userQuizResultDto.CorrectAnswers++;
+                }
+            }
+
+            if (userQuizResultDto.CorrectAnswers != 0) {
+                userQuizResultDto.ScorePercentage = (double.Parse(userQuizResultDto.CorrectAnswers.ToString()) / userAnswerDtos.Count) * 100;
+            }
+
+            //UPISI SVE U BAZU  -->  vratiti userQuizResultDto
+            userQuizResultDto = await _quizDao.FinishQuiz(userQuizResultDto);
+
+            if (userQuizResultDto == null) {
+                return null;
+            }
+
+            return userQuizResultDto;
+        }
+
         #region Helpers
         private async Task SetFields(QuizDto dto, int quizId) {
             await _quizDao.AddQuizCategoriesAsync(dto.AllQuizCategories);

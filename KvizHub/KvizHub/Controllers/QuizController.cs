@@ -86,10 +86,18 @@ namespace KvizHub.Controllers
         [HttpPut("finish")]
         public async Task<IActionResult> FinishQuiz(UserQuizResultDto userQuizResultDto)
         {
-            Console.WriteLine("AAA: " + userQuizResultDto.QuizId + " : " + userQuizResultDto?.Answers.ToString());
-            userQuizResultDto.CorrectAnswers = 7;
+            //return Ok(userQuizResultDto);
+            userQuizResultDto.SubmittedAt = DateTime.Now;
+            userQuizResultDto.TotalQuestions = userQuizResultDto.Answers.Count;
+            userQuizResultDto.IsStarted = false;
+            UserQuizResultDto dto = await _quizService.FinishQuiz(userQuizResultDto);
 
-            return Ok(userQuizResultDto);
+            if (dto == null)
+            {
+                return BadRequest(new { message = "Failed to finish quiz." });
+            }
+
+            return Ok(dto);
         }
 
     }

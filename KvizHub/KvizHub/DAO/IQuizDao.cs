@@ -23,6 +23,7 @@ namespace KvizHub.DAO
         Task<UserQuizResult> StartQuiz(int quizId, int userId);
         Task<List<Question>> GetQuestionsByQuizId(int quizId);
         Task<List<UserAnswer>> CreateUserAnswers(int quizId, int resultId, List<Question> questions, int userId);
+        Task<UserQuizResultDto> FinishQuiz(UserQuizResultDto userQuizResultDto);
 
     }
 }
