@@ -5,7 +5,7 @@
     "version": "1.0"
   },
   "paths": {
-    "/api/Category": {
+    "/api/categories": {
       "get": {
         "tags": [
           "Category"
@@ -17,7 +17,7 @@
         }
       }
     },
-    "/api/Quiz": {
+    "/api/quizzes": {
       "post": {
         "tags": [
           "Quiz"
@@ -58,7 +58,7 @@
         }
       }
     },
-    "/api/Quiz/{id}": {
+    "/api/quizzes/{id}": {
       "put": {
         "tags": [
           "Quiz"
@@ -121,14 +121,14 @@
         }
       }
     },
-    "/api/Quiz/start/{quizId}": {
+    "/api/quizzes/{id}/attempts": {
       "post": {
         "tags": [
           "Quiz"
         ],
         "parameters": [
           {
-            "name": "quizId",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -144,10 +144,21 @@
         }
       }
     },
-    "/api/Quiz/finish": {
+    "/api/quizzes/attempts/{attemptId}": {
       "put": {
         "tags": [
           "Quiz"
+        ],
+        "parameters": [
+          {
+            "name": "attemptId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "requestBody": {
           "content": {
@@ -175,7 +186,7 @@
         }
       }
     },
-    "/api/User/login": {
+    "/api/users/login": {
       "post": {
         "tags": [
           "User"
@@ -206,7 +217,7 @@
         }
       }
     },
-    "/api/User/register": {
+    "/api/users/register": {
       "post": {
         "tags": [
           "User"

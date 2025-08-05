@@ -108,13 +108,10 @@ namespace KvizHub.Services
                 List<UserAnswerOptionDto> userAnswerOptions = userAnswerDtos[i].UserAnswerOptions.ToList();
 
                 for (int j = 0; j < questionAnswerOptions.Count; j++) {
-
-                    //proveriti da li je pitanje multiple-correct-answers
-                    bool restore = false;
                     bool isMultiple = await _questionDao.IsQuestionTypeMultipleCorrectAnswers(userAnswerDtos[i].QuestionId);
                     if (isMultiple)
                     {
-                        if (userAnswerOptions[j].IsCorrect == null) { userAnswerOptions[j].IsCorrect = false; restore = true; }
+                        if (userAnswerOptions[j].IsCorrect == null) { userAnswerOptions[j].IsCorrect = false; }
                     }
 
                     if (questionAnswerOptions[j].FieldAnswerText != null) {
@@ -132,11 +129,6 @@ namespace KvizHub.Services
                     else if(questionAnswerOptions[j].IsCorrect != userAnswerOptions[j].IsCorrect) {
                         isTrue = false;
                         userAnswerDtos[i].IsTrue = false;
-                        if(restore) { userAnswerOptions[j].IsCorrect = null; } //vracanje na null vrednost kod multiple-correct-answers sa false na null ako je bilo null
-                        break;
-                    }
-                    else{
-                        if(restore) { userAnswerOptions[j].IsCorrect = null; } //vracanje na null vrednost kod multiple-correct-answers sa false na null ako je bilo null
                     }
                 }
                 if (isTrue) { 

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KvizHub.Controllers
 {
-    [Route("api/Quiz")]
+    [Route("api/quizzes")]
     [ApiController]
     public class QuizController : ControllerBase
     {
@@ -22,79 +22,139 @@ namespace KvizHub.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] QuizDto dto)
         {
-            QuizDto quizDto = await _quizService.AddQuiz(dto);
-
-            if (quizDto == null)
+            try
             {
-                return BadRequest(new { message = "Failed to add quiz." });
+                QuizDto quizDto = await _quizService.AddQuiz(dto);
+
+                if (quizDto == null)
+                {
+                    return StatusCode(500, new { message = "Internal server error while adding quiz." });
+                }
+                return Ok(quizDto);
             }
-            return Ok(quizDto);
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+            }
         }
 
         [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Edit([FromBody] QuizDto dto, int id)
         {
-            QuizDto quizDto = await _quizService.EditQuiz(dto, id);
-
-            if (quizDto == null)
+            if (dto == null || id <= 0)
             {
-                return BadRequest(new { message = "Failed to edit quiz." });
+                return BadRequest(new { message = $"Quiz with id {id} does not exists." });
             }
-            return Ok(quizDto);
+
+            try
+            {
+                QuizDto quizDto = await _quizService.EditQuiz(dto, id);
+
+                if (quizDto == null)
+                {
+                    return StatusCode(500, new { message = "Internal server error while editing quiz." });
+                }
+                return Ok(quizDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+            }
         }
 
         [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            int returnedId = await _quizService.DeleteQuiz(id);
-
-            if (returnedId <= 0)
+            if (id <= 0)
             {
-                return BadRequest(new { message = "Failed to delete quiz." });
+                return BadRequest(new { message = $"Quiz with id {id} does not exists." });
             }
-            return Ok(returnedId);
+
+            try
+            {
+                int returnedId = await _quizService.DeleteQuiz(id);
+
+                if (returnedId <= 0)
+                {
+                    return StatusCode(500, new { message = "Internal server error while deleting quiz." });
+                }
+                return Ok(returnedId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+            }
         }
 
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllQuizzes()
         {
-            List<QuizDto> quizzesDtos = await _quizService.GetAllQuizzes();
-            if (quizzesDtos == null)
+            try 
             {
-                return BadRequest(new { message = "Failed to get quizzes." });
-            }
+                List<QuizDto> quizzesDtos = await _quizService.GetAllQuizzes();
+                if (quizzesDtos == null)
+                {
+                    return StatusCode(500, new { message = "Internal server error while fetching quizzes." });
+                }
 
-            return Ok(quizzesDtos);
+                return Ok(quizzesDtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+            }
         }
 
         [Authorize]
-        [HttpPost("start/{quizId}")]
-        public async Task<IActionResult> StartQuiz(int quizId)
+        [HttpPost("{id}/attempts")]
+        public async Task<IActionResult> StartQuiz(int id)
         {
-            UserQuizResultDto quizzesDtos = await _quizService.StartQuiz(quizId);
-            if (quizzesDtos == null)
+            if (id <= 0)
             {
-                return BadRequest(new { message = "Failed to start quiz." });
+                return BadRequest(new { message = $"Quiz with id {id} does not exists." });
             }
-            return Ok(quizzesDtos);
+            try
+            {
+                UserQuizResultDto quizzesDtos = await _quizService.StartQuiz(id);
+                if (quizzesDtos == null)
+                {
+                    return StatusCode(500, new { message = "Internal server error while starting quiz." });
+                }
+                return Ok(quizzesDtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+            }
         }
 
         [Authorize]
-        [HttpPut("finish")]
-        public async Task<IActionResult> FinishQuiz(UserQuizResultDto userQuizResultDto)
+        [HttpPut("attempts/{attemptId}")]
+        public async Task<IActionResult> FinishQuiz(int attemptId, UserQuizResultDto userQuizResultDto)
         {
-            //return Ok(userQuizResultDto);
-            UserQuizResultDto dto = await _quizService.FinishQuiz(userQuizResultDto);
-
-            if (dto == null)
+            if (userQuizResultDto == null || userQuizResultDto.QuizId <= 0)
             {
-                return BadRequest(new { message = "Failed to finish quiz." });
+                return BadRequest(new { message = "Invalid quiz result data." });
             }
 
-            return Ok(dto);
+            try
+            {
+                var result = await _quizService.FinishQuiz(userQuizResultDto);
+
+                if (result == null)
+                {
+                    return NotFound(new { message = $"Quiz attempt with ID {attemptId} not found." });
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+            }
         }
 
     }

@@ -1,5 +1,6 @@
 ﻿using KvizHub.DTO;
 using KvizHub.Models;
+using KvizHub.Services;
 using KvizHub.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KvizHub.Controllers
 {
-    [Route("api/Category")]
+    [Route("api/categories")]
     [ApiController]
     public class CategoryController : ControllerBase
     {
@@ -22,12 +23,21 @@ namespace KvizHub.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
-            List<QuizCategoryDto> dtos = await _categoryService.GetAllCategories();
-            if (dtos == null)
+            try
             {
-                return BadRequest(new { message = "Failed to get categories." });
+                var result = await _categoryService.GetAllCategories();
+
+                if (result == null)
+                {
+                    return NotFound(new { message = $"Internal server error while fetching categories." });
+                }
+
+                return Ok(result);
             }
-            return Ok(dtos);
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error while fetching categories.", detail = ex.Message });
+            }
         }
     }
 }
