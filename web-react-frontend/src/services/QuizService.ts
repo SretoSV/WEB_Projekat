@@ -10,7 +10,7 @@ export async function fetchQuizzes(): Promise<FetchQuizzesResponse> {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch(`${serverPath()}/api/Quiz`, {
+        const response = await fetch(`${serverPath()}/api/quizzes`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ export async function addQuiz(quiz: Quiz): Promise<AddQuizResponse> {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch(`${serverPath()}/api/Quiz/`, {
+        const response = await fetch(`${serverPath()}/api/quizzes/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export async function editQuiz(quiz: Quiz): Promise<EditQuizResponse> {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch(`${serverPath()}/api/Quiz/${quiz.id}`, {
+        const response = await fetch(`${serverPath()}/api/quizzes/${quiz.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ export async function deleteQuiz(quizId: number): Promise<DeleteQuizResponse> {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch(`${serverPath()}/api/Quiz/${quizId}`, {
+        const response = await fetch(`${serverPath()}/api/quizzes/${quizId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ export async function startQuizFetch(quizId: number): Promise<StartQuizResponse>
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch(`${serverPath()}/api/Quiz/start/${quizId}`, {
+        const response = await fetch(`${serverPath()}/api/quizzes/${quizId}/attempts`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ export async function finishQuizFetch(quizResult: UserQuizResult): Promise<Finis
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch(`${serverPath()}/api/Quiz/finish`, {
+        const response = await fetch(`${serverPath()}/api/quizzes/attempts/${quizResult.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

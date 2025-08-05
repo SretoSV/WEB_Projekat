@@ -6,5 +6,6 @@ export interface UserAnswer{
     resultId: number,
     questionId: number,
     userId: string,
+    isTrue: string,
     userAnswerOptions?: Array<UserAnswerOption>;
 }

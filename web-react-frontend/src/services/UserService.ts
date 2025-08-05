@@ -11,7 +11,7 @@ export interface RegisterResponse {
 
 export async function loginUser(loginForm: { usernameOrEmail: string; password: string }): Promise<LoginResponse> {
     try {
-        const response = await fetch(`${serverPath()}/api/User/login`, {
+        const response = await fetch(`${serverPath()}/api/users/login`, {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export async function loginUser(loginForm: { usernameOrEmail: string; password: 
 
 export async function registerUser(formData: FormData): Promise<RegisterResponse> {
     try {
-    const response = await fetch(`${serverPath()}/api/User/register`, {
+    const response = await fetch(`${serverPath()}/api/users/register`, {
         method: 'POST',
         body: formData,
     });

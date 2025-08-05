@@ -10,7 +10,7 @@ export async function fetchCategories(): Promise<FetchCategoriesResponse> {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch(`${serverPath()}/api/Category`, {
+        const response = await fetch(`${serverPath()}/api/categories`, {
             method: 'GET',
             headers: {
             'Content-Type': 'application/json',
