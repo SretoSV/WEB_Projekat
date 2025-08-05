@@ -246,14 +246,6 @@ namespace KvizHub.DAO.Implementations
             return newResult;
         }
 
-        public async Task<List<Question>> GetQuestionsByQuizId(int quizId)
-        {
-            return await _context.Questions
-                .Where(q => q.QuizId == quizId)
-                .Include(q => q.AnswerOptions)
-                .ToListAsync();
-        }
-
         public async Task<List<UserAnswer>> CreateUserAnswers(int quizId, int resultId, List<Question> questions, int userId)
         {
             var userAnswers = new List<UserAnswer>();
@@ -294,9 +286,49 @@ namespace KvizHub.DAO.Implementations
             return userAnswers;
         }
 
-        public async Task<UserQuizResultDto> FinishQuiz(UserQuizResultDto userQuizResultDto) {
-            return null;
+        public async Task<bool> FinishQuiz(UserQuizResult updatedResult)
+        {
+            // 1. Pronađi postojeći zapis u bazi po ID-u
+            var existingResult = await _context.UserQuizResults
+                .Include(r => r.Answers)
+                    .ThenInclude(a => a.UserAnswerOptions)
+                .FirstOrDefaultAsync(r => r.Id == updatedResult.Id);
+
+            if (existingResult == null)
+                return false;
+
+            // 2. Ažuriraj osnovna polja UserQuizResult
+            existingResult.TotalQuestions = updatedResult.TotalQuestions;
+            existingResult.CorrectAnswers = updatedResult.CorrectAnswers;
+            existingResult.ScorePercentage = updatedResult.ScorePercentage;
+            existingResult.SubmittedAt = updatedResult.SubmittedAt;
+            existingResult.IsStarted = updatedResult.IsStarted;
+
+            // 3. Ažuriraj Answers i njihove opcije
+            foreach (var updatedAnswer in updatedResult.Answers)
+            {
+                var existingAnswer = existingResult.Answers.FirstOrDefault(a => a.Id == updatedAnswer.Id);
+                if (existingAnswer != null)
+                {
+                    existingAnswer.IsTrue = updatedAnswer.IsTrue;
+
+                    foreach (var updatedOption in updatedAnswer.UserAnswerOptions)
+                    {
+                        var existingOption = existingAnswer.UserAnswerOptions.FirstOrDefault(o => o.Id == updatedOption.Id);
+                        if (existingOption != null)
+                        {
+                            existingOption.IsCorrect = updatedOption.IsCorrect;
+                            existingOption.FieldAnswerText = updatedOption.FieldAnswerText;
+                        }
+                    }
+                }
+            }
+
+            // 4. Sačuvaj sve izmene
+            await _context.SaveChangesAsync();
+            return true;
         }
+
         #endregion
     }
 }

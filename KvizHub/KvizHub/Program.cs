@@ -52,6 +52,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<IUserDao, UserDao>();
 builder.Services.AddScoped<IQuizDao, QuizDao>();
+builder.Services.AddScoped<IQuestionDao, QuestionDao>();
 builder.Services.AddScoped<ICategoryDao, CategoryDao>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();

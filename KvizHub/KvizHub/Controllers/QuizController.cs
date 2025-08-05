@@ -87,9 +87,6 @@ namespace KvizHub.Controllers
         public async Task<IActionResult> FinishQuiz(UserQuizResultDto userQuizResultDto)
         {
             //return Ok(userQuizResultDto);
-            userQuizResultDto.SubmittedAt = DateTime.Now;
-            userQuizResultDto.TotalQuestions = userQuizResultDto.Answers.Count;
-            userQuizResultDto.IsStarted = false;
             UserQuizResultDto dto = await _quizService.FinishQuiz(userQuizResultDto);
 
             if (dto == null)

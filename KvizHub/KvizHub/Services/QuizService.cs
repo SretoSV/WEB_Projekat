@@ -15,12 +15,14 @@ namespace KvizHub.Services
     public class QuizService : IQuizService
     {
         private readonly IQuizDao _quizDao;
+        private readonly IQuestionDao _questionDao;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public QuizService(IQuizDao quizDao, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public QuizService(IQuizDao quizDao, IQuestionDao questionDao, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _quizDao = quizDao;
+            _questionDao = questionDao;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -80,7 +82,7 @@ namespace KvizHub.Services
             int userId = GetUserId();
             UserQuizResult userQuizResult = await _quizDao.StartQuiz(quizId, userId);
             UserQuizResultDto userQuizResultDto = _mapper.Map<UserQuizResultDto>(userQuizResult);
-            List<Question> questions = await _quizDao.GetQuestionsByQuizId(quizId);
+            List<Question> questions = await _questionDao.GetQuestionsByQuizId(quizId);
 
             List<UserAnswer> userAnswers = await _quizDao.CreateUserAnswers(quizId, userQuizResult.Id, questions, userId);
             userQuizResultDto.Answers = _mapper.Map<List<UserAnswerDto>>(userAnswers);
@@ -90,10 +92,14 @@ namespace KvizHub.Services
 
         public async Task<UserQuizResultDto> FinishQuiz(UserQuizResultDto userQuizResultDto)
         {
-            List <UserAnswerDto> userAnswerDtos = userQuizResultDto.Answers.ToList();
-            List<Question> questions = await _quizDao.GetQuestionsByQuizId(userQuizResultDto.QuizId);
+            userQuizResultDto.SubmittedAt = DateTime.Now;
+            userQuizResultDto.TotalQuestions = userQuizResultDto.Answers.Count;
             userQuizResultDto.CorrectAnswers = 0;
             userQuizResultDto.ScorePercentage = 0;
+            userQuizResultDto.IsStarted = false;
+
+            List <UserAnswerDto> userAnswerDtos = userQuizResultDto.Answers.ToList();
+            List<Question> questions = await _questionDao.GetQuestionsByQuizId(userQuizResultDto.QuizId);
             bool isTrue;
 
             for (int i = 0; i < questions.Count; i++) {
@@ -103,6 +109,14 @@ namespace KvizHub.Services
 
                 for (int j = 0; j < questionAnswerOptions.Count; j++) {
 
+                    //proveriti da li je pitanje multiple-correct-answers
+                    bool restore = false;
+                    bool isMultiple = await _questionDao.IsQuestionTypeMultipleCorrectAnswers(userAnswerDtos[i].QuestionId);
+                    if (isMultiple)
+                    {
+                        if (userAnswerOptions[j].IsCorrect == null) { userAnswerOptions[j].IsCorrect = false; restore = true; }
+                    }
+
                     if (questionAnswerOptions[j].FieldAnswerText != null) {
                         if (!questionAnswerOptions[j].FieldAnswerText.Equals(userAnswerOptions[j].FieldAnswerText, StringComparison.OrdinalIgnoreCase))
                         {
@@ -111,7 +125,6 @@ namespace KvizHub.Services
                             break;
                         }
                         else { 
-                            userAnswerDtos[i].UserAnswerOptions = userAnswerOptions;
                             userAnswerOptions[j].IsCorrect = true;
                             break;
                         }
@@ -119,7 +132,11 @@ namespace KvizHub.Services
                     else if(questionAnswerOptions[j].IsCorrect != userAnswerOptions[j].IsCorrect) {
                         isTrue = false;
                         userAnswerDtos[i].IsTrue = false;
+                        if(restore) { userAnswerOptions[j].IsCorrect = null; } //vracanje na null vrednost kod multiple-correct-answers sa false na null ako je bilo null
                         break;
+                    }
+                    else{
+                        if(restore) { userAnswerOptions[j].IsCorrect = null; } //vracanje na null vrednost kod multiple-correct-answers sa false na null ako je bilo null
                     }
                 }
                 if (isTrue) { 
@@ -132,10 +149,10 @@ namespace KvizHub.Services
                 userQuizResultDto.ScorePercentage = (double.Parse(userQuizResultDto.CorrectAnswers.ToString()) / userAnswerDtos.Count) * 100;
             }
 
-            //UPISI SVE U BAZU  -->  vratiti userQuizResultDto
-            userQuizResultDto = await _quizDao.FinishQuiz(userQuizResultDto);
+            //UPISI SVE U BAZU
+            UserQuizResult userQuizResult = _mapper.Map<UserQuizResult>(userQuizResultDto);
 
-            if (userQuizResultDto == null) {
+            if (!await _quizDao.FinishQuiz(userQuizResult)) {
                 return null;
             }
 
