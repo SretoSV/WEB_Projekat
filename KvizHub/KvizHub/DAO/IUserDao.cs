@@ -9,5 +9,6 @@ namespace KvizHub.DAO
         Task<bool> UserExistsByUsername(string username);
         Task<bool> UserExistsByEmail(string parameter);
         Task<bool> RegisterUser(User user);
+        Task<List<string>> GetAllUsersUsernames();
     }
 }

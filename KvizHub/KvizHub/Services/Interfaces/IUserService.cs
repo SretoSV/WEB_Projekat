@@ -6,5 +6,7 @@ namespace KvizHub.Services.Interfaces
     {
         Task<UserLoginResponseDto> Login(LoginUserDto dto);
         Task<UserRegisterResponseDto> Register(RegisterUserDto dto);
+        Task<List<string>> GetAllUsersUsernames();
+
     }
 }

@@ -13,6 +13,7 @@ namespace KvizHub.DAO.Implementations
         {
             _context = context;
         }
+
         #region CRUD
         public int Count()
         {
@@ -95,5 +96,12 @@ namespace KvizHub.DAO.Implementations
                 return false;
             }
         }
+
+        public async Task<List<string>> GetAllUsersUsernames() {
+            return await _context.Users
+                .Select(u => u.Username)
+                .ToListAsync();
+        }
+
     }
 }

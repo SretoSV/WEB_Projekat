@@ -148,6 +148,16 @@
   },
   {
     "ContainingType": "KvizHub.Controllers.UserController",
+    "Method": "GetAllUsersUsernames",
+    "RelativePath": "api/users",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KvizHub.Controllers.UserController",
     "Method": "Login",
     "RelativePath": "api/users/login",
     "HttpMethod": "POST",

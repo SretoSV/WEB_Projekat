@@ -91,5 +91,12 @@ namespace KvizHub.Services
 
             return new UserRegisterResponseDto { Success = await _userDao.RegisterUser(user), Message = "User successfully registered." };
         }
+
+        public async Task<List<string>> GetAllUsersUsernames()
+        {
+            List<string> usernames = await _userDao.GetAllUsersUsernames();
+            return usernames;
+        }
+
     }
 }

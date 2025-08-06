@@ -1,5 +1,7 @@
 ﻿using KvizHub.DTO;
+using KvizHub.Services;
 using KvizHub.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -57,6 +59,26 @@ namespace KvizHub.Controllers
             }
 
             return Ok(new { message = response.Message });
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsersUsernames()
+        {
+            try
+            {
+                List<string> userUsernamesDtos = await _userService.GetAllUsersUsernames();
+                if (userUsernamesDtos == null)
+                {
+                    return StatusCode(500, new { message = "Internal server error while fetching user usernames." });
+                }
+
+                return Ok(userUsernamesDtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+            }
         }
     }
 }
