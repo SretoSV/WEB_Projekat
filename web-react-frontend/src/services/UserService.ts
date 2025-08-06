@@ -62,6 +62,43 @@ export async function registerUser(formData: FormData): Promise<RegisterResponse
     }
 }
 
+
+export interface FetchUsersUsernamesResponse {
+    allUserUsernames: Array<string>;
+}
+
+export async function fetchAllUsers(): Promise<FetchUsersUsernamesResponse> {
+    const token = localStorage.getItem('token');
+
+    try {
+        const response = await fetch(`${serverPath()}/api/users`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+
+        if (response.status === 204) {
+            return { allUserUsernames: [] };
+        }
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Fetching failed.');
+        }
+
+       return {
+            allUserUsernames: data,
+        };
+
+    } catch (err: any) {
+        throw new Error(err.message || 'Server error. Try again later.');
+    }
+
+}
+
+
 export function validateAndExtractImageFile(file: File | null): { valid: boolean; error?: string; file?: File; fileName?: string } {
     if (!file) {
         return { valid: false, error: "No file selected." };

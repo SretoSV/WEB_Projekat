@@ -65,3 +65,13 @@
 .toggleButton{
     margin-left: auto;
 }
+
+.chooseDiv{
+    /*background-color: red;*/
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    min-width: 600px;
+}
