@@ -24,7 +24,7 @@ export async function fetchQuizzes(): Promise<FetchQuizzesResponse> {
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.message || 'Login failed.');
+            throw new Error(data.message || 'Fetching failed.');
         }
 
        return {
@@ -199,6 +199,89 @@ export async function finishQuizFetch(quizResult: UserQuizResult): Promise<Finis
     }
 }
 
+
+export interface FetchUserQuizzesResponse {
+    quizzes: Array<Quiz>;
+}
+
+export async function fetchQuizzesByUserUsername(username: string): Promise<FetchUserQuizzesResponse> {
+    const token = localStorage.getItem('token');
+
+    try {
+        if(username !== ""){
+            const response = await fetch(`${serverPath()}/api/quizzes/${username}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+
+            if (response.status === 204) {
+                return { quizzes: [] };
+            }
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Fetching failed.');
+            }
+        
+            return {
+                quizzes: data,
+            };
+        }
+        else{
+            return {
+                quizzes: [],
+            };
+        }
+    } catch (err: any) {
+        throw new Error(err.message || 'Server error. Try again later.');
+    }
+
+}
+
+export interface FetchQuizResultsByUserUsernameAndQuizIdResponse {
+    results: Array<UserQuizResult>;
+}
+
+export async function fetchQuizResultsByUserUsernameAndQuizId(username: string, quizId: number): Promise<FetchQuizResultsByUserUsernameAndQuizIdResponse> {
+    const token = localStorage.getItem('token');
+
+    try {
+        if(username !== "" && quizId !== 0){
+            const response = await fetch(`${serverPath()}/api/quizzes/${quizId}/${username}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+
+            if (response.status === 204) {
+                return { results: [] };
+            }
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Fetching failed.');
+            }
+        
+            return {
+                results: data,
+            };
+        }
+        else{
+            return {
+                results: [],
+            };
+        }
+    } catch (err: any) {
+        throw new Error(err.message || 'Server error. Try again later.');
+    }
+
+}
+
 export function setQuizDifficultyText(
   quizDifficultyId: number
 ): string {
@@ -334,3 +417,16 @@ export function onChangFillInTheBlank(
     });
 }
 
+export function formatDateTime(dateString?: string): string {
+    if (!dateString) return "N/A";
+
+    const date = new Date(dateString);
+    return date.toLocaleString("sr-RS", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+    });
+}
