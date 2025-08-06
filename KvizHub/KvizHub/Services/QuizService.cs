@@ -16,13 +16,15 @@ namespace KvizHub.Services
     {
         private readonly IQuizDao _quizDao;
         private readonly IQuestionDao _questionDao;
+        private readonly IUserDao _userDao;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public QuizService(IQuizDao quizDao, IQuestionDao questionDao, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public QuizService(IQuizDao quizDao, IQuestionDao questionDao, IUserDao userDao, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _quizDao = quizDao;
             _questionDao = questionDao;
+            _userDao = userDao;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -92,7 +94,7 @@ namespace KvizHub.Services
 
         public async Task<UserQuizResultDto> FinishQuiz(UserQuizResultDto userQuizResultDto)
         {
-            userQuizResultDto.SubmittedAt = DateTime.Now;
+            userQuizResultDto.SubmittedAt = DateTime.UtcNow;
             userQuizResultDto.TotalQuestions = userQuizResultDto.Answers.Count;
             userQuizResultDto.CorrectAnswers = 0;
             userQuizResultDto.ScorePercentage = 0;
@@ -149,6 +151,23 @@ namespace KvizHub.Services
             }
 
             return userQuizResultDto;
+        }
+
+        public async Task<List<QuizDto>> GetAllUserQuizzes(string username)
+        {
+            User user = await _userDao.GetUserByUsernameOrEmailAsync(username);
+            Console.WriteLine("LLLL: " + user.Id);
+            List<Quiz> quizzes = await _quizDao.GetAllUserQuizzesAsync(user.Id);
+            var quizDtos = _mapper.Map<List<QuizDto>>(quizzes);
+            return quizDtos;
+        }
+        public async Task<List<UserQuizResultDto>> GetAllUserResultsForQuiz(int quizId, string username)
+        {
+            User user = await _userDao.GetUserByUsernameOrEmailAsync(username);
+            
+            List<UserQuizResult> results = await _quizDao.GetAllUserResultsForQuiz(quizId, user.Id);
+            var quizDtos = _mapper.Map<List<UserQuizResultDto>>(results);
+            return quizDtos;
         }
 
         #region Helpers

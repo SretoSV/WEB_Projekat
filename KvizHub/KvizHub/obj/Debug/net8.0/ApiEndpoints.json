@@ -90,6 +90,43 @@
   },
   {
     "ContainingType": "KvizHub.Controllers.QuizController",
+    "Method": "GetAllUserResultsForQuiz",
+    "RelativePath": "api/quizzes/{quizId}/{username}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "quizId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KvizHub.Controllers.QuizController",
+    "Method": "GetAllUserQuizzes",
+    "RelativePath": "api/quizzes/{username}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KvizHub.Controllers.QuizController",
     "Method": "FinishQuiz",
     "RelativePath": "api/quizzes/attempts/{attemptId}",
     "HttpMethod": "PUT",

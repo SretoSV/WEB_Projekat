@@ -157,5 +157,46 @@ namespace KvizHub.Controllers
             }
         }
 
+        [Authorize]
+        [HttpGet("{username}")]
+        public async Task<IActionResult> GetAllUserQuizzes(string username)
+        {
+            try
+            {
+                List<QuizDto> quizzesDtos = await _quizService.GetAllUserQuizzes(username);
+                if (quizzesDtos == null)
+                {
+                    return StatusCode(500, new { message = "Internal server error while fetching quizzes." });
+                }
+
+                return Ok(quizzesDtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpGet("{quizId}/{username}")]
+        public async Task<IActionResult> GetAllUserResultsForQuiz(int quizId, string username)
+        {
+            Console.WriteLine("SSAASASASSASASS");
+            try
+            {
+                List<UserQuizResultDto> resultsDtos = await _quizService.GetAllUserResultsForQuiz(quizId, username);
+                if (resultsDtos == null)
+                {
+                    return StatusCode(500, new { message = "Internal server error while fetching quizzes." });
+                }
+
+                return Ok(resultsDtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+            }
+        }
+
     }
 }

@@ -14,6 +14,61 @@ namespace KvizHub.DAO.Implementations
             _context = context;
         }
 
+        #region Get
+        public async Task<List<Quiz>> GetAllQuizzesAsync()
+        {
+            return await _context.Quizzes
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.AnswerOptions)
+                .Include(q => q.AllQuizCategories)
+                    .ThenInclude(aqc => aqc.QuizCategory)
+                .Include(q => q.QuizDifficulty)
+                .Include(q => q.Results)
+                    .ThenInclude(r => r.User)
+                .Include(q => q.Results)
+                    .ThenInclude(r => r.Answers)
+                .ToListAsync();
+        }
+
+        public async Task<List<Quiz>> GetAllUserQuizzesAsync(int id)
+        {
+            //Dohvati sve QuizId vrednosti za ovo user-a
+            var quizIds = await _context.UserQuizResults
+                .Where(uqr => uqr.UserId == id)
+                .Select(uqr => uqr.QuizId)
+                .Distinct()
+                .ToListAsync();
+
+            //Ako nije resavao ni jedan kviz vratiti praznu listu
+            if (!quizIds.Any())
+                return new List<Quiz>();
+
+            //Dohvati sve kvizove
+            return await _context.Quizzes
+                .Where(q => quizIds.Contains(q.Id))
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.AnswerOptions)
+                .Include(q => q.AllQuizCategories)
+                    .ThenInclude(aqc => aqc.QuizCategory)
+                .Include(q => q.QuizDifficulty)
+                .Include(q => q.Results)
+                    .ThenInclude(r => r.User)
+                .Include(q => q.Results)
+                    .ThenInclude(r => r.Answers)
+                .ToListAsync();
+        }
+
+        public async Task<List<UserQuizResult>> GetAllUserResultsForQuiz(int quizId, int userId)
+        {
+            return await _context.UserQuizResults
+            .Where(uqr => uqr.QuizId == quizId && uqr.UserId == userId)
+            .Include(uqr => uqr.Answers)
+                .ThenInclude(a => a.UserAnswerOptions)
+            .ToListAsync();
+        }
+
+        #endregion
+
         #region Add
         public async Task<Quiz> AddQuizAsync(Quiz quiz)
         {
@@ -142,29 +197,7 @@ namespace KvizHub.DAO.Implementations
             _context.AnswerOptions.AddRange(allAnswerOptions);
             await _context.SaveChangesAsync();
         }
-        public async Task<List<Quiz>> GetAllQuizzesAsync()
-        {
-            return await _context.Quizzes
-                .Include(q => q.Questions)
-                    .ThenInclude(q => q.AnswerOptions)
-                .Include(q => q.AllQuizCategories)
-                    .ThenInclude(aqc => aqc.QuizCategory)
-                .Include(q => q.QuizDifficulty)
-                .Include(q => q.Results)
-                    .ThenInclude(r => r.User)
-                .Include(q => q.Results)
-                    .ThenInclude(r => r.Answers)
-                .ToListAsync();
-        }
-        /*public async Task<List<Quiz>> GetAllQuizzesAsync() {
-            return await _context.Quizzes
-                .Include(q => q.Questions)
-                    .ThenInclude(q => q.AnswerOptions)
-                .Include(q => q.AllQuizCategories)
-                    .ThenInclude(aqc => aqc.QuizCategory)
-                .Include(q => q.QuizDifficulty)
-                .ToListAsync();
-        }*/
+
         #endregion
 
         #region Edit
