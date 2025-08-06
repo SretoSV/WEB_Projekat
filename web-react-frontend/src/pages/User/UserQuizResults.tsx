@@ -52,7 +52,6 @@ export function UserQuizResults(){
         setToggleChart(false);
 
         if(value !== ""){
-            console.log(value);
             const usernameToUse = selectedUserUsername !== "" ? selectedUserUsername : user?.username || "";
             const fetchData = async () => {
             try {
@@ -92,7 +91,7 @@ export function UserQuizResults(){
             setToggleChart={setToggleChart}
         />
 
-        {toggleChart && <Chart />}
+        {toggleChart && <Chart results={results}/>}
 
         {selectedQuiz && results.map((result, index) => {
             const duration = result.submittedAt 

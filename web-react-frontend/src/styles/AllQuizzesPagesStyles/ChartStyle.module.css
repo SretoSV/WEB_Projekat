@@ -1,0 +1,35 @@
+.verticalLine{
+    background-color: #8f8f8f;
+    width: 2px;
+    height: 500px;
+}
+
+.horizontalLine{
+    background-color: #8f8f8f;
+    width: 600px;
+    height: 2px;
+}
+
+.stubDiv{
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    max-width: 600px;
+}
+
+.percentage{
+    position: absolute;
+    margin-left: -120px;
+}
+
+.attempt{
+    margin-left: auto;
+    margin-right: 50px;
+    margin-bottom: 20px;
+}
+
+.numberOfAttempt{
+display: flex;
+justify-content: center;
+align-items: center;
+}
