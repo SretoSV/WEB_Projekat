@@ -20,7 +20,29 @@ namespace KvizHub.Services
         public async Task<List<QuizCategoryDto>> GetAllCategories()
         {
             List<QuizCategory> categories = await _categoryDao.GetAllCategoriesAsync();
-            return _mapper.Map<List<QuizCategoryDto>>(categories);
+            var categoriesDto = _mapper.Map<List<QuizCategoryDto>>(categories);
+
+            var usageMap = await _categoryDao.GetCategoryUsageMapAsync();
+
+            foreach (var categoryDto in categoriesDto)
+            {
+                categoryDto.isUsed = usageMap.ContainsKey(categoryDto.Id);
+            }
+
+            return categoriesDto;
         }
+
+        public async Task<int> DeleteCategory(int id)
+        {
+            if (await _categoryDao.DeleteCategoryByIdAsync(id))
+            {
+                return id;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
     }
 }

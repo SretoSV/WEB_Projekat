@@ -19,7 +19,7 @@ namespace KvizHub.Controllers
             _categoryService = categoryService;
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
@@ -37,6 +37,31 @@ namespace KvizHub.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Internal server error while fetching categories.", detail = ex.Message });
+            }
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new { message = $"Category with id {id} does not exists." });
+            }
+
+            try
+            {
+                int returnedId = await _categoryService.DeleteCategory(id);
+
+                if (returnedId <= 0)
+                {
+                    return StatusCode(500, new { message = "Internal server error while deleting category." });
+                }
+                return Ok(returnedId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
             }
         }
     }

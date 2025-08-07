@@ -80,5 +80,29 @@ namespace KvizHub.DAO.Implementations
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Dictionary<int, bool>> GetCategoryUsageMapAsync()
+        {
+            return await _context.AllQuizCategories
+                .GroupBy(aqc => aqc.QuizCategoryId)
+                .Select(group => new
+                {
+                    CategoryId = group.Key,
+                    IsUsed = group.Any()
+                })
+                .ToDictionaryAsync(x => x.CategoryId, x => x.IsUsed);
+        }
+        
+        public async Task<bool> DeleteCategoryByIdAsync(int id)
+        {
+            var category = await _context.QuizCategories.FindAsync(id);
+
+            if (category == null)
+                return false;
+
+            _context.QuizCategories.Remove(category);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

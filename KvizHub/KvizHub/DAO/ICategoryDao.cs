@@ -9,5 +9,7 @@ namespace KvizHub.DAO
         Task<bool> AddQuizCategoriesAsync(ICollection<QuizCategoryDto> dtoList);
         Task<List<QuizCategory>> GetQuizCategoriesByQuizCategoryNameAsync(ICollection<QuizCategoryDto> dtoList);
         Task AddCategoryIdsToAllQuizCategoriesTableByQuizId(int quizId, List<QuizCategory> categoryIds);
+        Task<Dictionary<int, bool>> GetCategoryUsageMapAsync();
+        Task<bool> DeleteCategoryByIdAsync(int id);
     }
 }

@@ -49,6 +49,7 @@ namespace KvizHub.Profiles
             CreateMap<UserAnswerOption, UserAnswerOptionDto>();
             CreateMap<UserAnswerOptionDto, UserAnswerOption>();
 
+            CreateMap<Quiz, QuizTitleDto>();
         }
     }
 }

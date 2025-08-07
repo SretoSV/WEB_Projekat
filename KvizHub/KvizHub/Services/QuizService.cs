@@ -163,12 +163,13 @@ namespace KvizHub.Services
             return userQuizResultDto;
         }
 
-        public async Task<List<QuizDto>> GetAllUserQuizzes(string username)
+        public async Task<List<QuizTitleDto>> GetAllUserQuizzes(string username)
         {
             User user = await _userDao.GetUserByUsernameOrEmailAsync(username);
-            Console.WriteLine("LLLL: " + user.Id);
+
             List<Quiz> quizzes = await _quizDao.GetAllUserQuizzesAsync(user.Id);
-            var quizDtos = _mapper.Map<List<QuizDto>>(quizzes);
+            var quizDtos = _mapper.Map<List<QuizTitleDto>>(quizzes);
+
             return quizDtos;
         }
         public async Task<List<UserQuizResultDto>> GetAllUserResultsForQuiz(int quizId, string username)

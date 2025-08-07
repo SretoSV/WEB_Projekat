@@ -52,11 +52,6 @@ namespace KvizHub.Controllers
                 return BadRequest(new { message = "Invalid quiz data." });
             }
 
-            if (await _quizService.DoesQuizTitleExist(dto.Title))
-            {
-                return BadRequest(new { message = "Quiz with this title already exists." });
-            }
-
             try
             {
                 QuizDto quizDto = await _quizService.EditQuiz(dto, id);
@@ -173,7 +168,7 @@ namespace KvizHub.Controllers
         {
             try
             {
-                List<QuizDto> quizzesDtos = await _quizService.GetAllUserQuizzes(username);
+                List<QuizTitleDto> quizzesDtos = await _quizService.GetAllUserQuizzes(username);
                 if (quizzesDtos == null)
                 {
                     return StatusCode(500, new { message = "Internal server error while fetching quizzes." });

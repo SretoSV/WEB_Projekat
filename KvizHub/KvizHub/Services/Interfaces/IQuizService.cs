@@ -12,7 +12,7 @@ namespace KvizHub.Services.Interfaces
         Task<List<QuizDto>> GetAllQuizzes();
         Task<UserQuizResultDto> StartQuiz(int quizId);
         Task<UserQuizResultDto> FinishQuiz(UserQuizResultDto userQuizResultDto);
-        Task<List<QuizDto>> GetAllUserQuizzes(string username);
+        Task<List<QuizTitleDto>> GetAllUserQuizzes(string username);
         Task<List<UserQuizResultDto>> GetAllUserResultsForQuiz(int quizId, string username);
         Task<UserQuizResultAndProfileDto> GetAllResultsForQuiz(int quizId);
     }
