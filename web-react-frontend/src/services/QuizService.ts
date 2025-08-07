@@ -1,4 +1,4 @@
-import type { Quiz } from "../models/QuizModel";
+import type { Quiz, QuizDto } from "../models/QuizModel";
 import type { UserDto } from "../models/UserModel";
 import type { UserQuizResult } from "../models/UserQuizResultModel";
 import { serverPath } from "../serverPath";
@@ -203,7 +203,7 @@ export async function finishQuizFetch(quizResult: UserQuizResult): Promise<Finis
 
 
 export interface FetchUserQuizzesResponse {
-    quizzes: Array<Quiz>;
+    quizzes: Array<QuizDto>;
 }
 
 export async function fetchQuizzesByUserUsername(username: string): Promise<FetchUserQuizzesResponse> {

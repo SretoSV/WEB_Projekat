@@ -1,15 +1,15 @@
 import ButtonWithLongText from "../ButtonWithLongText";
 import styles from "../../styles/AllQuizzesPagesStyles/UserQuizResultsStyle.module.css";
 import { useUserContext } from "../../context/UserContext";
-import type { Quiz } from "../../models/QuizModel";
+import type { QuizDto } from "../../models/QuizModel";
 interface SelectionAreaProps{
     selectedUserUsername: string;
     setSelectedUserUsername: React.Dispatch<React.SetStateAction<string>>;
     usersUsernames: Array<string>;
     selectedQuizId: number;
     onChangeQuiz: (value: string) => void;
-    quizzes: Array<Quiz>;
-    selectedQuiz: Quiz | null;
+    quizzes: Array<QuizDto>;
+    selectedQuiz: QuizDto | null;
     setToggleChart: React.Dispatch<React.SetStateAction<boolean>>;
 }
 

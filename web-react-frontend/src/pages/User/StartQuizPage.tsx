@@ -79,7 +79,7 @@ export function StartQuizPage() {
                 {   finishedQuizResult === null ? 
                     <StartQuizInfo quiz={quiz} onStartQuiz={handleStartQuiz}/>
                     :
-                    <FinishedQuizResult quiz={quiz}/>
+                    quizId && <FinishedQuizResult selectedQuizId={parseInt(quizId)}/>
                 }
             </>
             :

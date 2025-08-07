@@ -21,11 +21,11 @@ export function QuizzesSection() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('');
 
   useEffect(() => {
-    if(user && user.isAdmin){
+    if(user){
       const fetchData = async () => {
         try {
-        const { categories } = await fetchCategories();
-        setAllCategories(categories);
+          const { categories } = await fetchCategories();
+          setAllCategories(categories);
         } catch (err: any) {
           alert(err.message);
         }

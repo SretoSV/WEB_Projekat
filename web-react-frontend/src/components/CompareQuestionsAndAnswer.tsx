@@ -1,19 +1,21 @@
-import type { Quiz } from "../models/QuizModel";
+import { useQuizContext } from "../context/QuizContext";
 import type { UserQuizResult } from "../models/UserQuizResultModel";
 import styles from "../styles/AllQuizzesPagesStyles/FinishedQuizResultsStyle.module.css";
 interface CompareQuestionAndAnswerProps{
-    quiz: Quiz;
+    selectedQuizId: number;
     finishedQuizResult: UserQuizResult;
 }
 
-export function CompareQuestionAndAnswer({quiz, finishedQuizResult}: CompareQuestionAndAnswerProps){
-
+export function CompareQuestionAndAnswer({selectedQuizId, finishedQuizResult}: CompareQuestionAndAnswerProps){
+    const { quizzes } = useQuizContext();
+    const quiz = quizzes.find(q => q.id === selectedQuizId);
+    
     return  <div className={styles.resultsDiv}>
                 <div className={styles.rowDivs}>
-                    <div>Total Questions: {quiz.questions.length}</div>
+                    <div>Total Questions: {quiz?.questions.length}</div>
                     <div className={styles.divider}></div>
                     {
-                        quiz.questions.map((answer, index )=> {
+                        quiz?.questions.map((answer, index )=> {
                             return <div key={answer.id}>
                                 <div className={styles.addPadding}>{(index + 1) + ". " + answer.text}</div>
                                 {
@@ -38,13 +40,13 @@ export function CompareQuestionAndAnswer({quiz, finishedQuizResult}: CompareQues
                         finishedQuizResult?.answers?.map((userAnswer, index)=> {
                             return <div key={userAnswer.id}>
                                 <div className={userAnswer.isTrue ? styles.trueQuestionAnswer : styles.wrongQuestionAnswer}>
-                                    {(index + 1) + ". " + quiz.questions[index].text}
+                                    {(index + 1) + ". " + quiz?.questions[index].text}
                                 </div>
                                 {
                                     userAnswer?.userAnswerOptions?.map((userAnswerOption, indexOptions) => {
-                                        if(userAnswerOption?.isCorrect === quiz.questions[index].answerOptions[indexOptions].isCorrect){
+                                        if(userAnswerOption?.isCorrect === quiz?.questions[index].answerOptions[indexOptions].isCorrect){
                                             
-                                            if(quiz.questions[index].questionTypeId === 4){
+                                            if(quiz?.questions[index].questionTypeId === 4){
                                                 return <div key={userAnswerOption.id} className={styles.addPadding}>{userAnswerOption.text + " | " + (userAnswerOption.fieldAnswerText === null ? "" : userAnswerOption.fieldAnswerText)}</div>
                                             }
                                             else{
@@ -52,7 +54,7 @@ export function CompareQuestionAndAnswer({quiz, finishedQuizResult}: CompareQues
                                             }
                                         }
                                         else{
-                                            if(quiz.questions[index].questionTypeId === 4){
+                                            if(quiz?.questions[index].questionTypeId === 4){
                                                 return <div key={userAnswerOption.id} className={styles.wrongUserAnswer}>{userAnswerOption.text + " | " + (userAnswerOption.fieldAnswerText === null ? "" : userAnswerOption.fieldAnswerText)}</div>
                                             }
                                             else{

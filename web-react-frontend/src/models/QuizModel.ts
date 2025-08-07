@@ -12,3 +12,8 @@ export interface Quiz {
   quizDifficultyId: number;
   results: Array<UserQuizResult>;
 }
+
+export interface QuizDto {
+  id: number;
+  title: string;
+}

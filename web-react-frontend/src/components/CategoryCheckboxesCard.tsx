@@ -9,6 +9,7 @@ interface CategoryCheckboxesCardProps{
     quizCategories: Array<QuizCategory>;
     quizQuestions: Array<Question>;
     onCategoryToggle: (category: QuizCategory, checked: boolean) => void;
+    onDeleteCategory: (categoryId: number) => void;
 }
 export default function CategoryCheckboxesCard(props: CategoryCheckboxesCardProps){
     
@@ -37,6 +38,14 @@ export default function CategoryCheckboxesCard(props: CategoryCheckboxesCardProp
                 >
                     {category.name}
                 </label>
+                {!category.isUsed && 
+                <button
+                        type="button"
+                        className={styles.removeAndAddButton}
+                        onClick={() => props.onDeleteCategory(category.id)}
+                    >
+                        x
+                </button>}
             </div>
         ))}
     </>

@@ -8,7 +8,7 @@ import type { Question } from '../models/QuestionModel';
 import ButtonWithImage from './ButtonWithImage';
 import plusImage from '../images/plus.png';
 import CategoryCheckboxesCard from './CategoryCheckboxesCard';
-import { createNewCategory, fetchCategories } from '../services/QuizCategoryService';
+import { createNewCategory, deleteCategory, fetchCategories } from '../services/QuizCategoryService';
 import { QuestionsEditBox } from './QuestionsEditBox';
 import { AddQuestion } from './AddQuestion';
 import { EditQuestion } from './EditQuestion';
@@ -81,19 +81,25 @@ export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizM
   }, [quizId]);
 
   const handleToggleCategory = (category: QuizCategory, checked: boolean) => {
+    const updatedCategory = { ...category, isUsed: checked };
+
     setSelectedCategories(prev => 
-      checked 
-        ? [...prev, category] 
+      checked
+        ? [...prev, updatedCategory]
         : prev.filter(c => c.id !== category.id)
     );
 
     setForm(prev => ({
       ...prev,
       allQuizCategories: checked
-        ? [...prev.allQuizCategories, category]
+        ? [...prev.allQuizCategories, updatedCategory]
         : prev.allQuizCategories.filter(c => c.id !== category.id),
     }));
-};
+
+    setAllCategories(prev =>
+      prev.map(c => c.id === category.id ? { ...c, isUsed: checked } : c)
+    );
+  };
   
   const handleToggleQuestionsList = () => {
     setToggleQuestionsList(current => !current);
@@ -166,6 +172,22 @@ export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizM
     }));
   }
 
+  const handleDeleteCategory = async (categoryId: number) => {
+    if (window.confirm(`Are you sure you want to delete this category?`)){
+      try {
+          const { deletedCategoryId } = await deleteCategory(categoryId);
+          setAllCategories(allCategories.filter(c => c.id !== deletedCategoryId));
+
+          const isSelected = form.allQuizCategories.some(c => c.id === categoryId);
+          if (isSelected) return;
+          setAllCategories(prev => prev.filter(c => c.id !== categoryId));
+
+      } catch (err: any) {
+          alert(err.message);
+      }
+    }
+  } 
+
   return (
     <div className={styles.modalOverlay}>
         <div className={styles.modalContent}>
@@ -200,6 +222,7 @@ export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizM
                   quizCategories={selectedCategories} 
                   quizQuestions={form.questions}
                   onCategoryToggle={handleToggleCategory}
+                  onDeleteCategory={handleDeleteCategory}
                 />
               </div>
 

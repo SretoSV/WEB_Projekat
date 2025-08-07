@@ -20,7 +20,7 @@ export function RanglistTable({selectedQuizId, results, profiles}: RanglistTable
                     </tr>
                 </thead>
                 <tbody>
-                    {
+                    {   results.length > 0 ?
                         selectedQuizId > 0 && results.map((result, index) => {
                             const duration = result.submittedAt 
                             ? new Date(result.submittedAt + "Z").getTime() - new Date(result.startedAt + "Z").getTime() 
@@ -56,6 +56,10 @@ export function RanglistTable({selectedQuizId, results, profiles}: RanglistTable
                                 </td>
                             </tr>
                         })
+                        :
+                        <tr>
+                            No results
+                        </tr>
                     }
                 </tbody>
             </table>

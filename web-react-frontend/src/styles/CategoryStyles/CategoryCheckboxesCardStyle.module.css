@@ -5,3 +5,17 @@
 .labelForCheckbox{
     margin-top: -100px;
 }
+
+.removeAndAddButton{
+    background-color: var(--primary-color);
+    color: var(--main-text-color);
+    border: none;
+    padding: 4px 8px;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+
+.removeAndAddButton:hover{
+    background-color: var(--primary-color-hover);
+}

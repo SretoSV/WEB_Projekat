@@ -36,6 +36,36 @@ export async function fetchCategories(): Promise<FetchCategoriesResponse> {
     }
 }
 
+export interface DeleteCategoryResponse {
+    deletedCategoryId: number;
+}
+
+export async function deleteCategory(categoryId: number): Promise<DeleteCategoryResponse> {
+    const token = localStorage.getItem('token');
+
+    try {
+        const response = await fetch(`${serverPath()}/api/categories/${categoryId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "Failed to delete quiz");
+        }
+
+        return {
+            deletedCategoryId: categoryId,
+        };
+
+    } catch (err: any) {
+        throw new Error(err.message || "Something went wrong while deleting the quiz.");
+    }
+}
+
 export function createNewCategory(
   allCategories: QuizCategory[],
   selectedCategories: QuizCategory[],
@@ -54,6 +84,7 @@ export function createNewCategory(
   return {
     id: Number(maxId + 1),
     name: newCategoryName,
+    isUsed: false,
   };
 }
 

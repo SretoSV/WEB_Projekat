@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useUserContext } from "../../context/UserContext"
 import styles from "../../styles/AllQuizzesPagesStyles/UserQuizResultsStyle.module.css";
 import { fetchQuizResultsByUserUsernameAndQuizId, fetchQuizzesByUserUsername, formatDateTime } from "../../services/QuizService";
-import type { Quiz } from "../../models/QuizModel";
+import type { QuizDto } from "../../models/QuizModel";
 import { Navigation } from "../../components/Navigation";
 import type { UserQuizResult } from "../../models/UserQuizResultModel";
 import { CompareQuestionAndAnswer } from "../../components/CompareQuestionsAndAnswer";
@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 export function UserQuizResults(){
     const { user } = useUserContext();
     const navigate = useNavigate();
-    const [quizzes, setQuizzes] = useState<Array<Quiz>>([]);
+    const [quizzes, setQuizzes] = useState<Array<QuizDto>>([]);
     const [usersUsernames, setUsersUsernames] = useState<Array<string>>([]);
     const [results, setResults] = useState<Array<UserQuizResult>>([]);
 
@@ -128,7 +128,7 @@ export function UserQuizResults(){
                 </div>
                 <div className={styles.toggleButton}><ButtonWithText text="Details" onClick={() => toggleResult(result.id)} /></div>
                 {openResultIds.has(result.id) && (
-                    <CompareQuestionAndAnswer finishedQuizResult={result} quiz={selectedQuiz} />
+                    <CompareQuestionAndAnswer finishedQuizResult={result} selectedQuizId={selectedQuiz.id} />
                 )}
             </div>
             })}
