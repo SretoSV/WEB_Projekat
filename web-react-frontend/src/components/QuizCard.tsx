@@ -22,14 +22,20 @@ export function QuizCard({ quizId }: { quizId: number }){
     if (!quiz) return <div>Quiz not found</div>;
     
     const handleEditQuiz = async (quiz: Quiz) => {
-        try {
-            const { editedQuiz } = await editQuiz(quiz);
-            const updatedQuizzes = quizzes.map(q => 
-                q.id === editedQuiz.id ? editedQuiz : q
-            );
-            setQuizzes(updatedQuizzes);
-        } catch (err) {
-            alert("Error editing quiz");
+        if(quiz.allQuizCategories.length !== 0){
+            try {
+                const { editedQuiz } = await editQuiz(quiz);
+                const updatedQuizzes = quizzes.map(q => 
+                    q.id === editedQuiz.id ? editedQuiz : q
+                );
+                setQuizzes(updatedQuizzes);
+                setShowEditQuizModal(false);
+            } catch (err: any) {
+                alert(err.message);
+            }
+        }    
+        else{
+            alert("A quiz needs to have at least one category.");
         }
     }
     
@@ -38,8 +44,8 @@ export function QuizCard({ quizId }: { quizId: number }){
             try {
                 const { deletedQuizId } = await deleteQuiz(quizId);
                 setQuizzes(quizzes.filter(q => q.id !== deletedQuizId));
-            } catch (err) {
-                alert("Error deleting quiz");
+            } catch (err: any) {
+                alert(err.message);
             }
         }
     }

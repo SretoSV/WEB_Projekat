@@ -35,11 +35,17 @@ export function QuizzesSection() {
   }, []);
 
   const handleAddQuiz = async (quiz: Quiz) => {
-    try {
-      const { addedQuiz } = await addQuiz(quiz);
-      setQuizzes([...quizzes, addedQuiz]);
-    } catch (err) {
-      alert("Error adding quiz!");
+    if(quiz.allQuizCategories.length !== 0) {
+      try {
+        const { addedQuiz } = await addQuiz(quiz);
+        setQuizzes([...quizzes, addedQuiz]);
+        setShowAddQuizModal(false);
+      } catch (err: any) {
+        alert(err.message);
+      }
+    }
+    else{
+      alert("A quiz needs to have at least one category.");
     }
   }
 

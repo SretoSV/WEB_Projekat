@@ -99,7 +99,6 @@ export default function AddQuizModal({ onClose, onAddQuiz }: EditQuizModalProps)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       onAddQuiz(form);
-      onClose();
   };
         
   const handleAddCategory = (e: React.MouseEvent<HTMLButtonElement>) => {
