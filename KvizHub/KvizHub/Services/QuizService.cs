@@ -29,6 +29,10 @@ namespace KvizHub.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public async Task<bool> DoesQuizTitleExist(string title)
+        {
+            return await _quizDao.DoesQuizTitleExistAsync(title);
+        }
         public async Task<QuizDto> AddQuiz(QuizDto dto)
         {
             Quiz quiz = _mapper.Map<Quiz>(dto); //dobijem quiz bez id-a

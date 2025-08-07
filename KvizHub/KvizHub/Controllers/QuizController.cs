@@ -22,6 +22,11 @@ namespace KvizHub.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] QuizDto dto)
         {
+            if (await _quizService.DoesQuizTitleExist(dto.Title))
+            {
+                return BadRequest(new { message = "Quiz with this title already exists." });
+            }
+
             try
             {
                 QuizDto quizDto = await _quizService.AddQuiz(dto);
@@ -44,7 +49,12 @@ namespace KvizHub.Controllers
         {
             if (dto == null || id <= 0)
             {
-                return BadRequest(new { message = $"Quiz with id {id} does not exists." });
+                return BadRequest(new { message = "Invalid quiz data." });
+            }
+
+            if (await _quizService.DoesQuizTitleExist(dto.Title))
+            {
+                return BadRequest(new { message = "Quiz with this title already exists." });
             }
 
             try

@@ -5,6 +5,8 @@ namespace KvizHub.DAO
 {
     public interface IQuizDao
     {
+        Task<bool> DoesQuizTitleExistAsync(string title);
+
         Task<List<Quiz>> GetAllQuizzesAsync();
         Task<List<Quiz>> GetAllUserQuizzesAsync(int id);
         Task<List<UserQuizResult>> GetAllUserResultsForQuiz(int quizId, int userId);

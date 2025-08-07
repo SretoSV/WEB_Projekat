@@ -13,6 +13,14 @@ namespace KvizHub.DAO.Implementations
         {
             _context = context;
         }
+        
+        #region Exists
+        public async Task<bool> DoesQuizTitleExistAsync(string title)
+        {
+            return await _context.Quizzes.AnyAsync(q => q.Title == title);
+        }
+
+        #endregion
 
         #region Get
         public async Task<List<Quiz>> GetAllQuizzesAsync()
@@ -261,7 +269,7 @@ namespace KvizHub.DAO.Implementations
         }
         #endregion
 
-        #region Start
+        #region Start/Finish
         public async Task<UserQuizResult> StartQuiz(int quizId, int userId) 
         {
 

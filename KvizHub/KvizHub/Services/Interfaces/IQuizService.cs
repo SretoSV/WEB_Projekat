@@ -5,6 +5,7 @@ namespace KvizHub.Services.Interfaces
 {
     public interface IQuizService
     {
+        Task<bool> DoesQuizTitleExist(string title);
         Task<QuizDto> AddQuiz(QuizDto dto);
         Task<QuizDto> EditQuiz(QuizDto dto, int id);
         Task<int> DeleteQuiz(int id);
