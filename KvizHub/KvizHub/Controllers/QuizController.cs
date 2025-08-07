@@ -191,7 +191,10 @@ namespace KvizHub.Controllers
         [HttpGet("{quizId}/{username}")]
         public async Task<IActionResult> GetAllUserResultsForQuiz(int quizId, string username)
         {
-            Console.WriteLine("SSAASASASSASASS");
+            if (quizId <= 0)
+            {
+                return BadRequest(new { message = $"Quiz with id {quizId} does not exists." });
+            }
             try
             {
                 List<UserQuizResultDto> resultsDtos = await _quizService.GetAllUserResultsForQuiz(quizId, username);
@@ -208,5 +211,28 @@ namespace KvizHub.Controllers
             }
         }
 
+        [Authorize]
+        [HttpGet("results/{quizId}")]
+        public async Task<IActionResult> GetAllResultsForQuiz(int quizId)
+        {
+            if (quizId <= 0)
+            {
+                return BadRequest(new { message = $"Quiz with id {quizId} does not exists." });
+            }
+            try
+            {
+                UserQuizResultAndProfileDto resultsDtos = await _quizService.GetAllResultsForQuiz(quizId);
+                if (resultsDtos == null)
+                {
+                    return StatusCode(500, new { message = "Internal server error while fetching quizzes." });
+                }
+
+                return Ok(resultsDtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+            }
+        }
     }
 }

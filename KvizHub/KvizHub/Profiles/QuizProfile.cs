@@ -49,18 +49,6 @@ namespace KvizHub.Profiles
             CreateMap<UserAnswerOption, UserAnswerOptionDto>();
             CreateMap<UserAnswerOptionDto, UserAnswerOption>();
 
-            /*
-            CreateMap<QuizDto, Quiz>()
-            .ForMember(dest => dest.AllQuizCategories,
-                opt => opt.MapFrom(src =>
-                    src.AllQuizCategories.Select(qc => new AllQuizCategories
-                    {
-                        QuizCategoryId = qc.Id
-                    }).ToList()
-                ))
-            .ForMember(dest => dest.Questions, opt => opt.Ignore())
-            .ForMember(dest => dest.Id, opt => opt.Ignore());
-            */
         }
     }
 }

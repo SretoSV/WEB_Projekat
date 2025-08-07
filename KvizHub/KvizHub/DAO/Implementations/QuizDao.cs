@@ -75,6 +75,14 @@ namespace KvizHub.DAO.Implementations
             .ToListAsync();
         }
 
+        public async Task<List<UserQuizResult>> GetAllResultsForQuiz(int quizId)
+        {
+            return await _context.UserQuizResults
+            .Where(uqr => uqr.QuizId == quizId)
+            .Include(uqr => uqr.Answers)
+                .ThenInclude(a => a.UserAnswerOptions)
+            .ToListAsync();
+        }
         #endregion
 
         #region Add

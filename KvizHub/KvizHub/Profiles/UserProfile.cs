@@ -22,6 +22,7 @@ namespace KvizHub.Profiles
             .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
             .ForMember(dest => dest.QuizResults, opt => opt.Ignore());
 
+            CreateMap<User, UserProfileForRanglistDto>();
         }
 
         #region Helpers

@@ -147,6 +147,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "KvizHub.Controllers.QuizController",
+    "Method": "GetAllResultsForQuiz",
+    "RelativePath": "api/quizzes/results/{quizId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "quizId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "KvizHub.Controllers.UserController",
     "Method": "GetAllUsersUsernames",
     "RelativePath": "api/users",

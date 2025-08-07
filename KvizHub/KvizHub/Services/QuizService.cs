@@ -174,6 +174,35 @@ namespace KvizHub.Services
             return quizDtos;
         }
 
+        public async Task<UserQuizResultAndProfileDto> GetAllResultsForQuiz(int quizId)
+        {
+            List<UserQuizResult> results = await _quizDao.GetAllResultsForQuiz(quizId);
+            if (results == null) {
+                return null;
+            }
+            var quizResultsDtos = _mapper.Map<List<UserQuizResultDto>>(results);
+            var sortedResults = quizResultsDtos
+                .OrderByDescending(r => r.ScorePercentage ?? 0)
+                .ThenBy(r => (r.SubmittedAt ?? DateTime.MaxValue) - r.StartedAt)
+                .ToList();
+
+            var userIds = results.Select(r => r.UserId).Distinct().ToList();
+            List<User> users = await _userDao.GetAllUsersByUsersIds(userIds);
+            if (results == null)
+            {
+                return null;
+            }
+            var profiles = _mapper.Map<List<UserProfileForRanglistDto>>(users);
+
+
+            UserQuizResultAndProfileDto userQuizResultAndProfileDto = new UserQuizResultAndProfileDto { 
+                Results = sortedResults,
+                Profiles = profiles,
+            };
+
+            return userQuizResultAndProfileDto;
+        }
+
         #region Helpers
         private async Task SetFields(QuizDto dto, int quizId) {
             await _quizDao.AddQuizCategoriesAsync(dto.AllQuizCategories);
