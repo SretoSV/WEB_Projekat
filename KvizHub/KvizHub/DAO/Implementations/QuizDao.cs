@@ -66,23 +66,6 @@ namespace KvizHub.DAO.Implementations
                 .ToListAsync();
         }
 
-        public async Task<List<UserQuizResult>> GetAllUserResultsForQuiz(int quizId, int userId)
-        {
-            return await _context.UserQuizResults
-            .Where(uqr => uqr.QuizId == quizId && uqr.UserId == userId)
-            .Include(uqr => uqr.Answers)
-                .ThenInclude(a => a.UserAnswerOptions)
-            .ToListAsync();
-        }
-
-        public async Task<List<UserQuizResult>> GetAllResultsForQuiz(int quizId)
-        {
-            return await _context.UserQuizResults
-            .Where(uqr => uqr.QuizId == quizId)
-            .Include(uqr => uqr.Answers)
-                .ThenInclude(a => a.UserAnswerOptions)
-            .ToListAsync();
-        }
         #endregion
 
         #region Add
@@ -105,113 +88,6 @@ namespace KvizHub.DAO.Implementations
             _context.Questions.AddRange(quiz.Questions);
             await _context.SaveChangesAsync();
             return quiz;
-        }
-
-        public async Task<bool> AddQuizCategoriesAsync(ICollection<QuizCategoryDto> dtoList)
-        {
-            if (dtoList == null || dtoList.Count == 0)
-                return false;
-
-            bool anyAdded = false;
-
-            foreach (var dto in dtoList)
-            {
-                //Provera da li već postoji kategorija sa istim imenom (case-insensitive) - Football == football
-                bool exists = await _context.QuizCategories
-                    .AnyAsync(c => c.Name.ToLower() == dto.Name.ToLower());
-
-                if (!exists)
-                {
-                    var category = new QuizCategory
-                    {
-                        Name = dto.Name
-                    };
-
-                    _context.QuizCategories.Add(category);
-                    anyAdded = true;
-                }
-            }
-
-            if (anyAdded)
-            {
-                await _context.SaveChangesAsync();
-                return true;
-            }
-
-            return false;
-        }
-
-        public async Task<List<QuizCategory>> GetQuizCategoriesByQuizCategoryNameAsync(ICollection<QuizCategoryDto> dtoList)
-        {
-            // Izvuci sve imena iz DTO liste
-            var names = dtoList.Select(dto => dto.Name.ToLower()).ToList();
-
-            // Vrati Id-ove kategorija čiji Name se poklapa (case-insensitive)
-            var categories = await _context.QuizCategories
-                .Where(c => names.Contains(c.Name.ToLower()))
-                .ToListAsync();
-
-            return categories;
-        }
-
-        public async Task AddCategoryIdsToAllQuizCategoriesTableByQuizId(int quizId, List<QuizCategory> categories)
-        {
-            if (categories == null || categories.Count == 0)
-                return;
-
-            var entries = categories.Select(category => new AllQuizCategories
-            {
-                QuizId = quizId,
-                QuizCategoryId = category.Id
-            }).ToList();
-
-            _context.AllQuizCategories.AddRange(entries);
-
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<List<Question>> AddQuestionsAsync(ICollection<QuestionDto> questionsDto)
-        {
-            if (questionsDto == null || questionsDto.Count == 0)
-                return new List<Question>();
-
-            var questions = questionsDto.Select(dto => new Question
-            {
-                Text = dto.Text,
-                QuestionTypeId = dto.QuestionTypeId,
-                QuizCategoryId = dto.QuizCategoryId,
-                QuestionDifficultyId = dto.QuestionDifficultyId,
-                QuizId = dto.QuizId
-            }).ToList();
-
-            _context.Questions.AddRange(questions);
-            await _context.SaveChangesAsync();
-
-            return questions;
-        }
-
-        public async Task AddAnswerOptionsAsync(List<QuestionDto> questions)
-        {
-            if (questions == null || questions.Count == 0)
-                return;
-
-            var allAnswerOptions = questions
-                .Where(q => q.AnswerOptions != null && q.AnswerOptions.Count > 0)
-                .SelectMany(q => q.AnswerOptions)
-                .Select(dto => new AnswerOption
-                {
-                    Text = dto.Text,
-                    IsCorrect = dto.IsCorrect,
-                    FieldAnswerText = dto.FieldAnswerText,
-                    QuestionId = dto.QuestionId
-                })
-                .ToList();
-
-            if (allAnswerOptions.Count == 0)
-                return;
-
-            _context.AnswerOptions.AddRange(allAnswerOptions);
-            await _context.SaveChangesAsync();
         }
 
         #endregion
@@ -293,46 +169,6 @@ namespace KvizHub.DAO.Implementations
             await _context.SaveChangesAsync();
 
             return newResult;
-        }
-
-        public async Task<List<UserAnswer>> CreateUserAnswers(int quizId, int resultId, List<Question> questions, int userId)
-        {
-            var userAnswers = new List<UserAnswer>();
-
-            foreach (var question in questions)
-            {
-                var userAnswer = new UserAnswer
-                {
-                    QuizId = quizId,
-                    ResultId = resultId,
-                    QuestionId = question.Id,
-                    UserId = userId,
-                    IsTrue = false,
-                    UserAnswerOptions = new List<UserAnswerOption>()
-                };
-
-                // Za svaki AnswerOption iz pitanja, napravi UserAnswerOption
-                foreach (var option in question.AnswerOptions)
-                {
-                    var userAnswerOption = new UserAnswerOption
-                    {
-                        Text = option.Text,
-                        IsCorrect = null,
-                        FieldAnswerText = null
-                        // UserAnswerId će EF postaviti automatski zbog veze
-                    };
-
-                    userAnswer.UserAnswerOptions.Add(userAnswerOption);
-                }
-
-                userAnswers.Add(userAnswer);
-            }
-
-            // Dodaj sve u bazu i sačuvaj
-            _context.UserAnswers.AddRange(userAnswers);
-            await _context.SaveChangesAsync();
-
-            return userAnswers;
         }
 
         public async Task<bool> FinishQuiz(UserQuizResult updatedResult)

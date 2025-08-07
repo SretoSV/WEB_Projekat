@@ -1,4 +1,5 @@
-﻿using KvizHub.Models;
+﻿using KvizHub.DTO;
+using KvizHub.Models;
 
 namespace KvizHub.DAO
 {
@@ -6,5 +7,6 @@ namespace KvizHub.DAO
     {
         Task<List<Question>> GetQuestionsByQuizId(int quizId);
         Task<bool> IsQuestionTypeMultipleCorrectAnswers(int questionId);
+        Task<List<Question>> AddQuestionsAsync(ICollection<QuestionDto> questionsDto);
     }
 }

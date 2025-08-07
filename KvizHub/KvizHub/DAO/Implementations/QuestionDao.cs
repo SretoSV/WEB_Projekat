@@ -1,4 +1,5 @@
 ﻿using KvizHub.Context;
+using KvizHub.DTO;
 using KvizHub.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +31,26 @@ namespace KvizHub.DAO.Implementations
                 throw new Exception($"Question with ID {questionId} does not exists.");
 
             return question.QuestionTypeId == 2;
+        }
+
+        public async Task<List<Question>> AddQuestionsAsync(ICollection<QuestionDto> questionsDto)
+        {
+            if (questionsDto == null || questionsDto.Count == 0)
+                return new List<Question>();
+
+            var questions = questionsDto.Select(dto => new Question
+            {
+                Text = dto.Text,
+                QuestionTypeId = dto.QuestionTypeId,
+                QuizCategoryId = dto.QuizCategoryId,
+                QuestionDifficultyId = dto.QuestionDifficultyId,
+                QuizId = dto.QuizId
+            }).ToList();
+
+            _context.Questions.AddRange(questions);
+            await _context.SaveChangesAsync();
+
+            return questions;
         }
     }
 }

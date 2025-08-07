@@ -17,14 +17,20 @@ namespace KvizHub.Services
         private readonly IQuizDao _quizDao;
         private readonly IQuestionDao _questionDao;
         private readonly IUserDao _userDao;
+        private readonly ICategoryDao _categoryDao;
+        private readonly IResultDao _resultDao;
+        private readonly IAnswerDao _answerDao;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public QuizService(IQuizDao quizDao, IQuestionDao questionDao, IUserDao userDao, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public QuizService(IQuizDao quizDao, IQuestionDao questionDao, IUserDao userDao, ICategoryDao categoryDao, IResultDao resultDao, IAnswerDao answerDao, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _quizDao = quizDao;
             _questionDao = questionDao;
             _userDao = userDao;
+            _categoryDao = categoryDao;
+            _resultDao = resultDao;
+            _answerDao = answerDao;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -90,7 +96,7 @@ namespace KvizHub.Services
             UserQuizResultDto userQuizResultDto = _mapper.Map<UserQuizResultDto>(userQuizResult);
             List<Question> questions = await _questionDao.GetQuestionsByQuizId(quizId);
 
-            List<UserAnswer> userAnswers = await _quizDao.CreateUserAnswers(quizId, userQuizResult.Id, questions, userId);
+            List<UserAnswer> userAnswers = await _answerDao.CreateUserAnswers(quizId, userQuizResult.Id, questions, userId);
             userQuizResultDto.Answers = _mapper.Map<List<UserAnswerDto>>(userAnswers);
 
             return userQuizResultDto;
@@ -169,14 +175,14 @@ namespace KvizHub.Services
         {
             User user = await _userDao.GetUserByUsernameOrEmailAsync(username);
             
-            List<UserQuizResult> results = await _quizDao.GetAllUserResultsForQuiz(quizId, user.Id);
+            List<UserQuizResult> results = await _resultDao.GetAllUserResultsForQuiz(quizId, user.Id);
             var quizDtos = _mapper.Map<List<UserQuizResultDto>>(results);
             return quizDtos;
         }
 
         public async Task<UserQuizResultAndProfileDto> GetAllResultsForQuiz(int quizId)
         {
-            List<UserQuizResult> results = await _quizDao.GetAllResultsForQuiz(quizId);
+            List<UserQuizResult> results = await _resultDao.GetAllResultsForQuiz(quizId);
             if (results == null) {
                 return null;
             }
@@ -205,9 +211,9 @@ namespace KvizHub.Services
 
         #region Helpers
         private async Task SetFields(QuizDto dto, int quizId) {
-            await _quizDao.AddQuizCategoriesAsync(dto.AllQuizCategories);
-            List<QuizCategory> categoriesIds = await _quizDao.GetQuizCategoriesByQuizCategoryNameAsync(dto.AllQuizCategories);
-            await _quizDao.AddCategoryIdsToAllQuizCategoriesTableByQuizId(quizId, categoriesIds);
+            await _categoryDao.AddQuizCategoriesAsync(dto.AllQuizCategories);
+            List<QuizCategory> categoriesIds = await _categoryDao.GetQuizCategoriesByQuizCategoryNameAsync(dto.AllQuizCategories);
+            await _categoryDao.AddCategoryIdsToAllQuizCategoriesTableByQuizId(quizId, categoriesIds);
 
             var nameIdMap = categoriesIds.ToDictionary(cat => cat.Name.ToLower(), cat => cat.Id);
             foreach (var dtoCat in dto.AllQuizCategories)
@@ -225,7 +231,7 @@ namespace KvizHub.Services
                 question.QuizId = quizId;
             }
 
-            List<Question> questionsFromDatabase = await _quizDao.AddQuestionsAsync(dto.Questions);
+            List<Question> questionsFromDatabase = await _questionDao.AddQuestionsAsync(dto.Questions);
 
             var dtoList = dto.Questions.ToList();
             var dbList = questionsFromDatabase.ToList();
@@ -246,7 +252,7 @@ namespace KvizHub.Services
 
             }
 
-            await _quizDao.AddAnswerOptionsAsync(dto.Questions.ToList());
+            await _answerDao.AddAnswerOptionsAsync(dto.Questions.ToList());
         }
 
         private int GetUserId()
