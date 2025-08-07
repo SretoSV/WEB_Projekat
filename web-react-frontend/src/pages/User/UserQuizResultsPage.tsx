@@ -10,9 +10,11 @@ import ButtonWithText from "../../components/ButtonWithText";
 import { Chart } from "../../components/UserResultsPageComponents/Chart";
 import { fetchAllUsers } from "../../services/UserService";
 import { SelectionArea } from "../../components/UserResultsPageComponents/SelectionArea";
+import { useNavigate } from "react-router-dom";
 
 export function UserQuizResults(){
     const { user } = useUserContext();
+    const navigate = useNavigate();
     const [quizzes, setQuizzes] = useState<Array<Quiz>>([]);
     const [usersUsernames, setUsersUsernames] = useState<Array<string>>([]);
     const [results, setResults] = useState<Array<UserQuizResult>>([]);
@@ -24,7 +26,12 @@ export function UserQuizResults(){
     const [toggleChart, setToggleChart] = useState<boolean>(false);
 
     useEffect(() => {
-        fetchQuizzes();
+        if(!localStorage.getItem('user')){
+            navigate("../Login");
+        }
+        else{
+            fetchQuizzes();
+        }
     }, [user]);
 
     useEffect(() => {
@@ -107,7 +114,17 @@ export function UserQuizResults(){
                     <div>Quiz: {selectedQuiz.title}</div>
                     <div>Date: {formatDateTime(result.startedAt.toString())}</div>
                     <div>Score: {result.scorePercentage}%</div>
-                    <div>Duration: {duration !== null ? `${minutes} min ${seconds} sec` : "Not submitted"}</div>
+                    <div>
+                        Duration:                                     
+                        {duration !== null ?
+                            minutes === 0 ? 
+                            ` ${seconds} sec`
+                            :
+                            ` ${minutes} min ${seconds} sec`
+                        :
+                            "Not submitted"
+                        }
+                    </div>
                 </div>
                 <div className={styles.toggleButton}><ButtonWithText text="Details" onClick={() => toggleResult(result.id)} /></div>
                 {openResultIds.has(result.id) && (

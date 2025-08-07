@@ -1,6 +1,8 @@
 import type { Quiz } from "../models/QuizModel";
+import type { UserDto } from "../models/UserModel";
 import type { UserQuizResult } from "../models/UserQuizResultModel";
 import { serverPath } from "../serverPath";
+import { subDays } from "date-fns";
 
 export interface FetchQuizzesResponse {
     quizzes: Array<Quiz>;
@@ -249,7 +251,7 @@ export async function fetchQuizResultsByUserUsernameAndQuizId(username: string, 
     const token = localStorage.getItem('token');
 
     try {
-        if(username !== "" && quizId !== 0){
+        if(username !== "" && quizId > 0){
             const response = await fetch(`${serverPath()}/api/quizzes/${quizId}/${username}`, {
                 method: 'GET',
                 headers: {
@@ -274,6 +276,50 @@ export async function fetchQuizResultsByUserUsernameAndQuizId(username: string, 
         else{
             return {
                 results: [],
+            };
+        }
+    } catch (err: any) {
+        throw new Error(err.message || 'Server error. Try again later.');
+    }
+
+}
+
+export interface FetchQuizResultsByQuizIdResponse {
+    results: Array<UserQuizResult>;
+    profiles: Array<UserDto>;
+}
+
+export async function fetchQuizResultsQuizId(quizId: number): Promise<FetchQuizResultsByQuizIdResponse> {
+    const token = localStorage.getItem('token');
+
+    try {
+        if(quizId > 0){
+            const response = await fetch(`${serverPath()}/api/quizzes/results/${quizId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+
+            if (response.status === 204) {
+                return { results: [], profiles: [] };
+            }
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Fetching failed.');
+            }
+        
+            return {
+                results: data.results,
+                profiles: data.profiles,
+            };
+        }
+        else{
+            return {
+                results: [],
+                profiles: [],
             };
         }
     } catch (err: any) {
@@ -430,3 +476,20 @@ export function formatDateTime(dateString?: string): string {
         hour12: false,
     });
 }
+
+export function filterResultsByPeriod(allResults: UserQuizResult[], period: string): UserQuizResult[]{
+    if (period === "") return allResults;
+
+    const now = new Date();
+    let thresholdDate: Date;
+
+    if (period === "Weekly") {
+        thresholdDate = subDays(now, 7);
+    } else if (period === "Monthly") {
+        thresholdDate = subDays(now, 30);
+    } else {
+        return allResults;
+    }
+
+    return allResults.filter(r => new Date(r.startedAt) >= thresholdDate);
+};

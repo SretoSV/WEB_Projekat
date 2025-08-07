@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuizContext } from "../../context/QuizContext";
 import styles from "../../styles/AllQuizzesPagesStyles/StartQuizPageStyle.module.css";
 import { useState, useEffect } from "react";
@@ -12,8 +12,11 @@ import { MultipleChoice } from "../../components/UserAnswerOptionsComponents/Mul
 import { MultipleCorrectAnswers } from "../../components/UserAnswerOptionsComponents/MultipleCorrectAnswers";
 import { TrueFalse } from "../../components/UserAnswerOptionsComponents/TrueFalse";
 import { FillInTheBlank } from "../../components/UserAnswerOptionsComponents/FillInTheBlank";
+import { useUserContext } from "../../context/UserContext";
 
 export function StartQuizPage() {
+    const { user } = useUserContext();
+    const navigate = useNavigate();
     const { quizId } = useParams();
     const { quizzes, quizResult, startQuiz, setFinishedQuizResult, currentUserAnswerIndex, timeLeft, restoreTimer, initializeTimer, handleSetIndex, finishQuiz, incrementIndex, decrementIndex, finishedQuizResult } = useQuizContext();
 
@@ -45,6 +48,12 @@ export function StartQuizPage() {
             restoreTimer(quiz.timeLimitSeconds);
         }
     }, [quizResult, quiz?.timeLimitSeconds]);
+
+    useEffect(() => {
+        if(!localStorage.getItem('user')){
+            navigate("../Login");
+        }
+    }, [user]);
 
     const handleStartQuiz = async () => {
         

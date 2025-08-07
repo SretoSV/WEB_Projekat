@@ -4,3 +4,9 @@ export interface User {
     profileImage?: string;
     isAdmin: boolean;
 }
+
+export interface UserDto {
+    id: number;
+    username: string; 
+    profileImage: string;
+}

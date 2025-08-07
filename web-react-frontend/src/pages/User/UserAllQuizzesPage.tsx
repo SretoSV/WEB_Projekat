@@ -9,7 +9,7 @@ export function UserAllQuizzesPage(){
     const { user } = useUserContext();
     const navigate = useNavigate();
     useEffect(() => {
-        if(!user){
+        if(!localStorage.getItem('user')){
             navigate('/Login');
         }
     }, [user]);

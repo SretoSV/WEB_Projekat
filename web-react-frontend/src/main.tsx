@@ -6,9 +6,10 @@ import { RegisterPage } from './pages/RegisterPage.tsx';
 import { UserProvider } from './context/UserContext.tsx';
 import { AdminAllQuizzesPage } from './pages/Admin/AdminAllQuizzesPage.tsx';
 import { UserAllQuizzesPage } from './pages/User/UserAllQuizzesPage.tsx';
-import { UserQuizResults } from './pages/User/UserQuizResults.tsx';
+import { UserQuizResults } from './pages/User/UserQuizResultsPage.tsx';
 import { StartQuizPage } from './pages/User/StartQuizPage.tsx';
 import { QuizProvider } from './context/QuizContext.tsx';
+import { GlobalRanglist } from './pages/GlobalRanglistPage.tsx';
 
 const router = createBrowserRouter([
   {
@@ -39,15 +40,9 @@ const router = createBrowserRouter([
     path: "/UserQuizResults",
     element: <UserQuizResults /> /* admin == all quizzes | user == own quizzes */
   },
-  /*
-  {
-    path: "/AdminUsersResults",
-    element: <RegisterPage />
-  },
-  */
   {
     path: "/GlobalRanglist",
-    element: <RegisterPage />
+    element: <GlobalRanglist />
   },
   {
     path: "*",

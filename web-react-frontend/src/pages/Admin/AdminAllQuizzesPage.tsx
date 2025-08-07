@@ -9,7 +9,7 @@ export function AdminAllQuizzesPage(){
     const { user } = useUserContext();
     const navigate = useNavigate();
     useEffect(() => {
-        if(!user){
+        if(!localStorage.getItem('user') || !user){
             navigate('/Login');
         }
         else{
