@@ -13,26 +13,33 @@ import { fetchCategories } from '../services/QuizCategoryService';
 
 export function QuizzesSection() {
   const { user } = useUserContext();
-  const { quizzes, setQuizzes } = useQuizContext();
+  const { quizzes, setQuizzes, loadingQuizzes } = useQuizContext();
   const [showAddQuizModal, setShowAddQuizModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [allCategories, setAllCategories] = useState<Array<QuizCategory>>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('');
+  const [loadingCategories, setLoadingCategories] = useState<boolean>(true);
 
   useEffect(() => {
     if(user){
       const fetchData = async () => {
         try {
+          setLoadingCategories(true);
           const { categories } = await fetchCategories();
           setAllCategories(categories);
         } catch (err: any) {
           alert(err.message);
         }
+        finally {
+          setLoadingCategories(false);
+        }
+
       };
       fetchData();
     }
-  }, []);
+
+  }, [user]);
 
   const handleAddQuiz = async (quiz: Quiz) => {
     if(quiz.allQuizCategories.length !== 0) {
@@ -54,6 +61,9 @@ export function QuizzesSection() {
   const step3filteredQuizzes: Quiz[] = filterForQuizzesDropDown(step2filteredQuizzes, selectedDifficulty, "difficulty");
 
   return (
+    loadingCategories || loadingQuizzes ? //ne radiiiiii nece categorije da se ucitaju
+      <div>Loading...</div>
+    :
     <>
         <div className={styles.divTop}>
           <h1 className={styles.title}>Quizzes</h1>

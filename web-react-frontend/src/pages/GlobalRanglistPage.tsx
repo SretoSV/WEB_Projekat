@@ -17,6 +17,7 @@ export function GlobalRanglist(){
     const [userDetails, setUserDetails] = useState<Array<UserDto>>([]);
     const [selectedQuizId, setSelectedQuizId] = useState<number>(0);
     const [selectedTimePeriod, setSelectedTimePeriod] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(true);
 
     const handleChangeQuiz = (value: string) => {
         const id = Number(value);
@@ -24,12 +25,15 @@ export function GlobalRanglist(){
         if(value !== ""){
             const fetchData = async () => {
                 try {
+                    setLoading(true);
                     const { results, profiles } = await fetchQuizResultsQuizId(id);//dohvatit sve quizResultove quiz-a
                     setAllResults(results);
                     setResults(filterResultsByPeriod(results, selectedTimePeriod));
                     setUserDetails(profiles);
                 } catch (err: any) {
                     alert(err.message);
+                }finally{
+                    setLoading(false);
                 }
             };
             fetchData();
@@ -56,12 +60,19 @@ export function GlobalRanglist(){
                 selectedQuizId={selectedQuizId}
                 onChangeQuiz={handleChangeQuiz}
             />
-
-            <RanglistTable 
-                selectedQuizId={selectedQuizId}
-                results={results}
-                profiles={userDetails}
-            />
+            {
+                loading ? 
+                    selectedQuizId ?
+                        <div>Loading...</div>
+                    :
+                        <></>
+                :
+                    <RanglistTable 
+                        selectedQuizId={selectedQuizId}
+                        results={results}
+                        profiles={userDetails}
+                    />
+            }
 
         </div>
     </>

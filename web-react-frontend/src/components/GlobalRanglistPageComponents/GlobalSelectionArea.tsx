@@ -9,7 +9,10 @@ interface SelectionAreaProps{
 }
 
 export function GlobalSelectionArea({selectedTimePeriod, onChangeTimePeriod, selectedQuizId, onChangeQuiz}: SelectionAreaProps){
-    const { quizzes } = useQuizContext();
+    const { quizzes, loadingQuizzes } = useQuizContext();
+    if(loadingQuizzes) {
+        return <div>Loading quizzes...</div>
+    }
     
     return <div className={styles.chooseDiv}>
 

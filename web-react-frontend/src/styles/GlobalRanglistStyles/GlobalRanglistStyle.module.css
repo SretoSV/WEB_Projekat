@@ -77,3 +77,7 @@ th, td{
     border: 2px solid var(--primary-color);
     margin-right: 5px;
 }
+
+.noResultsTd{
+    text-align: center;    
+}

@@ -58,7 +58,7 @@ export function RanglistTable({selectedQuizId, results, profiles}: RanglistTable
                         })
                         :
                         <tr>
-                            No results
+                            <td colSpan={4} className={styles.noResultsTd}>No results</td>
                         </tr>
                     }
                 </tbody>

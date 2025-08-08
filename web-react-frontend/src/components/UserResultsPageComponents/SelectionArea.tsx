@@ -4,7 +4,7 @@ import { useUserContext } from "../../context/UserContext";
 import type { QuizDto } from "../../models/QuizModel";
 interface SelectionAreaProps{
     selectedUserUsername: string;
-    setSelectedUserUsername: React.Dispatch<React.SetStateAction<string>>;
+    onChangeUserUsername: (username: string) => void;
     usersUsernames: Array<string>;
     selectedQuizId: number;
     onChangeQuiz: (value: string) => void;
@@ -13,7 +13,7 @@ interface SelectionAreaProps{
     setToggleChart: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function SelectionArea({selectedUserUsername, setSelectedUserUsername, usersUsernames, selectedQuizId, onChangeQuiz, quizzes, selectedQuiz, setToggleChart}: SelectionAreaProps){
+export function SelectionArea({selectedUserUsername, onChangeUserUsername, usersUsernames, selectedQuizId, onChangeQuiz, quizzes, selectedQuiz, setToggleChart}: SelectionAreaProps){
     const { user } = useUserContext();
     
     return <div className={styles.chooseDiv}>
@@ -24,7 +24,9 @@ export function SelectionArea({selectedUserUsername, setSelectedUserUsername, us
                     name="user"
                     className={styles.dropdownInput}
                     value={selectedUserUsername}
-                    onChange={(e) => setSelectedUserUsername(e.target.value)}
+                    onChange={(e) => {
+                        onChangeUserUsername(e.target.value);
+                    }}
                 >
                     <option value="">Select user</option>
                     {usersUsernames.map((userUsername) => (
@@ -39,7 +41,7 @@ export function SelectionArea({selectedUserUsername, setSelectedUserUsername, us
                 value={selectedQuizId}
                 onChange={(e) => onChangeQuiz(e.target.value)}
             >
-                <option value="">Select quiz</option>
+                <option value={0}>Select quiz</option>
                 {quizzes.map((quiz) => (
                     <option key={quiz.id} value={quiz.id}>{quiz.title}</option>
                 ))}

@@ -21,6 +21,7 @@ interface QuizContextType {
   timeLeft: number | null;
   initializeTimer: (durationSeconds: number) => void;
   restoreTimer: (durationSeconds: number) => void;
+  loadingQuizzes: boolean;
 }
 
 const QuizContext = createContext<QuizContextType | undefined>(undefined);
@@ -31,17 +32,21 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
   const [quizResult, setQuizResult] = useState<UserQuizResult | null>(null);
   const [finishedQuizResult, setFinishedQuizResult] = useState<UserQuizResult | null>(null);
   const [currentUserAnswerIndex, setCurrentUserAnswerIndex] = useState<number>(0);
+  const [loadingQuizzes, setLoadingQuizzes] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if(user){
       const fetchData = async () => {
+        setLoadingQuizzes(true);
         try {
           const { quizzes } = await fetchQuizzes();
           setQuizzes(quizzes);
         } catch (err: any) {
           alert(err.message);
+        }finally{
+          setLoadingQuizzes(false);
         }
       };
 
@@ -202,7 +207,8 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
       handleSetIndex,
       timeLeft,
       initializeTimer,
-      restoreTimer
+      restoreTimer,
+      loadingQuizzes
       }}>
       {children}
     </QuizContext.Provider>
