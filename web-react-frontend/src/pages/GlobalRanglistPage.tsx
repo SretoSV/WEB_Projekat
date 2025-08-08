@@ -3,13 +3,15 @@ import styles from "../styles/GlobalRanglistStyles/GlobalRanglistStyle.module.cs
 import { GlobalSelectionArea } from "../components/GlobalRanglistPageComponents/GlobalSelectionArea";
 import { useEffect, useState } from "react";
 import type { UserQuizResult } from "../models/UserQuizResultModel";
-import { fetchQuizResultsQuizId, filterResultsByPeriod } from "../services/QuizService";
+import { filterResultsByPeriod } from "../services/QuizService";
 import { RanglistTable } from "../components/GlobalRanglistPageComponents/RanglistTable";
 import type { UserDto } from "../models/UserModel";
 import { useUserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { useQuizResults } from "../customHooks/useQuizResults";
 
 export function GlobalRanglist(){
+    
     const { user } = useUserContext();
     const navigate = useNavigate();
     const [allResults, setAllResults] = useState<Array<UserQuizResult>>([]);
@@ -17,28 +19,21 @@ export function GlobalRanglist(){
     const [userDetails, setUserDetails] = useState<Array<UserDto>>([]);
     const [selectedQuizId, setSelectedQuizId] = useState<number>(0);
     const [selectedTimePeriod, setSelectedTimePeriod] = useState<string>("");
-    const [loading, setLoading] = useState<boolean>(true);
 
-    const handleChangeQuiz = (value: string) => {
-        const id = Number(value);
-        setSelectedQuizId(id);
-        if(value !== ""){
-            const fetchData = async () => {
-                try {
-                    setLoading(true);
-                    const { results, profiles } = await fetchQuizResultsQuizId(id);//dohvatit sve quizResultove quiz-a
-                    setAllResults(results);
-                    setResults(filterResultsByPeriod(results, selectedTimePeriod));
-                    setUserDetails(profiles);
-                } catch (err: any) {
-                    alert(err.message);
-                }finally{
-                    setLoading(false);
-                }
-            };
-            fetchData();
-        }
+    const { data, isLoading } = useQuizResults(selectedQuizId);
+
+    useEffect(() => {
+    if (data) {
+        setAllResults(data.results);
+        setResults(filterResultsByPeriod(data.results, selectedTimePeriod));
+        setUserDetails(data.profiles);
     }
+    }, [data]);
+
+    const handleChangeQuiz = (value: string) => { 
+        if (value === "") return;
+        setSelectedQuizId(Number(value));
+    };
 
     useEffect(() => {
         if(!localStorage.getItem('user')){
@@ -61,7 +56,7 @@ export function GlobalRanglist(){
                 onChangeQuiz={handleChangeQuiz}
             />
             {
-                loading ? 
+                isLoading ? 
                     selectedQuizId ?
                         <div>Loading...</div>
                     :

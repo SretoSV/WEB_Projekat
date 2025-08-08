@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useUserContext } from "../../context/UserContext"
 import styles from "../../styles/AllQuizzesPagesStyles/UserQuizResultsStyle.module.css";
-import { fetchQuizResultsByUserUsernameAndQuizId, fetchQuizzesByUserUsername, formatDateTime } from "../../services/QuizService";
+import { formatDateTime } from "../../services/QuizService";
 import type { QuizDto } from "../../models/QuizModel";
 import { Navigation } from "../../components/Navigation";
 import type { UserQuizResult } from "../../models/UserQuizResultModel";
@@ -11,6 +11,8 @@ import { Chart } from "../../components/UserResultsPageComponents/Chart";
 import { fetchAllUsers } from "../../services/UserService";
 import { SelectionArea } from "../../components/UserResultsPageComponents/SelectionArea";
 import { useNavigate } from "react-router-dom";
+import { useUserQuizResults } from "../../customHooks/useUserQuizResults";
+import { useUserQuizzes } from "../../customHooks/useUserQuizzes";
 
 export function UserQuizResults(){
     const { user } = useUserContext();
@@ -24,10 +26,12 @@ export function UserQuizResults(){
     const selectedQuiz = quizzes.find(q => q.id === selectedQuizId);
     const [openResultIds, setOpenResultIds] = useState<Set<number>>(new Set());
     const [toggleChart, setToggleChart] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [loadingQuizzes, setLoadingQuizzes] = useState<boolean>(false);
     const [loadingUsers, setLoadingUsers] = useState<boolean>(false);
-    
+
+    const usernameToUse = selectedUserUsername !== "" ? selectedUserUsername : user?.username || "";
+    const { data: data, isLoading: isLoading } = useUserQuizResults(usernameToUse, selectedQuizId);
+    const { data: dataQuizzes, isLoading: isLoadingQuizzes } = useUserQuizzes(usernameToUse);
+
     useEffect(() => {
         if(!localStorage.getItem('user')){
             navigate("../Login");
@@ -36,31 +40,20 @@ export function UserQuizResults(){
             if(user && user.isAdmin){
                 fetchUsers();
             }
-            if(user && !user.isAdmin){
-                fetchQuizzes();
-            }
         }
     }, [user]);
 
     useEffect(() => {
-        if(user && user.isAdmin){
-            fetchQuizzes();
+        if (data) {
+            setResults(data.results);
         }
-    }, [selectedUserUsername]);
+    }, [data]);
 
-    const fetchQuizzes = async () => {
-        try {
-            setLoadingQuizzes(true);
-            const usernameToUse = selectedUserUsername !== "" ? selectedUserUsername : user?.username || "";
-            const { quizzes } = await fetchQuizzesByUserUsername(usernameToUse);//dohvatit sve quizove koje je user resavao
-            setQuizzes(quizzes);
-        } catch (err: any) {
-            alert(err.message);
+    useEffect(() => {
+        if (dataQuizzes) {
+            setQuizzes(dataQuizzes.quizzes);
         }
-        finally{
-            setLoadingQuizzes(false);
-        }
-    };
+    }, [dataQuizzes]);
 
     const fetchUsers = async () => {
         try{
@@ -78,23 +71,7 @@ export function UserQuizResults(){
         const id = Number(value);
         setSelectedQuizId(id);
         setToggleChart(false);
-
-        if(value !== ""){
-            const usernameToUse = selectedUserUsername !== "" ? selectedUserUsername : user?.username || "";
-            const fetchData = async () => {
-                try {
-                    setLoading(true);
-                    const { results } = await fetchQuizResultsByUserUsernameAndQuizId(usernameToUse, id);//dohvatit sve quizResultove quizova koje je user resavao
-                    setResults(results);
-                } catch (err: any) {
-                    alert(err.message);
-                }finally{
-                    setLoading(false);
-                }
-            };
-            fetchData();
-        }
-    }
+    };
 
     const toggleResult = (id: number) => {
         setOpenResultIds(prev => {
@@ -111,12 +88,13 @@ export function UserQuizResults(){
     const handleChangeUserUsername = (username: string) => {
         setSelectedUserUsername(username);
         setSelectedQuizId(0);
+        setResults([]);
     };
 
     return <> 
     <Navigation />
     <div className={styles.mainDiv}>
-        {loadingQuizzes ?
+        {isLoadingQuizzes ?
             <div><br/><br/><br/>Loading quizzes...</div>
             :
             <>
@@ -153,7 +131,7 @@ export function UserQuizResults(){
             </>
         }
         {
-            loading ?
+            isLoading ?
                 selectedQuizId ?
                     <div>Loading...</div>
                 :
