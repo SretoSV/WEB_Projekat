@@ -22,6 +22,7 @@ namespace KvizHub.Context
         public DbSet<QuestionType> QuestionTypes { get; set; }
         public DbSet<QuizDifficulty> QuizDifficulties { get; set; }
         public DbSet<QuestionDifficulty> QuestionDifficulties { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -39,6 +40,7 @@ namespace KvizHub.Context
             modelBuilder.Entity<QuestionType>().ToTable("question_types");
             modelBuilder.Entity<QuizDifficulty>().ToTable("quiz_difficulties");
             modelBuilder.Entity<QuestionDifficulty>().ToTable("question_difficulties");
+            modelBuilder.Entity<RefreshToken>().ToTable("refresh_tokens");
 
             modelBuilder.Entity<Question>()
                 .HasOne(q => q.Quiz)

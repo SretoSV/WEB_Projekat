@@ -35,7 +35,7 @@ namespace KvizHub.Controllers
                 {
                     return StatusCode(500, new { message = "Internal server error while adding quiz." });
                 }
-                return Ok(quizDto);
+                return StatusCode(201, quizDto);
             }
             catch (Exception ex)
             {

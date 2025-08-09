@@ -1,9 +1,11 @@
 ﻿using KvizHub.DTO;
+using KvizHub.Models;
 using KvizHub.Services;
 using KvizHub.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KvizHub.Controllers
 {
@@ -12,10 +14,11 @@ namespace KvizHub.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-
-        public UserController(IUserService userService)
+        private readonly IWebHostEnvironment _env;
+        public UserController(IUserService userService, IWebHostEnvironment env)
         {
             _userService = userService;
+            _env = env;
         }
 
         [HttpPost("login")]
@@ -30,13 +33,15 @@ namespace KvizHub.Controllers
             {
                 return BadRequest(new { Message = "Password length must be between 3 and 15 characters!" });
             }
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
 
-            UserLoginResponseDto userLoginResponseDto = await _userService.Login(dto);
-            if (userLoginResponseDto == null) {
+            UserLoginResponseDto result = await _userService.Login(dto, ipAddress);
+
+            if (result == null) {
                 return BadRequest(new { message = "Wrong email or password." });
             }
 
-            return Ok(userLoginResponseDto);
+            return Ok(result);
         }
 
         [HttpPost("register")]
@@ -79,6 +84,51 @@ namespace KvizHub.Controllers
             {
                 return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
             }
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout(RefreshTokenHashDto dto)
+        {
+            try
+            {
+                await _userService.LogoutAsync(dto.RefreshTokenHash);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+            }
+
+            return Ok(new { message = "Logged out successfully" });
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(RefreshTokenHashDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.RefreshTokenHash))
+            {
+                return BadRequest(new { message = "No refresh token." });
+            }
+
+            if (!await _userService.IsTokenActive(dto.RefreshTokenHash)) 
+            {
+                return Unauthorized();
+            }
+            else {
+                try 
+                {
+                    var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+                    AccessAndRefreshTokenDto result = await _userService.GetNewAccessAndRefreshToken(ipAddress, dto.RefreshTokenHash);
+
+                    await _userService.LogoutAsync(dto.RefreshTokenHash);// uloni se stari refresh-token
+
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+                }
+            }
+
         }
     }
 }

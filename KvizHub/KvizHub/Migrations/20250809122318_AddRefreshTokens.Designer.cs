@@ -4,6 +4,7 @@ using KvizHub.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KvizHub.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250809122318_AddRefreshTokens")]
+    partial class AddRefreshTokens
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -282,16 +285,14 @@ namespace KvizHub.Migrations
                     b.Property<DateTime>("Expires")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<bool>("Revoked")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("TokenHash")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("refresh_tokens", (string)null);
                 });
@@ -332,7 +333,7 @@ namespace KvizHub.Migrations
                             Id = 1,
                             Email = "anaanic@gmail.com",
                             IsAdmin = true,
-                            PasswordHash = "AQAAAAIAAYagAAAAEOpHe7kDTgr39ghVsqUXV+NernTzd6LHdmKD3Mp7jKXgbDbiMky70s87nOi1mM4m7w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEE0bpefKqEUsYAwMy7LTIhKO+yE2SRefmi3JIPmEAk56x/2svQkVtEWyEv/vvMGOQw==",
                             Username = "Ana123"
                         });
                 });
@@ -518,17 +519,6 @@ namespace KvizHub.Migrations
                         .IsRequired();
 
                     b.Navigation("QuizDifficulty");
-                });
-
-            modelBuilder.Entity("KvizHub.Models.RefreshToken", b =>
-                {
-                    b.HasOne("KvizHub.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("KvizHub.Models.UserAnswer", b =>

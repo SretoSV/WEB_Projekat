@@ -55,11 +55,13 @@ builder.Services.AddScoped<IQuizDao, QuizDao>();
 builder.Services.AddScoped<IQuestionDao, QuestionDao>();
 builder.Services.AddScoped<ICategoryDao, CategoryDao>();
 builder.Services.AddScoped<IResultDao, ResultDao>();
+builder.Services.AddScoped<IRefreshTokenDao, RefreshTokenDao>();
 builder.Services.AddScoped<IAnswerDao, AnswerDao>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<IPasswordHasher<string>, PasswordHasher<string>>();
 
 builder.Services.AddAutoMapper(typeof(UserProfile));
 builder.Services.AddAutoMapper(typeof(QuizProfile));

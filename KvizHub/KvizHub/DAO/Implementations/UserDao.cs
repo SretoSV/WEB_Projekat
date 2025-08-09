@@ -71,6 +71,11 @@ namespace KvizHub.DAO.Implementations
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == usernameOrEmail || u.Username == usernameOrEmail);
         }
+        public async Task<User> GetUserByIdAsync(int id)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        }
+
         public async Task<bool> UserExistsByUsername(string username)
         {
             return await _context.Users

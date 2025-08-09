@@ -206,6 +206,38 @@
   },
   {
     "ContainingType": "KvizHub.Controllers.UserController",
+    "Method": "Logout",
+    "RelativePath": "api/users/logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "KvizHub.DTO.RefreshTokenHashDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KvizHub.Controllers.UserController",
+    "Method": "RefreshToken",
+    "RelativePath": "api/users/refresh-token",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "KvizHub.DTO.RefreshTokenHashDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KvizHub.Controllers.UserController",
     "Method": "Register",
     "RelativePath": "api/users/register",
     "HttpMethod": "POST",
