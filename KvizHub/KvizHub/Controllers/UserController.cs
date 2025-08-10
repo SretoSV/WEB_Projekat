@@ -90,6 +90,7 @@ namespace KvizHub.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout(RefreshTokenHashDto dto)
         {
+            Console.WriteLine("ADAD:  " + dto.RefreshTokenHash);
             try
             {
                 await _userService.LogoutAsync(dto.RefreshTokenHash);
@@ -112,6 +113,7 @@ namespace KvizHub.Controllers
 
             if (!await _userService.IsTokenActive(dto.RefreshTokenHash)) 
             {
+                await _userService.LogoutAsync(dto.RefreshTokenHash);
                 return Unauthorized();
             }
             else {

@@ -157,7 +157,7 @@ namespace KvizHub.Services
             var tokeOptions = new JwtSecurityToken(
                 issuer: "http://localhost:5213",
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(1),
+                expires: DateTime.UtcNow.AddMinutes(10),
                 signingCredentials: signinCredentials
             );
             string tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
