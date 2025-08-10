@@ -15,6 +15,7 @@ import { EditQuestion } from './EditQuestion';
 import type { Quiz } from '../models/QuizModel';
 import ButtonWithLongText from './ButtonWithLongText';
 import type { UserQuizResult } from '../models/UserQuizResultModel';
+import { useUserContext } from '../context/UserContext';
 
 interface EditQuizModalProps {
   onClose: () => void;
@@ -23,6 +24,7 @@ interface EditQuizModalProps {
 }
 
 export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizModalProps) {
+  const { handleLogout } = useUserContext();
   const { quizzes } = useQuizContext();
   const quiz = quizzes.find(q => q.id === quizId);
   if (!quiz) return <div>Quiz not found</div>;
@@ -58,10 +60,10 @@ export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizM
   useEffect(() => {
     const fetchData = async () => {
       try {
-      const { categories } = await fetchCategories();
+      const { categories } = await fetchCategories(handleLogout);
       setAllCategories(categories);
       } catch (err: any) {
-        //alert(err.message);
+        throw new Error(err);
       }
     };
     fetchData();
@@ -175,7 +177,7 @@ export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizM
   const handleDeleteCategory = async (categoryId: number) => {
     if (window.confirm(`Are you sure you want to delete this category?`)){
       try {
-          const { deletedCategoryId } = await deleteCategory(categoryId);
+          const { deletedCategoryId } = await deleteCategory(categoryId, handleLogout);
           setAllCategories(allCategories.filter(c => c.id !== deletedCategoryId));
 
           const isSelected = form.allQuizCategories.some(c => c.id === categoryId);
@@ -183,7 +185,7 @@ export default function EditQuizModal({ onClose, quizId, onEditQuiz }: EditQuizM
           setAllCategories(prev => prev.filter(c => c.id !== categoryId));
 
       } catch (err: any) {
-          //alert(err.message);
+          throw new Error(err);
       }
     }
   } 

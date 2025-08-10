@@ -12,7 +12,7 @@ import type { QuizCategory } from '../models/QuizCategoryModel';
 import { fetchCategories } from '../services/QuizCategoryService';
 
 export function QuizzesSection() {
-  const { user } = useUserContext();
+  const { user, handleLogout } = useUserContext();
   const { quizzes, setQuizzes, loadingQuizzes } = useQuizContext();
   const [showAddQuizModal, setShowAddQuizModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,10 +26,10 @@ export function QuizzesSection() {
       const fetchData = async () => {
         try {
           setLoadingCategories(true);
-          const { categories } = await fetchCategories();
+          const { categories } = await fetchCategories(handleLogout);
           setAllCategories(categories);
         } catch (err: any) {
-          //alert(err.message);
+          throw new Error(err);
         }
         finally {
           setLoadingCategories(false);
@@ -44,11 +44,11 @@ export function QuizzesSection() {
   const handleAddQuiz = async (quiz: Quiz) => {
     if(quiz.allQuizCategories.length !== 0) {
       try {
-        const { addedQuiz } = await addQuiz(quiz);
+        const { addedQuiz } = await addQuiz(quiz, handleLogout);
         setQuizzes([...quizzes, addedQuiz]);
         setShowAddQuizModal(false);
       } catch (err: any) {
-        //alert(err.message);
+        throw new Error(err);
       }
     }
     else{

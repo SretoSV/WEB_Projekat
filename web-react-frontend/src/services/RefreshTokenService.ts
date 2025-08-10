@@ -1,6 +1,10 @@
 import { serverPath } from "../serverPath";
 
-export async function authFetch(url: string, options: RequestInit = {}) {
+let isLoggingOut = false;
+
+export async function authFetch(url: string, options: RequestInit = {}, onLogout: () => void) {
+    //const { setUser } = useUserContext();
+
     let token = localStorage.getItem("token");
 
     const doFetch = async (t: string) => {
@@ -26,9 +30,12 @@ export async function authFetch(url: string, options: RequestInit = {}) {
         });
 
         if (!refreshResponse.ok) {
-            localStorage.removeItem('user');
-            localStorage.removeItem('token');
-            alert("Authentication failed, please login again.");
+            if (!isLoggingOut) {
+                isLoggingOut = true;
+                alert("Authentication failed, please login again.");
+            }
+            localStorage.clear();
+            onLogout();
             return response;
         }
 

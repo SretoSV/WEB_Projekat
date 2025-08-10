@@ -27,7 +27,7 @@ interface QuizContextType {
 const QuizContext = createContext<QuizContextType | undefined>(undefined);
 
 export const QuizProvider = ({ children }: { children: ReactNode }) => {
-  const { user } = useUserContext();
+  const { user, handleLogout } = useUserContext();
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [quizResult, setQuizResult] = useState<UserQuizResult | null>(null);
   const [finishedQuizResult, setFinishedQuizResult] = useState<UserQuizResult | null>(null);
@@ -41,10 +41,10 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
       const fetchData = async () => {
         setLoadingQuizzes(true);
         try {
-          const { quizzes } = await fetchQuizzes();
+          const { quizzes } = await fetchQuizzes(handleLogout);
           setQuizzes(quizzes);
         } catch (err: any) {
-          alert(err.message);
+          throw new Error(err);
         }finally{
           setLoadingQuizzes(false);
         }
@@ -84,10 +84,10 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
     const savedQuizResult = localStorage.getItem('quizResult');
     if (savedQuizResult) {
       try {
-        const { returnedQuizResult } = await finishQuizFetch(JSON.parse(savedQuizResult));
+        const { returnedQuizResult } = await finishQuizFetch(JSON.parse(savedQuizResult), handleLogout);
         setFinishedQuizResult(returnedQuizResult);
-      } catch (err) {
-        alert("Error finishing quiz!");
+      } catch (err: any) {
+        throw new Error(err);
       }
     }
 

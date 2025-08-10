@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 
 export function QuizCard({ quizId }: { quizId: number }){
     
-    const { user } = useUserContext();
+    const { user, handleLogout } = useUserContext();
     const { quizzes, setQuizzes } = useQuizContext();
     const [showEditQuizModal, setShowEditQuizModal] = useState(false);
 
@@ -24,14 +24,14 @@ export function QuizCard({ quizId }: { quizId: number }){
     const handleEditQuiz = async (quiz: Quiz) => {
         if(quiz.allQuizCategories.length !== 0){
             try {
-                const { editedQuiz } = await editQuiz(quiz);
+                const { editedQuiz } = await editQuiz(quiz, handleLogout);
                 const updatedQuizzes = quizzes.map(q => 
                     q.id === editedQuiz.id ? editedQuiz : q
                 );
                 setQuizzes(updatedQuizzes);
                 setShowEditQuizModal(false);
             } catch (err: any) {
-                alert(err.message);
+                throw new Error(err);
             }
         }    
         else{
@@ -42,10 +42,10 @@ export function QuizCard({ quizId }: { quizId: number }){
     const handleDeleteQuiz = async (quizId: number) => {
         if (window.confirm(`Are you sure you want to delete this quiz?`)){
             try {
-                const { deletedQuizId } = await deleteQuiz(quizId);
+                const { deletedQuizId } = await deleteQuiz(quizId, handleLogout);
                 setQuizzes(quizzes.filter(q => q.id !== deletedQuizId));
             } catch (err: any) {
-                alert(err.message);
+                throw new Error(err);
             }
         }
     }

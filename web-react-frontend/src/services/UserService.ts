@@ -103,8 +103,8 @@ export interface FetchUsersUsernamesResponse {
     allUserUsernames: Array<string>;
 }
 
-export async function fetchAllUsers(): Promise<FetchUsersUsernamesResponse> {
-    const response = await authFetch(`${serverPath()}/api/users`, { method: "GET" });
+export async function fetchAllUsers(onLogout: () => void): Promise<FetchUsersUsernamesResponse> {
+    const response = await authFetch(`${serverPath()}/api/users`, { method: "GET" }, onLogout);
 
     if (response.status === 204) {
         return { allUserUsernames: [] };

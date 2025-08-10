@@ -15,7 +15,7 @@ import { useUserQuizResults } from "../../customHooks/useUserQuizResults";
 import { useUserQuizzes } from "../../customHooks/useUserQuizzes";
 
 export function UserQuizResults(){
-    const { user } = useUserContext();
+    const { user, handleLogout } = useUserContext();
     const navigate = useNavigate();
     const [quizzes, setQuizzes] = useState<Array<QuizDto>>([]);
     const [usersUsernames, setUsersUsernames] = useState<Array<string>>([]);
@@ -58,10 +58,10 @@ export function UserQuizResults(){
     const fetchUsers = async () => {
         try{
             setLoadingUsers(true);
-            const { allUserUsernames } = await fetchAllUsers();
+            const { allUserUsernames } = await fetchAllUsers(handleLogout);
             setUsersUsernames(allUserUsernames);
         }catch(err: any){
-            //alert(err);
+            throw new Error(err);
         }finally{
             setLoadingUsers(false);
         }

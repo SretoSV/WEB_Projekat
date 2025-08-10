@@ -8,8 +8,8 @@ import { authFetch } from "./RefreshTokenService";
 export interface FetchQuizzesResponse {
     quizzes: Array<Quiz>;
 }
-export async function fetchQuizzes(): Promise<FetchQuizzesResponse> {
-    const res = await authFetch(`${serverPath()}/api/quizzes`);
+export async function fetchQuizzes(onLogout: () => void): Promise<FetchQuizzesResponse> {
+    const res = await authFetch(`${serverPath()}/api/quizzes`, { method: "GET" }, onLogout);
     if (res.status === 204) return { quizzes: [] };
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Fetching failed.");
@@ -19,11 +19,8 @@ export async function fetchQuizzes(): Promise<FetchQuizzesResponse> {
 export interface AddQuizResponse {
     addedQuiz: Quiz;
 }
-export async function addQuiz(quiz: Quiz): Promise<AddQuizResponse> {
-    const res = await authFetch(`${serverPath()}/api/quizzes/`, {
-        method: "POST",
-        body: JSON.stringify(quiz),
-    });
+export async function addQuiz(quiz: Quiz, onLogout: () => void): Promise<AddQuizResponse> {
+    const res = await authFetch(`${serverPath()}/api/quizzes/`, { method: "POST", body: JSON.stringify(quiz) }, onLogout);
     if (!res.ok) throw new Error(await res.text() || "Failed to add quiz");
     return { addedQuiz: await res.json() };
 }
@@ -31,11 +28,8 @@ export async function addQuiz(quiz: Quiz): Promise<AddQuizResponse> {
 export interface EditQuizResponse {
     editedQuiz: Quiz;
 }
-export async function editQuiz(quiz: Quiz): Promise<EditQuizResponse> {
-    const res = await authFetch(`${serverPath()}/api/quizzes/${quiz.id}`, {
-        method: "PUT",
-        body: JSON.stringify(quiz),
-    });
+export async function editQuiz(quiz: Quiz, onLogout: () => void): Promise<EditQuizResponse> {
+    const res = await authFetch(`${serverPath()}/api/quizzes/${quiz.id}`, { method: "PUT", body: JSON.stringify(quiz) }, onLogout);
     if (!res.ok) throw new Error(await res.text() || "Failed to edit quiz");
     return { editedQuiz: await res.json() };
 }
@@ -43,8 +37,8 @@ export async function editQuiz(quiz: Quiz): Promise<EditQuizResponse> {
 export interface DeleteQuizResponse {
     deletedQuizId: number;
 }
-export async function deleteQuiz(quizId: number): Promise<DeleteQuizResponse> {
-    const res = await authFetch(`${serverPath()}/api/quizzes/${quizId}`, { method: "DELETE" });
+export async function deleteQuiz(quizId: number, onLogout: () => void): Promise<DeleteQuizResponse> {
+    const res = await authFetch(`${serverPath()}/api/quizzes/${quizId}`, { method: "DELETE" }, onLogout);
     if (!res.ok) throw new Error(await res.text() || "Failed to delete quiz");
     return { deletedQuizId: quizId };
 }
@@ -52,8 +46,8 @@ export async function deleteQuiz(quizId: number): Promise<DeleteQuizResponse> {
 export interface StartQuizResponse {
     startedUserQuizResult: UserQuizResult;
 }
-export async function startQuizFetch(quizId: number): Promise<StartQuizResponse> {
-    const res = await authFetch(`${serverPath()}/api/quizzes/${quizId}/attempts`, { method: "POST" });
+export async function startQuizFetch(quizId: number, onLogout: () => void): Promise<StartQuizResponse> {
+    const res = await authFetch(`${serverPath()}/api/quizzes/${quizId}/attempts`, { method: "POST" }, onLogout);
     if (!res.ok) throw new Error(await res.text() || "Failed to start quiz");
     return { startedUserQuizResult: await res.json() };
 }
@@ -61,11 +55,8 @@ export async function startQuizFetch(quizId: number): Promise<StartQuizResponse>
 export interface FinishQuizResponse {
     returnedQuizResult: UserQuizResult;
 }
-export async function finishQuizFetch(quizResult: UserQuizResult): Promise<FinishQuizResponse> {
-    const res = await authFetch(`${serverPath()}/api/quizzes/attempts/${quizResult.id}`, {
-        method: "PUT",
-        body: JSON.stringify(quizResult),
-    });
+export async function finishQuizFetch(quizResult: UserQuizResult, onLogout: () => void): Promise<FinishQuizResponse> {
+    const res = await authFetch(`${serverPath()}/api/quizzes/attempts/${quizResult.id}`, { method: "PUT", body: JSON.stringify(quizResult) }, onLogout);
     if (!res.ok) throw new Error(await res.text() || "Failed to finish quiz");
     return { returnedQuizResult: await res.json() };
 }
@@ -73,9 +64,9 @@ export async function finishQuizFetch(quizResult: UserQuizResult): Promise<Finis
 export interface FetchUserQuizzesResponse {
     quizzes: Array<QuizDto>;
 }
-export async function fetchQuizzesByUserUsername(username: string): Promise<FetchUserQuizzesResponse> {
+export async function fetchQuizzesByUserUsername(username: string, onLogout: () => void): Promise<FetchUserQuizzesResponse> {
     if (!username) return { quizzes: [] };
-    const res = await authFetch(`${serverPath()}/api/quizzes/${username}`);
+    const res = await authFetch(`${serverPath()}/api/quizzes/${username}`, { method: "GET" }, onLogout);
     if (res.status === 204) return { quizzes: [] };
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Fetching failed.");
@@ -85,9 +76,9 @@ export async function fetchQuizzesByUserUsername(username: string): Promise<Fetc
 export interface FetchQuizResultsByUserUsernameAndQuizIdResponse {
     results: Array<UserQuizResult>;
 }
-export async function fetchQuizResultsByUserUsernameAndQuizId(username: string, quizId: number): Promise<FetchQuizResultsByUserUsernameAndQuizIdResponse> {
+export async function fetchQuizResultsByUserUsernameAndQuizId(username: string, quizId: number, onLogout: () => void): Promise<FetchQuizResultsByUserUsernameAndQuizIdResponse> {
     if (!username || quizId <= 0) return { results: [] };
-    const res = await authFetch(`${serverPath()}/api/quizzes/${quizId}/${username}`);
+    const res = await authFetch(`${serverPath()}/api/quizzes/${quizId}/${username}`, { method: "GET" }, onLogout);
     if (res.status === 204) return { results: [] };
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Fetching failed.");
@@ -98,9 +89,9 @@ export interface FetchQuizResultsByQuizIdResponse {
     results: Array<UserQuizResult>;
     profiles: Array<UserDto>;
 }
-export async function fetchQuizResultsQuizId(quizId: number): Promise<FetchQuizResultsByQuizIdResponse> {
+export async function fetchQuizResultsQuizId(quizId: number, onLogout: () => void): Promise<FetchQuizResultsByQuizIdResponse> {
     if (quizId <= 0) return { results: [], profiles: [] };
-    const res = await authFetch(`${serverPath()}/api/quizzes/results/${quizId}`);
+    const res = await authFetch(`${serverPath()}/api/quizzes/results/${quizId}`, { method: "GET" }, onLogout);
     if (res.status === 204) return { results: [], profiles: [] };
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Fetching failed.");

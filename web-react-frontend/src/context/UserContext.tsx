@@ -9,6 +9,7 @@ interface UserContextType {
   token: string | null;
   login: (userData: User, userToken: string, refreshToken: string) => void;
   logout: () => void;
+  handleLogout: () => void;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
@@ -45,13 +46,10 @@ export function UserProvider({ children }: UserProviderProps) {
   const logout = async () => {
     try {
       await logoutUser();
-      setUser(null);
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
+      handleLogout();
     } 
     catch (err: any) {
-        //alert(`Error from server: ${err.message}`);
+      throw new Error(err);
     }
       
     //localStorage.removeItem('quizResult');
@@ -59,8 +57,15 @@ export function UserProvider({ children }: UserProviderProps) {
     //localStorage.removeItem('currentUserAnswerIndex');
   };
 
+  const handleLogout = async () => {
+    setUser(null);
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+  };
+
   return (
-    <UserContext.Provider value={{ user, token, login, logout, setUser }}>
+    <UserContext.Provider value={{ user, token, login, logout, handleLogout, setUser }}>
       {children}
     </UserContext.Provider>
   );

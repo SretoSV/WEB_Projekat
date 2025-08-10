@@ -15,7 +15,7 @@ import { FillInTheBlank } from "../../components/UserAnswerOptionsComponents/Fil
 import { useUserContext } from "../../context/UserContext";
 
 export function StartQuizPage() {
-    const { user } = useUserContext();
+    const { user, handleLogout } = useUserContext();
     const navigate = useNavigate();
     const { quizId } = useParams();
     const { quizzes, quizResult, startQuiz, setFinishedQuizResult, currentUserAnswerIndex, timeLeft, restoreTimer, initializeTimer, handleSetIndex, finishQuiz, incrementIndex, decrementIndex, finishedQuizResult } = useQuizContext();
@@ -59,13 +59,13 @@ export function StartQuizPage() {
         
         try {
             const quizIdNumber = parseInt(quizId ?? "0");
-            const { startedUserQuizResult } = await startQuizFetch(quizIdNumber);
+            const { startedUserQuizResult } = await startQuizFetch(quizIdNumber, handleLogout);
             
             initializeTimer(quiz?.timeLimitSeconds || 0);
 
             startQuiz(startedUserQuizResult);
-        } catch (err) {
-            //alert("Error starting quiz!");
+        } catch (err: any) {
+            throw new Error(err);
         }
     }
 

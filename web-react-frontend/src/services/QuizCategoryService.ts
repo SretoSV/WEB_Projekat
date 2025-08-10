@@ -7,8 +7,8 @@ export interface FetchCategoriesResponse {
   categories: Array<QuizCategory>;
 }
 
-export async function fetchCategories(): Promise<FetchCategoriesResponse> {
-  const response = await authFetch(`${serverPath()}/api/categories`, { method: "GET" });
+export async function fetchCategories(onLogout: () => void): Promise<FetchCategoriesResponse> {
+  const response = await authFetch(`${serverPath()}/api/categories`, { method: "GET" }, onLogout);
   if (response.status === 204) { return { categories: [] }; }
   const data = await response.json();
   if (!response.ok) { throw new Error(data.message || "Fetching categories failed."); }
@@ -19,8 +19,8 @@ export interface DeleteCategoryResponse {
   deletedCategoryId: number;
 }
 
-export async function deleteCategory(categoryId: number): Promise<DeleteCategoryResponse> {
-  const response = await authFetch(`${serverPath()}/api/categories/${categoryId}`, { method: "DELETE" });
+export async function deleteCategory(categoryId: number, onLogout: () => void): Promise<DeleteCategoryResponse> {
+  const response = await authFetch(`${serverPath()}/api/categories/${categoryId}`, { method: "DELETE" }, onLogout);
   if (!response.ok) {
       const errorText = await response.text();
       throw new Error(errorText || "Failed to delete category");
