@@ -55,6 +55,12 @@ export function StartQuizPage() {
         }
     }, [user]);
 
+    useEffect(() => {
+        if (quizResult) {
+            navigate(`/StartQuizPage/${quizResult.quizId}`, { replace: true });
+        }
+    }, [quizResult]);
+
     const handleStartQuiz = async () => {
         
         try {

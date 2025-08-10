@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 export function AdminAllQuizzesPage(){
     const { user } = useUserContext();
+
     const navigate = useNavigate();
     useEffect(() => {
         if(!localStorage.getItem('user') || !user){

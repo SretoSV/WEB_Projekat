@@ -13,9 +13,11 @@ import { SelectionArea } from "../../components/UserResultsPageComponents/Select
 import { useNavigate } from "react-router-dom";
 import { useUserQuizResults } from "../../customHooks/useUserQuizResults";
 import { useUserQuizzes } from "../../customHooks/useUserQuizzes";
+import { useQuizContext } from "../../context/QuizContext";
 
 export function UserQuizResults(){
     const { user, handleLogout } = useUserContext();
+    const { quizResult } = useQuizContext();
     const navigate = useNavigate();
     const [quizzes, setQuizzes] = useState<Array<QuizDto>>([]);
     const [usersUsernames, setUsersUsernames] = useState<Array<string>>([]);
@@ -54,6 +56,12 @@ export function UserQuizResults(){
             setQuizzes(dataQuizzes.quizzes);
         }
     }, [dataQuizzes]);
+
+    useEffect(() => {
+        if (quizResult) {
+            navigate(`/StartQuizPage/${quizResult.quizId}`, { replace: true });
+        }
+    }, [quizResult]);
 
     const fetchUsers = async () => {
         try{

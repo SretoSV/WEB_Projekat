@@ -9,10 +9,11 @@ import type { UserDto } from "../models/UserModel";
 import { useUserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useQuizResults } from "../customHooks/useQuizResults";
+import { useQuizContext } from "../context/QuizContext";
 
 export function GlobalRanglist(){
-    
     const { user } = useUserContext();
+    const { quizResult } = useQuizContext();
     const navigate = useNavigate();
     const [allResults, setAllResults] = useState<Array<UserQuizResult>>([]);
     const [results, setResults] = useState<Array<UserQuizResult>>([]);
@@ -30,16 +31,23 @@ export function GlobalRanglist(){
     }
     }, [data]);
 
-    const handleChangeQuiz = (value: string) => { 
-        if (value === "") return;
-        setSelectedQuizId(Number(value));
-    };
-
+    
     useEffect(() => {
         if(!localStorage.getItem('user')){
             navigate("../Login");
         }
     }, [user]);
+    
+    useEffect(() => {
+        if (quizResult) {
+            navigate(`/StartQuizPage/${quizResult.quizId}`, { replace: true });
+        }
+    }, [quizResult]);
+    
+    const handleChangeQuiz = (value: string) => { 
+        if (value === "") return;
+        setSelectedQuizId(Number(value));
+    };
 
     const handleChangeTimePeriod = (period: string) => {
         setSelectedTimePeriod(period);
