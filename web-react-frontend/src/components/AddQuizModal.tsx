@@ -58,7 +58,7 @@ export default function AddQuizModal({ onClose, onAddQuiz }: EditQuizModalProps)
       const { categories } = await fetchCategories();
       setAllCategories(categories);
       } catch (err: any) {
-        alert(err.message);
+        //alert(err.message);
       }
     };
     fetchData();
@@ -167,7 +167,7 @@ export default function AddQuizModal({ onClose, onAddQuiz }: EditQuizModalProps)
           setAllCategories(prev => prev.filter(c => c.id !== categoryId));
 
       } catch (err: any) {
-          alert(err.message);
+          //alert(err.message);
       }
     }
   }  

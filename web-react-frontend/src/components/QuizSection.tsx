@@ -29,7 +29,7 @@ export function QuizzesSection() {
           const { categories } = await fetchCategories();
           setAllCategories(categories);
         } catch (err: any) {
-          alert(err.message);
+          //alert(err.message);
         }
         finally {
           setLoadingCategories(false);
@@ -48,7 +48,7 @@ export function QuizzesSection() {
         setQuizzes([...quizzes, addedQuiz]);
         setShowAddQuizModal(false);
       } catch (err: any) {
-        alert(err.message);
+        //alert(err.message);
       }
     }
     else{

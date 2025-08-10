@@ -61,7 +61,7 @@ export function UserQuizResults(){
             const { allUserUsernames } = await fetchAllUsers();
             setUsersUsernames(allUserUsernames);
         }catch(err: any){
-            alert(err);
+            //alert(err);
         }finally{
             setLoadingUsers(false);
         }

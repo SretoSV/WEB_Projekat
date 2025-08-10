@@ -65,7 +65,7 @@ export function StartQuizPage() {
 
             startQuiz(startedUserQuizResult);
         } catch (err) {
-            alert("Error starting quiz!");
+            //alert("Error starting quiz!");
         }
     }
 

@@ -1,12 +1,11 @@
 import type { User } from "../models/UserModel";
 import { serverPath } from "../serverPath";
+import { authFetch } from "./RefreshTokenService";
 
 export interface LoginResponse {
     userData: User;
     userToken: string;
-}
-export interface RegisterResponse {
-    message: string;
+    refreshToken: string;
 }
 
 export async function loginUser(loginForm: { usernameOrEmail: string; password: string }): Promise<LoginResponse> {
@@ -34,11 +33,48 @@ export async function loginUser(loginForm: { usernameOrEmail: string; password: 
 
         return {
             userData,
-            userToken: data.token
+            userToken: data.token,
+            refreshToken: data.refreshToken
         };
     } catch (err: any) {
         throw new Error(err.message || 'Server error. Try again later.');
     }
+}
+
+export interface LogoutResponse {
+    message: string;
+}
+
+export async function logoutUser(): Promise<LogoutResponse> {
+    const token = localStorage.getItem('token');
+    const refreshTokenHash = localStorage.getItem('refreshToken');
+    
+    try {
+        const response = await fetch(`${serverPath()}/api/users/logout`, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ refreshTokenHash }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Logout failed.');
+        }
+        
+        return {
+            message: data.message
+        };
+    } catch (err: any) {
+        throw new Error(err.message || 'Server error. Try again later.');
+    }
+}
+
+export interface RegisterResponse {
+    message: string;
 }
 
 export async function registerUser(formData: FormData): Promise<RegisterResponse> {
@@ -68,36 +104,20 @@ export interface FetchUsersUsernamesResponse {
 }
 
 export async function fetchAllUsers(): Promise<FetchUsersUsernamesResponse> {
-    const token = localStorage.getItem('token');
+    const response = await authFetch(`${serverPath()}/api/users`, { method: "GET" });
 
-    try {
-        const response = await fetch(`${serverPath()}/api/users`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            }
-        });
-
-        if (response.status === 204) {
-            return { allUserUsernames: [] };
-        }
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || 'Fetching failed.');
-        }
-
-       return {
-            allUserUsernames: data,
-        };
-
-    } catch (err: any) {
-        throw new Error(err.message || 'Server error. Try again later.');
+    if (response.status === 204) {
+        return { allUserUsernames: [] };
     }
 
-}
+    const data = await response.json();
 
+    if (!response.ok) {
+        throw new Error(data.message || "Fetching failed.");
+    }
+
+    return { allUserUsernames: data };
+}
 
 export function validateAndExtractImageFile(file: File | null): { valid: boolean; error?: string; file?: File; fileName?: string } {
     if (!file) {

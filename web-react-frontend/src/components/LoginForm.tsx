@@ -19,8 +19,8 @@ export function LoginForm(){
         }
         else{
             try {
-                const { userData, userToken } = await loginUser(loginForm);
-                login(userData, userToken);
+                const { userData, userToken, refreshToken } = await loginUser(loginForm);
+                login(userData, userToken, refreshToken);
             } 
             catch (err: any) {
                 alert(`Error from server: ${err.message}`);
