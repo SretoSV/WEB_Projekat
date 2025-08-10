@@ -9,7 +9,7 @@ namespace KvizHub.Services.Interfaces
         Task<List<string>> GetAllUsersUsernames();
         Task LogoutAsync(string refreshTokenHash);
         Task<bool> IsTokenActive(string refreshTokenHash);
-        Task<AccessAndRefreshTokenDto> GetNewAccessAndRefreshToken(string ipAddress, string refreshTokenHash);
+        Task<AccessTokenDto> GetNewAccessToken(string refreshTokenHash);
 
 
     }

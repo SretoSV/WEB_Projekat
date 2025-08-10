@@ -86,6 +86,7 @@ namespace KvizHub.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout(RefreshTokenHashDto dto)
         {
@@ -116,10 +117,7 @@ namespace KvizHub.Controllers
             else {
                 try 
                 {
-                    var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-                    AccessAndRefreshTokenDto result = await _userService.GetNewAccessAndRefreshToken(ipAddress, dto.RefreshTokenHash);
-
-                    await _userService.LogoutAsync(dto.RefreshTokenHash);// uloni se stari refresh-token
+                    AccessTokenDto result = await _userService.GetNewAccessToken(dto.RefreshTokenHash);
 
                     return Ok(result);
                 }

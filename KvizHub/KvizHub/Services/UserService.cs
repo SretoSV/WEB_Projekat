@@ -114,7 +114,7 @@ namespace KvizHub.Services
             return await _refreshTokenDao.IsTokenActive(refreshTokenHash);
         }
 
-        public async Task<AccessAndRefreshTokenDto> GetNewAccessAndRefreshToken(string ipAddress, string refreshTokenHash) {
+        public async Task<AccessTokenDto> GetNewAccessToken(string refreshTokenHash) {
             var token = await _refreshTokenDao.GetByTokenHashAsync(refreshTokenHash);
             User user = await _userDao.GetUserByIdAsync(token.UserId);
 
@@ -125,12 +125,9 @@ namespace KvizHub.Services
                 new Claim(ClaimTypes.Role, user.IsAdmin ? "admin" : "user")
             };
 
-            var ip = GetIpAddress(ipAddress);
             string newAccessToken = GetAccessToken(claims);
 
-            var newRefreshTokenHash = await GetRefreshToken(ip, token.UserId);
-
-            return new AccessAndRefreshTokenDto { AccessToken = newAccessToken, RefreshToken = newRefreshTokenHash };
+            return new AccessTokenDto { AccessToken = newAccessToken };
         }
 
         #region Helpers
@@ -160,7 +157,7 @@ namespace KvizHub.Services
             var tokeOptions = new JwtSecurityToken(
                 issuer: "http://localhost:5213",
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(20),
+                expires: DateTime.UtcNow.AddMinutes(1),
                 signingCredentials: signinCredentials
             );
             string tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
