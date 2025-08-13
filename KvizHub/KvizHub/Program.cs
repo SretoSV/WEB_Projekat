@@ -11,6 +11,7 @@ using KvizHub.Profiles;
 using AutoMapper;
 using KvizHub.Models;
 using Microsoft.AspNetCore.Identity;
+using KvizHub.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
@@ -49,6 +50,23 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["SecretKey"]!)),
         ClockSkew = TimeSpan.Zero
     };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken) &&
+                path.StartsWithSegments("/signalrhub"))
+            {
+                context.Token = accessToken;
+            }
+
+            return Task.CompletedTask;
+        }
+    };
 });
 
 builder.Services.AddScoped<IUserDao, UserDao>();
@@ -58,9 +76,11 @@ builder.Services.AddScoped<ICategoryDao, CategoryDao>();
 builder.Services.AddScoped<IResultDao, ResultDao>();
 builder.Services.AddScoped<IRefreshTokenDao, RefreshTokenDao>();
 builder.Services.AddScoped<IAnswerDao, AnswerDao>();
+builder.Services.AddScoped<IGameRoomDao, GameRoomDao>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
+builder.Services.AddScoped<IGameRoomService, GameRoomService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IPasswordHasher<string>, PasswordHasher<string>>();
 
@@ -77,9 +97,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 app.UseCors("AllowLocalhost5173");
+
+app.MapHub<SignalRHub>("/signalrhub");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -12,5 +12,6 @@ namespace KvizHub.DAO
         Task<bool> RegisterUser(User user);
         Task<List<string>> GetAllUsersUsernames();
         Task<List<User>> GetAllUsersByUsersIds(List<int> userIds);
+        Task<int> GetUserIdByUsername(string username);
     }
 }

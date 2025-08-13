@@ -4,6 +4,7 @@ using KvizHub.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KvizHub.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250813142607_AddIsFinishedToGameRoom")]
+    partial class AddIsFinishedToGameRoom
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,7 +84,7 @@ namespace KvizHub.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsFinished")
+                    b.Property<bool>("IsFinised")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<int>("NumberOfUsers")
@@ -379,7 +382,7 @@ namespace KvizHub.Migrations
                             Id = 1,
                             Email = "anaanic@gmail.com",
                             IsAdmin = true,
-                            PasswordHash = "AQAAAAIAAYagAAAAECt6FLDYFiEyp/IhRdaF/qD8WSa17Z08Laop3QjTxRe6eQz0Ki2hwUv4sap3r2G5xA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBC8458wwBEzTnV3j2WtdIPQCFItjXRzVFUTU+BglKLmssn3oAGLwbzMoGo/OyKbxw==",
                             Username = "Ana123"
                         });
                 });

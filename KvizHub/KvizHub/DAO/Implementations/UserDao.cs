@@ -114,5 +114,19 @@ namespace KvizHub.DAO.Implementations
                 .Where(u => userIds.Contains(u.Id))
                 .ToListAsync();
         }
+
+        public async Task<int> GetUserIdByUsername(string username)
+        {
+            var user = await _context.Users
+                .Where(u => u.Username == username)
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            return user.Id;
+        }
     }
 }

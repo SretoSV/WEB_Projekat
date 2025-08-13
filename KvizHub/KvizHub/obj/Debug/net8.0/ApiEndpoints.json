@@ -179,6 +179,32 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "KvizHub.Controllers.GameRoomController",
+    "Method": "GetAllGameRooms",
+    "RelativePath": "api/rooms",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KvizHub.Controllers.GameRoomController",
+    "Method": "Add",
+    "RelativePath": "api/rooms",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "KvizHub.DTO.GameRoomDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "KvizHub.Controllers.UserController",
     "Method": "GetAllUsersUsernames",
     "RelativePath": "api/users",

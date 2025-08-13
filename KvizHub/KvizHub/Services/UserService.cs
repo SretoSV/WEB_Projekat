@@ -130,6 +130,11 @@ namespace KvizHub.Services
             return new AccessTokenDto { AccessToken = newAccessToken };
         }
 
+        public async Task<int> GetUserIdByUsername(string username)
+        {
+            return await _userDao.GetUserIdByUsername(username);
+        }
+
         #region Helpers
         private string GenerateRefreshToken()
         {
@@ -184,6 +189,7 @@ namespace KvizHub.Services
             var ip = ipAddress ?? "Unknown";
             return ip;
         }
+
         #endregion
 
     }

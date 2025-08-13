@@ -40,6 +40,47 @@
         }
       }
     },
+    "/api/rooms": {
+      "get": {
+        "tags": [
+          "GameRoom"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "GameRoom"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GameRoomDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GameRoomDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GameRoomDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/quizzes": {
       "post": {
         "tags": [
@@ -468,6 +509,34 @@
         },
         "additionalProperties": false
       },
+      "GameRoomDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quizID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numberOfUsers": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isFinished": {
+            "type": "boolean"
+          },
+          "roomParticipants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoomParticipantDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "LoginUserDto": {
         "type": "object",
         "properties": {
@@ -593,6 +662,27 @@
         },
         "additionalProperties": false
       },
+      "RoomParticipantDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gameRoomId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userProfile": {
+            "$ref": "#/components/schemas/UserProfileForRanglistDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "UserAnswerDto": {
         "type": "object",
         "properties": {
@@ -651,6 +741,25 @@
           "userAnswerId": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserProfileForRanglistDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "profileImage": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
           }
         },
         "additionalProperties": false
