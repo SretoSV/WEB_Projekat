@@ -32,11 +32,13 @@ export function Navigation(){
                 <a className={`${styles.Links} ${styles.LinksBorder}`} href="../AdminAllQuizzes">All quizzes</a>
                 <a className={`${styles.Links} ${styles.LinksBorder}`} href="../UserQuizResults">Users results</a>
                 <a className={`${styles.Links} ${styles.LinksBorder}`} href="../GlobalRanglist">Global ranglist</a>
+                <a className={`${styles.Links} ${styles.LinksBorder}`} href="../OnlineQuizCompetition">Online quiz competition</a>
                 </>
                 :
                 <>
                 <a className={`${styles.Links} ${styles.LinksBorder}`} href="../UserAllQuizzes">All quizzes</a>
                 <a className={`${styles.Links} ${styles.LinksBorder}`} href="../GlobalRanglist">Global ranglist</a>
+                <a className={`${styles.Links} ${styles.LinksBorder}`} href="../OnlineQuizCompetition">Online quiz competition</a>
                 </>
             } 
         </div>

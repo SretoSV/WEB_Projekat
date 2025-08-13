@@ -1,0 +1,50 @@
+.mainDiv {
+    background-color: var(--background-color);  
+    color: var(--main-text-color);
+    padding: 0px 20px;
+    border-radius: 10px;
+    width: 850px;
+    margin: 20px auto;
+    border: 3px solid var(--primary-color);
+}
+
+.filtersDiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 30px;
+}
+
+.cardDiv{
+    display: flex;
+    flex-direction: column;
+    border: 3px solid var(--primary-color);
+    border-radius: 15px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.buttonAdd{
+    margin-left: auto;
+}
+
+.profileImage{
+    width: 50px;
+    height: 50px;
+    border: 2px solid var(--primary-color);
+    margin-right: 5px;
+    border-radius: 50px;
+}
+
+.participantProfile{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
+    margin-bottom: 5px;
+    padding: 5px;
+    width: fit-content;
+}

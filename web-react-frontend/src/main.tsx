@@ -11,6 +11,7 @@ import { StartQuizPage } from './pages/User/StartQuizPage.tsx';
 import { QuizProvider } from './context/QuizContext.tsx';
 import { GlobalRanglist } from './pages/GlobalRanglistPage.tsx';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { OnlineQuizCompetition } from './pages/OnlineQuizCompetition.tsx';
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
   {
     path: "/GlobalRanglist",
     element: <GlobalRanglist />
+  },
+  {
+    path: "/OnlineQuizCompetition",
+    element: <OnlineQuizCompetition />
   },
   {
     path: "*",

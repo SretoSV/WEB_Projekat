@@ -24,7 +24,7 @@ export function CompareQuestionAndAnswer({selectedQuizId, finishedQuizResult}: C
                                             return <div key={answerOption.id} className={styles.addPadding}>{answerOption.text + " | " + answerOption.fieldAnswerText}</div>
                                         }
                                         else{
-                                            return <div key={answerOption.id} className={styles.addPadding}>{answerOption.text + " | " + answerOption.isCorrect}</div>
+                                            return <div key={answerOption.id} className={styles.addPadding}>{answerOption.text + " | " + answerOption?.isCorrect}</div>
                                         }
                                     })
                                 }
@@ -44,13 +44,13 @@ export function CompareQuestionAndAnswer({selectedQuizId, finishedQuizResult}: C
                                 </div>
                                 {
                                     userAnswer?.userAnswerOptions?.map((userAnswerOption, indexOptions) => {
-                                        if(userAnswerOption?.isCorrect === quiz?.questions[index].answerOptions[indexOptions].isCorrect){
+                                        if(userAnswerOption?.isCorrect === quiz?.questions[index].answerOptions[indexOptions]?.isCorrect){
                                             
                                             if(quiz?.questions[index].questionTypeId === 4){
                                                 return <div key={userAnswerOption.id} className={styles.addPadding}>{userAnswerOption.text + " | " + (userAnswerOption.fieldAnswerText === null ? "" : userAnswerOption.fieldAnswerText)}</div>
                                             }
                                             else{
-                                                return <div key={userAnswerOption.id} className={styles.addPadding}>{userAnswerOption.text + " | " + (userAnswerOption.isCorrect === null ? "" : userAnswerOption.isCorrect)}</div>
+                                                return <div key={userAnswerOption.id} className={styles.addPadding}>{userAnswerOption.text + " | " + (userAnswerOption?.isCorrect === null ? "" : userAnswerOption?.isCorrect)}</div>
                                             }
                                         }
                                         else{
@@ -58,7 +58,7 @@ export function CompareQuestionAndAnswer({selectedQuizId, finishedQuizResult}: C
                                                 return <div key={userAnswerOption.id} className={styles.wrongUserAnswer}>{userAnswerOption.text + " | " + (userAnswerOption.fieldAnswerText === null ? "" : userAnswerOption.fieldAnswerText)}</div>
                                             }
                                             else{
-                                                return <div key={userAnswerOption.id} className={styles.wrongUserAnswer}>{userAnswerOption.text + " | " + (userAnswerOption.isCorrect === null ? "" : userAnswerOption.isCorrect)}</div>
+                                                return <div key={userAnswerOption.id} className={styles.wrongUserAnswer}>{userAnswerOption.text + " | " + (userAnswerOption?.isCorrect === null ? "" : userAnswerOption?.isCorrect)}</div>
                                             }
                                         }
                                     })
