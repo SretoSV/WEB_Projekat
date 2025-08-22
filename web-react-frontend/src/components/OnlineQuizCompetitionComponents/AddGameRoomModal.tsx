@@ -14,6 +14,7 @@ export function AddGameRoomModal({onAddGameRoom}: AddGameRoomModalProps){
         id: 0,
         quizID: 0,
         numberOfUsers: 0,
+        isStarted: false,
         isFinished: false,
     });
 

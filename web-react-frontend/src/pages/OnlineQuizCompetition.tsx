@@ -38,8 +38,18 @@ export function OnlineQuizCompetition(){
         socket.start().then(() => {
             console.log("Connected to WebSocket");
 
-            socket.on("start_message", (data: any) => {
-                console.log("Working received data:", data);
+            socket.on("start_message", (gameRoomId: number) => {
+                console.log("Working received data:", gameRoomId);
+                setGameRooms(prevRooms => {
+                    return prevRooms.map(room => {
+                        if (room.id !== gameRoomId) return room;
+
+                        return {
+                            ...room,
+                            isStarted: true
+                        };
+                    });
+                });
             });
 
             socket.on("join_message", (data: RoomParticipant) => {
@@ -62,11 +72,27 @@ export function OnlineQuizCompetition(){
                 }
             });
 
+            socket.on("leave_message", (participantId: number) => {
+                setGameRooms(prevRooms => {
+                    return prevRooms.map(room => {
+                        const participantExists = room.roomParticipants?.some(p => p.id === participantId);
+                        if (!participantExists) return room;
+
+                        return {
+                            ...room,
+                            numberOfUsers: Math.max(0, room.numberOfUsers - 1),
+                            roomParticipants: room.roomParticipants?.filter(p => p.id !== participantId) || []
+                        };
+                    });
+                });
+            });
+
         });
     
         return () => {
             socket.off("start_message");
             socket.off("join_message");
+            socket.off("leave_message");
         };
     }, []);
 
@@ -85,6 +111,10 @@ export function OnlineQuizCompetition(){
 
     const handleJoin = async (gameRoomId: number) => {
         socket.invoke("JoinGameRoom", "join_message", gameRoomId, user?.username);
+    }
+
+    const handleLeave = async (gameRoomId: number) => {
+        socket.invoke("LeaveGameRoom", "leave_message", gameRoomId, user?.username);
     }
 
     return <>
@@ -115,8 +145,10 @@ export function OnlineQuizCompetition(){
                         id={gameRoom.id}
                         quizId={gameRoom.quizID}
                         numberOfUsers={gameRoom.numberOfUsers}
+                        isStarted={gameRoom.isStarted}
                         onJoin={handleJoin}
                         onStart={handleStart}
+                        onLeave={handleLeave}
                         roomParticipants={gameRoom.roomParticipants || []}
                     />
                 ))

@@ -5,17 +5,20 @@ import { useUserContext } from '../../context/UserContext';
 import { useQuizContext } from '../../context/QuizContext';
 import type { RoomParticipant } from '../../models/RoomParticipantModel';
 import placeHolder from '../../images/placeHolder.png';
+import ButtonWithText from '../ButtonWithText';
 
 interface GameRoomCardProps{
     id: number;
     quizId: number;
     numberOfUsers: number;
+    isStarted: boolean;
     onJoin: (gameRoomId: number) => void;
     onStart: (gameRoomId: number) => void;
+    onLeave: (gameRoomId: number) => void;
     roomParticipants: Array<RoomParticipant>;
 }
 
-export function GameRoomCard({id, quizId, onJoin, onStart, roomParticipants}: GameRoomCardProps){
+export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isStarted, roomParticipants}: GameRoomCardProps){
     const { user } = useUserContext();
     const { quizzes } = useQuizContext();
 
@@ -43,6 +46,9 @@ export function GameRoomCard({id, quizId, onJoin, onStart, roomParticipants}: Ga
                             alt="profile"
                             />
                         <div>{roomParticipant.userProfile?.username}</div>
+                        {user?.username === roomParticipant.userProfile?.username &&
+                            <ButtonWithText text="Leave" onClick1={() => onLeave(id)}/>
+                        }
                     </div>
                 ))
             }
@@ -50,9 +56,15 @@ export function GameRoomCard({id, quizId, onJoin, onStart, roomParticipants}: Ga
 
             {
                 user && user.isAdmin ? 
-                <ButtonWithLongText text="Start" onClick1={() => onStart(id)}/>    
+                    isStarted ? 
+                    <div>Active</div>
+                    :
+                    <ButtonWithLongText text="Start" onClick1={() => onStart(id)}/>    
                 :
-                <ButtonWithLongText text="Join" onClick1={() => onJoin(id)}/>    
+                    isStarted ? 
+                    <div>Active</div>
+                    :
+                    <ButtonWithLongText text="Join" onClick1={() => onJoin(id)}/>    
             }
         </div>
         </motion.div>
