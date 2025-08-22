@@ -79,5 +79,21 @@ namespace KvizHub.Services
                 UserProfile = new UserProfileForRanglistDto { Id = user.Id, Username = userUsername, ProfileImage = user.ProfileImage }
             };
         }
+        public async Task<int> LeaveGameRoom(int gameRoomId, string userUsername)
+        {
+            var user = await _userDao.GetUserByUsernameOrEmailAsync(userUsername);
+            var existingParticipant = await _gameRoomDao.IsUserExistsInGameRoom(gameRoomId, user.Id);
+
+            if (existingParticipant == null)
+            {
+                return -1;
+            }
+
+            if (await _gameRoomDao.RemoveUserFromGameRoom(existingParticipant.Id)) {
+                return existingParticipant.Id;
+            }
+
+            return -1;
+        }
     }
 }

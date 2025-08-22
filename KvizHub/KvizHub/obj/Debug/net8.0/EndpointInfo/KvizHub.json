@@ -524,6 +524,9 @@
             "type": "integer",
             "format": "int32"
           },
+          "isStarted": {
+            "type": "boolean"
+          },
           "isFinished": {
             "type": "boolean"
           },

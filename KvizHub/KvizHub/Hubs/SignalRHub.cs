@@ -20,15 +20,25 @@ namespace KvizHub.Hubs
         [Authorize(Roles = "admin")]
         public async Task StartCompetition(string eventName, int gameRoomId)
         {
-            await Clients.All.SendAsync(eventName, $"START {gameRoomId}!");
+            await Groups.AddToGroupAsync(Context.ConnectionId, gameRoomId.ToString()); //dodajem admina u grupu da i on dobije signal da je startovao taj room
+            await Clients.Group(gameRoomId.ToString()).SendAsync(eventName, gameRoomId);
+            //await Clients.Group(gameRoomId.ToString()).SendAsync(eventName, //return quiz);
         }
 
         [Authorize(Roles = "user")]
         public async Task JoinGameRoom(string eventName, int gameRoomId, string userUsermame)
         {
             RoomParticipantDto roomParticipantDto = await _gameRoomService.JoinGameRoom(gameRoomId, userUsermame);
-
+            await Groups.AddToGroupAsync(Context.ConnectionId, gameRoomId.ToString());
             await Clients.All.SendAsync(eventName, roomParticipantDto);
+        }
+
+        [Authorize(Roles = "user")]
+        public async Task LeaveGameRoom(string eventName, int gameRoomId, string userUsermame)
+        {
+            int roomParticipantId = await _gameRoomService.LeaveGameRoom(gameRoomId, userUsermame);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, gameRoomId.ToString());
+            await Clients.All.SendAsync(eventName, roomParticipantId);
         }
 
     }

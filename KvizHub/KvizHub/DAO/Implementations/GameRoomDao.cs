@@ -40,6 +40,17 @@ namespace KvizHub.DAO.Implementations
             return await _context.RoomParticipants
                  .FirstOrDefaultAsync(rp => rp.GameRoomId == gameRoomId && rp.UserId == userId);
         }
+        public async Task<bool> RemoveUserFromGameRoom(int id)
+        {
+            var participant = await _context.RoomParticipants.FindAsync(id);
+
+            if (participant == null)
+                return false;
+
+            _context.RoomParticipants.Remove(participant);
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
     }
 }

@@ -9,5 +9,6 @@ namespace KvizHub.DAO
         Task<GameRoom> AddGameRoomAsync(GameRoom gameRoom);
         Task<RoomParticipant> AddUserToGameRoom(RoomParticipant roomParticipant);
         Task<RoomParticipant> IsUserExistsInGameRoom(int gameRoomId, int userId);
+        Task<bool> RemoveUserFromGameRoom(int id);
     }
 }

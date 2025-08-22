@@ -7,6 +7,7 @@ namespace KvizHub.DTO
         public int Id { get; set; }
         public int QuizID { get; set; }
         public int NumberOfUsers { get; set; }
+        public bool IsStarted { get; set; }
         public bool IsFinished { get; set; }
 
         public ICollection<RoomParticipantDto>? RoomParticipants { get; set; }
