@@ -18,10 +18,9 @@ export function StartQuizPage() {
     const { user, handleLogout } = useUserContext();
     const navigate = useNavigate();
     const { quizId } = useParams();
-    const { quizzes, quizResult, startQuiz, setFinishedQuizResult, currentUserAnswerIndex, timeLeft, restoreTimer, initializeTimer, handleSetIndex, finishQuiz, incrementIndex, decrementIndex, finishedQuizResult } = useQuizContext();
+    const { quizzes, quizResult, startQuiz, setFinishedQuizResult,iDontKnowStates, setIDontKnowStates, currentUserAnswerIndex, timeLeft, restoreTimer, initializeTimer, handleSetIndex, finishQuiz, incrementIndex, decrementIndex, finishedQuizResult } = useQuizContext();
 
     const [fillInAnswer, setFillInAnswer] = useState<string>("");
-    const [iDontKnowStates, setIDontKnowStates] = useState<boolean[]>([]);
     const quiz = quizzes.find(q => q.id === parseInt(quizId ?? "0"));
 
     useEffect(() => {
@@ -29,14 +28,6 @@ export function StartQuizPage() {
     }, []);
 
     useEffect(() => {
-        //setujem i dont know za svako pitanje
-        setIDontKnowStates(prev => {
-            const copy = [...prev];
-            while (copy.length <= currentUserAnswerIndex) {
-                copy.push(false);
-            }
-            return copy;
-        });
         //ucitavam u fillInAnswer ono sto je uneto vec pri refreshu
         const answer = quizResult?.answers?.[currentUserAnswerIndex];
         const answerText = answer?.userAnswerOptions?.[0]?.fieldAnswerText ?? "";

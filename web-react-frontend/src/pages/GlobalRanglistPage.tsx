@@ -12,7 +12,7 @@ import { useQuizResults } from "../customHooks/useQuizResults";
 import { useQuizContext } from "../context/QuizContext";
 
 export function GlobalRanglist(){
-    const { user } = useUserContext();
+    const { user, handleLogout } = useUserContext();
     const { quizResult } = useQuizContext();
     const navigate = useNavigate();
     const [allResults, setAllResults] = useState<Array<UserQuizResult>>([]);
@@ -21,7 +21,7 @@ export function GlobalRanglist(){
     const [selectedQuizId, setSelectedQuizId] = useState<number>(0);
     const [selectedTimePeriod, setSelectedTimePeriod] = useState<string>("");
 
-    const { data, isLoading } = useQuizResults(selectedQuizId);
+    const { data, isLoading } = useQuizResults(selectedQuizId, handleLogout);
 
     useEffect(() => {
     if (data) {

@@ -61,7 +61,7 @@ export function QuizzesSection() {
   const step3filteredQuizzes: Quiz[] = filterForQuizzesDropDown(step2filteredQuizzes, selectedDifficulty, "difficulty");
 
   return (
-    loadingCategories || loadingQuizzes ? //ne radiiiiii nece categorije da se ucitaju
+    loadingCategories || loadingQuizzes ? 
       <div>Loading...</div>
     :
     <>

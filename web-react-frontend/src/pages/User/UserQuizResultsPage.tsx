@@ -31,8 +31,8 @@ export function UserQuizResults(){
     const [loadingUsers, setLoadingUsers] = useState<boolean>(false);
 
     const usernameToUse = selectedUserUsername !== "" ? selectedUserUsername : user?.username || "";
-    const { data: data, isLoading: isLoading } = useUserQuizResults(usernameToUse, selectedQuizId);
-    const { data: dataQuizzes, isLoading: isLoadingQuizzes } = useUserQuizzes(usernameToUse);
+    const { data: data, isLoading: isLoading } = useUserQuizResults(usernameToUse, selectedQuizId, handleLogout);
+    const { data: dataQuizzes, isLoading: isLoadingQuizzes } = useUserQuizzes(usernameToUse, handleLogout);
 
     useEffect(() => {
         if(!localStorage.getItem('user')){

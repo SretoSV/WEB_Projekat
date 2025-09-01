@@ -22,6 +22,8 @@ interface QuizContextType {
   initializeTimer: (durationSeconds: number) => void;
   restoreTimer: (durationSeconds: number) => void;
   loadingQuizzes: boolean;
+  iDontKnowStates: Array<boolean>;
+  setIDontKnowStates: React.Dispatch<React.SetStateAction<boolean[]>>;
 }
 
 const QuizContext = createContext<QuizContextType | undefined>(undefined);
@@ -31,6 +33,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [quizResult, setQuizResult] = useState<UserQuizResult | null>(null);
   const [finishedQuizResult, setFinishedQuizResult] = useState<UserQuizResult | null>(null);
+  const [iDontKnowStates, setIDontKnowStates] = useState<boolean[]>([]);
   const [currentUserAnswerIndex, setCurrentUserAnswerIndex] = useState<number>(0);
   const [loadingQuizzes, setLoadingQuizzes] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
@@ -60,7 +63,14 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem('quizResult', JSON.stringify(quizResult));
     }
   }, [quizResult]);
-  
+
+  useEffect(() => {
+      //ucitati tu promenu u localStroage
+      if (iDontKnowStates.length !== 0) {
+        localStorage.setItem('iDontKnowStates', JSON.stringify(iDontKnowStates));
+      }
+  }, [iDontKnowStates]);
+
   useEffect(() => {
     const savedQuizResult = localStorage.getItem('quizResult');
     if (savedQuizResult) {
@@ -70,7 +80,10 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
     if (savedCurrentUserAnswerIndex) {
       setCurrentUserAnswerIndex(JSON.parse(savedCurrentUserAnswerIndex));
     }
-
+    const savedIDontKnowStates = localStorage.getItem('iDontKnowStates');
+    if (savedIDontKnowStates) {
+        setIDontKnowStates(JSON.parse(savedIDontKnowStates));
+    }
   }, []);
 
   const startQuiz = (quizResult: UserQuizResult) => {
@@ -98,9 +111,11 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
     setQuizResult(null);
     setCurrentUserAnswerIndex(0);
     setTimeLeft(null);
+    setIDontKnowStates([] as boolean[]);
     localStorage.removeItem('quizResult');
     localStorage.removeItem('currentUserAnswerIndex');
     localStorage.removeItem('quizStartTime');
+    localStorage.removeItem('iDontKnowStates');
   };
 
   const incrementIndex = () => {
@@ -208,7 +223,9 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
       timeLeft,
       initializeTimer,
       restoreTimer,
-      loadingQuizzes
+      loadingQuizzes,
+      iDontKnowStates,
+      setIDontKnowStates
       }}>
       {children}
     </QuizContext.Provider>
