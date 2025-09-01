@@ -1,0 +1,498 @@
+<Project>
+  <Name>WEB_Projekat</Name>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
+    <Name>KvizHub</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>User</Name>
+        <Access>Public</Access>
+        <Location left="1216" top="740" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int Id { get; set; }</Member>
+        <Member type="Property">public string Username { get; set; }</Member>
+        <Member type="Property">public string Email { get; set; }</Member>
+        <Member type="Property">public string PasswordHash { get; set; }</Member>
+        <Member type="Property">public byte[] ProfileImage { get; set; }</Member>
+        <Member type="Property">public bool IsAdmin { get; set; }</Member>
+        <Member type="Property">public ICollection&lt;UserQuizResult&gt; QuizResults { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>UserQuizResult</Name>
+        <Access>Public</Access>
+        <Location left="1801" top="639" />
+        <Size width="162" height="281" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int Id { get; set; }</Member>
+        <Member type="Property">public int UserId { get; set; }</Member>
+        <Member type="Property">public User User { get; set; }</Member>
+        <Member type="Property">public int QuizId { get; set; }</Member>
+        <Member type="Property">public Quiz Quiz { get; set; }</Member>
+        <Member type="Property">public int TotalQuestions { get; set; }</Member>
+        <Member type="Property">public int CorrectAnswers { get; set; }</Member>
+        <Member type="Property">public double ScorePercentage { get; set; }</Member>
+        <Member type="Property">public DateTime StartedAt { get; set; }</Member>
+        <Member type="Property">public DateTime SubmittedAt { get; set; }</Member>
+        <Member type="Property">public bool IsStarted { get; set; }</Member>
+        <Member type="Property">public ICollection&lt;UserAnswer&gt; Answers { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Quiz</Name>
+        <Access>Public</Access>
+        <Location left="1673" top="97" />
+        <Size width="203" height="230" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int Id { get; set; }</Member>
+        <Member type="Property">public string Title { get; set; }</Member>
+        <Member type="Property">public string Description { get; set; }</Member>
+        <Member type="Property">public int TimeLimitSeconds { get; set; }</Member>
+        <Member type="Property">public int QuizDifficultyId { get; set; }</Member>
+        <Member type="Property">public QuizDifficulty QuizDifficulty { get; set; }</Member>
+        <Member type="Property">public ICollection&lt;AllQuizCategories&gt; AllQuizCategories { get; set; }</Member>
+        <Member type="Property">public ICollection&lt;Question&gt; Questions { get; set; }</Member>
+        <Member type="Property">public ICollection&lt;UserQuizResult&gt; Results { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>AllQuizCategories</Name>
+        <Access>Public</Access>
+        <Location left="39" top="70" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int Id { get; set; }</Member>
+        <Member type="Property">public int QuizCategoryId { get; set; }</Member>
+        <Member type="Property">public QuizCategory QuizCategory { get; set; }</Member>
+        <Member type="Property">public int QuizId { get; set; }</Member>
+        <Member type="Property">public Quiz Quiz { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>AnswerOption</Name>
+        <Access>Public</Access>
+        <Location left="223" top="70" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int Id { get; set; }</Member>
+        <Member type="Property">public string Text { get; set; }</Member>
+        <Member type="Property">public bool IsCorrect { get; set; }</Member>
+        <Member type="Property">public string FieldAnswerText { get; set; }</Member>
+        <Member type="Property">public int QuestionId { get; set; }</Member>
+        <Member type="Property">public Question Question { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>GameRoom</Name>
+        <Access>Public</Access>
+        <Location left="592" top="430" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int Id { get; set; }</Member>
+        <Member type="Property">public int QuizId { get; set; }</Member>
+        <Member type="Property">public Quiz Quiz { get; set; }</Member>
+        <Member type="Property">public int NumberOfUsers { get; set; }</Member>
+        <Member type="Property">public int IsStarted { get; set; }</Member>
+        <Member type="Property">public int IsFinished { get; set; }</Member>
+        <Member type="Property">public ICollection&lt;RoomParticipant&gt; RoomParticipants { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Question</Name>
+        <Access>Public</Access>
+        <Location left="592" top="70" />
+        <Size width="177" height="264" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int Id { get; set; }</Member>
+        <Member type="Property">public string Text { get; set; }</Member>
+        <Member type="Property">public int QuestionTypeId { get; set; }</Member>
+        <Member type="Property">public QuestionType QuestionType { get; set; }</Member>
+        <Member type="Property">public int QuizCategoryId { get; set; }</Member>
+        <Member type="Property">public QuizCategory QuizCategory { get; set; }</Member>
+        <Member type="Property">public int QuestionDifficultyId { get; set; }</Member>
+        <Member type="Property">public QuestionDifficulty QuestionDifficulty { get; set; }</Member>
+        <Member type="Property">public int QuizId { get; set; }</Member>
+        <Member type="Property">public Quiz Quiz { get; set; }</Member>
+        <Member type="Property">public ICollection&lt;AnswerOption&gt; AnswerOptions { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>QuestionDifficulty</Name>
+        <Access>Public</Access>
+        <Location left="958" top="171" />
+        <Size width="162" height="131" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int Id { get; set; }</Member>
+        <Member type="Property">public string Title { get; set; }</Member>
+        <Member type="Property">public ICollection&lt;Question&gt; Questions { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>QuestionType</Name>
+        <Access>Public</Access>
+        <Location left="958" top="30" />
+        <Size width="162" height="128" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int Id { get; set; }</Member>
+        <Member type="Property">public string Title { get; set; }</Member>
+        <Member type="Property">public ICollection&lt;Question&gt; Questions { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>QuizCategory</Name>
+        <Access>Public</Access>
+        <Location left="39" top="386" />
+        <Size width="162" height="128" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int Id { get; set; }</Member>
+        <Member type="Property">public string Name { get; set; }</Member>
+        <Member type="Property">public ICollection&lt;AllQuizCategories&gt; AllQuizCategories { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>QuizDifficulty</Name>
+        <Access>Public</Access>
+        <Location left="1247" top="171" />
+        <Size width="162" height="128" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int Id { get; set; }</Member>
+        <Member type="Property">public string Title { get; set; }</Member>
+        <Member type="Property">public ICollection&lt;Quiz&gt; Quizzes { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>RefreshToken</Name>
+        <Access>Public</Access>
+        <Location left="862" top="651" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int Id { get; set; }</Member>
+        <Member type="Property">public string TokenHash { get; set; }</Member>
+        <Member type="Property">public DateTime Expires { get; set; }</Member>
+        <Member type="Property">public DateTime CreatedAt { get; set; }</Member>
+        <Member type="Property">public string CreatedByIp { get; set; }</Member>
+        <Member type="Property">public int UserId { get; set; }</Member>
+        <Member type="Property">public User User { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>RoomParticipant</Name>
+        <Access>Public</Access>
+        <Location left="445" top="714" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int Id { get; set; }</Member>
+        <Member type="Property">public int GameRoomId { get; set; }</Member>
+        <Member type="Property">public GameRoom GameRoom { get; set; }</Member>
+        <Member type="Property">public int UserId { get; set; }</Member>
+        <Member type="Property">public User User { get; set; }</Member>
+        <Member type="Property">public ICollection&lt;Quiz&gt; Quizzes { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>UserAnswer</Name>
+        <Access>Public</Access>
+        <Location left="1297" top="394" />
+        <Size width="162" height="264" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int Id { get; set; }</Member>
+        <Member type="Property">public int QuizId { get; set; }</Member>
+        <Member type="Property">public Quiz Quiz { get; set; }</Member>
+        <Member type="Property">public int ResultId { get; set; }</Member>
+        <Member type="Property">public UserQuizResult Result { get; set; }</Member>
+        <Member type="Property">public int QuestionId { get; set; }</Member>
+        <Member type="Property">public Question Question { get; set; }</Member>
+        <Member type="Property">public int UserId { get; set; }</Member>
+        <Member type="Property">public User User { get; set; }</Member>
+        <Member type="Property">public bool IsTrue { get; set; }</Member>
+        <Member type="Property">public ICollection&lt;UserAnswerOption&gt; UserAnswerOptions { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>UserAnswerOption</Name>
+        <Access>Public</Access>
+        <Location left="1567" top="394" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int Id { get; set; }</Member>
+        <Member type="Property">public string Text { get; set; }</Member>
+        <Member type="Property">public bool IsCorrect { get; set; }</Member>
+        <Member type="Property">public string FieldAnswerText { get; set; }</Member>
+        <Member type="Property">public int UserAnswerId { get; set; }</Member>
+        <Member type="Property">public UserAnswer UserAnswer { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Association" first="0" second="1">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1440</X>
+          <Y>892</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1774</X>
+          <Y>892</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="2" second="1">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1908</X>
+          <Y>223</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1908</X>
+          <Y>569</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="9" second="3">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Aggregation</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="2" second="3">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1694</X>
+          <Y>13</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="6" second="4">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>674</X>
+          <Y>37</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>254</X>
+          <Y>37</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Aggregation</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="2" second="5">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1648</X>
+          <Y>317</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1193</X>
+          <Y>395</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Aggregation</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="5" second="12">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="8" second="6">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>922</X>
+          <Y>92</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Aggregation</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="6" second="9">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>567</X>
+          <Y>96</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>554</X>
+          <Y>392</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="7" second="6">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Aggregation</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="2" second="6">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1546</X>
+          <Y>133</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>794</X>
+          <Y>320</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="10" second="2">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1478</X>
+          <Y>245</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1638</X>
+          <Y>245</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Aggregation</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="11" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>0..1</StartMultiplicity>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="1" second="13">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1553</X>
+          <Y>805</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1416</X>
+          <Y>683</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="13" second="2">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="13" second="6">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1104</X>
+          <Y>411</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="13" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="13" second="14">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="12" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>644</X>
+          <Y>947</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+</Project>

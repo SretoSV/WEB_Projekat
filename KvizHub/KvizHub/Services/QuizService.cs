@@ -138,7 +138,7 @@ namespace KvizHub.Services
                             break;
                         }
                     }
-                    else if(questionAnswerOptions[j].IsCorrect != userAnswerOptions[j].IsCorrect) {
+                    else if(questionAnswerOptions[j].IsCorrect != userAnswerOptions[j].IsCorrect) { //ako je neki od optiona razlicit pitanje postaje netacno
                         isTrue = false;
                         userAnswerDtos[i].IsTrue = false;
                     }
