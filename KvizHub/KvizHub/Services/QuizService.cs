@@ -212,8 +212,23 @@ namespace KvizHub.Services
 
         #region Helpers
         private async Task SetFields(QuizDto dto, int quizId) {
+
+            List<QuizCategoryDto> startingCategoryList = dto.AllQuizCategories
+            .Select(c => new QuizCategoryDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+            })
+            .ToList();
+
             await _categoryDao.AddQuizCategoriesAsync(dto.AllQuizCategories);
             List<QuizCategory> categoriesIds = await _categoryDao.GetQuizCategoriesByQuizCategoryNameAsync(dto.AllQuizCategories);
+
+            foreach (var dtoCat in startingCategoryList)
+            {
+                Console.WriteLine("\n" + dtoCat.Id + " " + dtoCat.Name);
+            }
+
             await _categoryDao.AddCategoryIdsToAllQuizCategoriesTableByQuizId(quizId, categoriesIds);
 
             var nameIdMap = categoriesIds.ToDictionary(cat => cat.Name.ToLower(), cat => cat.Id);
@@ -226,11 +241,27 @@ namespace KvizHub.Services
                     dtoCat.Id = id;
                 }
             }
+            foreach (var dtoCat in dto.AllQuizCategories)
+            {
+                Console.WriteLine("\n" + dtoCat.Id +" " + dtoCat.Name);
+            }
+            Console.WriteLine("\n-----------------------------");
 
             foreach (var question in dto.Questions)
             {
+                //Pronadji originalnu kategoriju iz startingCategoryList po ID-u
+                var originalCategory = startingCategoryList
+                    .FirstOrDefault(c => c.Id == question.QuizCategoryId);
+
+                //Pronadji azuriranu kategoriju po imenu u dto.AllQuizCategories
+                var updatedCategory = dto.AllQuizCategories
+                    .FirstOrDefault(c => c.Name.Equals(originalCategory.Name, StringComparison.OrdinalIgnoreCase));
+
+                //Dodeli novi ID
+                question.QuizCategoryId = updatedCategory.Id;
                 question.QuizId = quizId;
             }
+
 
             List<Question> questionsFromDatabase = await _questionDao.AddQuestionsAsync(dto.Questions);
 
