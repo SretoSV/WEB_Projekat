@@ -8,5 +8,5 @@ export function useQuizResults(quizId: number, onLogout: () => void) {
     enabled: !!quizId,
     staleTime: 1000 * 60 * 5, //5 minuta je svez podatak
     gcTime: 1000 * 60 * 10, //10 minuta cuva u kesu
-    });
+  });
 }

@@ -37,7 +37,7 @@ export function RegisterForm(){
         alert("Profile image is required.");
         return;
     }
-    if(form.password.length < MIN_PASSWORD_LENGTH || form.password.length < MAX_PASSWORD_LENGTH){
+    if(form.password.length < MIN_PASSWORD_LENGTH || form.password.length > MAX_PASSWORD_LENGTH){
       alert(`Password length must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters!`);
       return;
     }

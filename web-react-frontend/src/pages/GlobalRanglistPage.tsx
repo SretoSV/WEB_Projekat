@@ -24,11 +24,11 @@ export function GlobalRanglist(){
     const { data, isLoading } = useQuizResults(selectedQuizId, handleLogout);
 
     useEffect(() => {
-    if (data) {
-        setAllResults(data.results);
-        setResults(filterResultsByPeriod(data.results, selectedTimePeriod));
-        setUserDetails(data.profiles);
-    }
+        if (data) {
+            setAllResults(data.results);
+            setResults(filterResultsByPeriod(data.results, selectedTimePeriod));
+            setUserDetails(data.profiles);
+        }
     }, [data]);
 
     
