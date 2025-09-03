@@ -13,12 +13,18 @@ namespace KvizHub.Services
         private readonly IGameRoomDao _gameRoomDao;
         private readonly IUserDao _userDao;
         private readonly IMapper _mapper;
+        private readonly IQuizDao _quizDao;
+        private readonly IQuestionDao _questionDao;
+        private readonly IAnswerDao _answerDao;
 
-        public GameRoomService(IGameRoomDao gameRoomDao, IUserDao userDao, IMapper mapper)
+        public GameRoomService(IGameRoomDao gameRoomDao, IUserDao userDao, IMapper mapper, IQuizDao quizDao, IQuestionDao questionDao, IAnswerDao answerDao)
         {
             _gameRoomDao = gameRoomDao;
             _userDao = userDao;
             _mapper = mapper;
+            _quizDao = quizDao;
+            _questionDao = questionDao;
+            _answerDao = answerDao;
         }
 
         public async Task<List<GameRoomDto>> GetAllGameRooms()
@@ -39,6 +45,10 @@ namespace KvizHub.Services
             return roomsDtos;
         }
 
+        public async Task<List<int>> GetUserIdsForGameRoom(int gameRoomId)
+        {
+            return await _gameRoomDao.GetUserIdsForGameRoom(gameRoomId);
+        }
         public async Task<GameRoomDto> AddGameRoom(GameRoomDto dto)
         {
             GameRoom gameRoom = _mapper.Map<GameRoom>(dto); //dobijem room iz dto
@@ -94,6 +104,22 @@ namespace KvizHub.Services
             }
 
             return -1;
+        }
+        public async Task<UserQuizResultDto> StartQuiz(int quizId, int userId)
+        {
+            UserQuizResult userQuizResult = await _quizDao.StartQuiz(quizId, userId);
+            UserQuizResultDto userQuizResultDto = _mapper.Map<UserQuizResultDto>(userQuizResult);
+            List<Question> questions = await _questionDao.GetQuestionsByQuizId(quizId);
+
+            List<UserAnswer> userAnswers = await _answerDao.CreateUserAnswers(quizId, userQuizResult.Id, questions, userId);
+            userQuizResultDto.Answers = _mapper.Map<List<UserAnswerDto>>(userAnswers);
+
+            return userQuizResultDto;
+        }
+
+        public async Task<bool> SetIsStartedToTrue(int gameRoomId)
+        {
+            return await _gameRoomDao.SetIsStartedToTrue(gameRoomId);
         }
     }
 }

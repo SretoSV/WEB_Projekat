@@ -21,6 +21,14 @@ namespace KvizHub.DAO.Implementations
                 .Include(r => r.RoomParticipants)
                 .ToListAsync();
         }
+        public async Task<List<int>> GetUserIdsForGameRoom(int gameRoomId)
+        {
+            return await _context.RoomParticipants
+                .Where(room => room.GameRoomId == gameRoomId)
+                .Select(room => room.UserId)
+                .ToListAsync();
+        }
+
         public async Task<GameRoom> AddGameRoomAsync(GameRoom gameRoom)
         {
             _context.GameRooms.Add(gameRoom);
@@ -49,6 +57,19 @@ namespace KvizHub.DAO.Implementations
 
             _context.RoomParticipants.Remove(participant);
             await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> SetIsStartedToTrue(int gameRoomId)
+        {
+            var gameRoom = await _context.GameRooms.FindAsync(gameRoomId);
+
+            if (gameRoom == null)
+                return false;
+
+            gameRoom.IsStarted = true;
+            await _context.SaveChangesAsync();
+
             return true;
         }
 

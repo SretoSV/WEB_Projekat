@@ -123,12 +123,12 @@ namespace KvizHub.Controllers
             }
             try
             {
-                UserQuizResultDto quizzesDtos = await _quizService.StartQuiz(id);
-                if (quizzesDtos == null)
+                UserQuizResultDto userQuizResultDto = await _quizService.StartQuiz(id);
+                if (userQuizResultDto == null)
                 {
                     return StatusCode(500, new { message = "Internal server error while starting quiz." });
                 }
-                return Ok(quizzesDtos);
+                return Ok(userQuizResultDto);
             }
             catch (Exception ex)
             {

@@ -12,6 +12,8 @@ using AutoMapper;
 using KvizHub.Models;
 using Microsoft.AspNetCore.Identity;
 using KvizHub.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using KvizHub.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
@@ -88,6 +90,8 @@ builder.Services.AddAutoMapper(typeof(UserProfile));
 builder.Services.AddAutoMapper(typeof(QuizProfile));
 builder.Services.AddAutoMapper(typeof(QuizCategoryProfile));
 builder.Services.AddAutoMapper(typeof(QuestionProfile));
+
+builder.Services.AddSingleton<IUserIdProvider, MyUserIdProvider>();
 
 // Add services to the container.
 

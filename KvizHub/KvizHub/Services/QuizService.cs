@@ -224,11 +224,6 @@ namespace KvizHub.Services
             await _categoryDao.AddQuizCategoriesAsync(dto.AllQuizCategories);
             List<QuizCategory> categoriesIds = await _categoryDao.GetQuizCategoriesByQuizCategoryNameAsync(dto.AllQuizCategories);
 
-            foreach (var dtoCat in startingCategoryList)
-            {
-                Console.WriteLine("\n" + dtoCat.Id + " " + dtoCat.Name);
-            }
-
             await _categoryDao.AddCategoryIdsToAllQuizCategoriesTableByQuizId(quizId, categoriesIds);
 
             var nameIdMap = categoriesIds.ToDictionary(cat => cat.Name.ToLower(), cat => cat.Id);
@@ -241,11 +236,6 @@ namespace KvizHub.Services
                     dtoCat.Id = id;
                 }
             }
-            foreach (var dtoCat in dto.AllQuizCategories)
-            {
-                Console.WriteLine("\n" + dtoCat.Id +" " + dtoCat.Name);
-            }
-            Console.WriteLine("\n-----------------------------");
 
             foreach (var question in dto.Questions)
             {

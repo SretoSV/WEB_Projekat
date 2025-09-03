@@ -18,11 +18,24 @@ namespace KvizHub.Hubs
         }
 
         [Authorize(Roles = "admin")]
-        public async Task StartCompetition(string eventName, int gameRoomId)
+        public async Task StartCompetition(string eventName, int gameRoomId, int quizId)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, gameRoomId.ToString()); //dodajem admina u grupu da i on dobije signal da je startovao taj room
-            await Clients.Group(gameRoomId.ToString()).SendAsync(eventName, gameRoomId);
-            //await Clients.Group(gameRoomId.ToString()).SendAsync(eventName, //return quiz);
+            //upisati u bazi isStarted na true
+            if (await _gameRoomService.SetIsStartedToTrue(gameRoomId)) {
+                var userIds = await _gameRoomService.GetUserIdsForGameRoom(gameRoomId);
+
+                foreach (var userId in userIds)
+                {
+                    UserQuizResultDto userQuizResultDto = await _gameRoomService.StartQuiz(quizId, userId);
+                    await Clients.User(userId.ToString()).SendAsync(eventName, gameRoomId, userQuizResultDto);
+                }
+
+                await Clients.User(("1").ToString()).SendAsync(eventName, gameRoomId, null);
+            }
+
+            //await Clients.Group(gameRoomId.ToString()).SendAsync(eventName, gameRoomId);
+
+            //await Groups.AddToGroupAsync(Context.ConnectionId, gameRoomId.ToString()); //dodajem admina u grupu da i on dobije signal da je startovao taj room
         }
 
         [Authorize(Roles = "user")]
