@@ -12,6 +12,7 @@ import { QuizProvider } from './context/QuizContext.tsx';
 import { GlobalRanglist } from './pages/GlobalRanglistPage.tsx';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { OnlineQuizCompetition } from './pages/OnlineQuizCompetition.tsx';
+import { OnlineQuizProvider } from './context/OnlineQuizContext.tsx';
 
 const queryClient = new QueryClient();
 
@@ -62,7 +63,9 @@ createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
     <UserProvider>
       <QuizProvider>
-      <RouterProvider router={router} />
+        <OnlineQuizProvider>
+          <RouterProvider router={router} />
+        </OnlineQuizProvider>
       </QuizProvider>
     </UserProvider>
   </QueryClientProvider>

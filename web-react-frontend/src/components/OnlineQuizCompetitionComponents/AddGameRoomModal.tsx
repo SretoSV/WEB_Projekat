@@ -3,13 +3,11 @@ import styles from '../../styles/OnlineQuizCompetitionStyles/AddGameRoomModalSty
 import ButtonWithText from '../ButtonWithText';
 import { useQuizContext } from '../../context/QuizContext';
 import type { GameRoom } from '../../models/GameRoomModel';
+import { useOnlineQuizContext } from '../../context/OnlineQuizContext';
 
-interface AddGameRoomModalProps{
-    onAddGameRoom: (room: GameRoom) => void;
-}
-
-export function AddGameRoomModal({onAddGameRoom}: AddGameRoomModalProps){
+export function AddGameRoomModal(){
     const { quizzes } = useQuizContext();
+    const { handleAddGameRoom } = useOnlineQuizContext();
     const [gameRoom, setGameRoom] = useState<GameRoom>({
         id: 0,
         quizID: 0,
@@ -28,7 +26,7 @@ export function AddGameRoomModal({onAddGameRoom}: AddGameRoomModalProps){
                             name="quizId"
                             className={styles.dropdownInput}
                             value={gameRoom.quizID}
-                            onChange={(e) => setGameRoom(prev => ({ ...prev, quizId: Number(e.target.value) }))}
+                            onChange={(e) => setGameRoom(prev => ({ ...prev, quizID: Number(e.target.value) }))}
                             required
                         >
                             <option value={0}>Select quiz</option>
@@ -38,7 +36,7 @@ export function AddGameRoomModal({onAddGameRoom}: AddGameRoomModalProps){
                         </select>
                         <br />
                     </div>
-                    <ButtonWithText text='Add' type='submit' onClick={() => onAddGameRoom(gameRoom)}/>
+                    <ButtonWithText text='Add' type='submit' onClick={() => handleAddGameRoom(gameRoom)}/>
                 </div>
             </>
 }

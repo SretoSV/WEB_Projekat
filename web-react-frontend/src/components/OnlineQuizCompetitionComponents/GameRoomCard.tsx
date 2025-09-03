@@ -6,19 +6,23 @@ import { useQuizContext } from '../../context/QuizContext';
 import type { RoomParticipant } from '../../models/RoomParticipantModel';
 import placeHolder from '../../images/placeHolder.png';
 import ButtonWithText from '../ButtonWithText';
+import { OnlineQuizCard } from './OnlineQuizCard';
+import { LiveRangList } from './LiveRangList';
 
 interface GameRoomCardProps{
     id: number;
     quizId: number;
     numberOfUsers: number;
     isStarted: boolean;
+    isFinished: boolean;
     onJoin: (gameRoomId: number) => void;
     onStart: (gameRoomId: number) => void;
     onLeave: (gameRoomId: number) => void;
     roomParticipants: Array<RoomParticipant>;
+    isJoined: boolean;
 }
 
-export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isStarted, roomParticipants}: GameRoomCardProps){
+export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, isStarted, roomParticipants, isJoined}: GameRoomCardProps){
     const { user } = useUserContext();
     const { quizzes } = useQuizContext();
 
@@ -31,14 +35,26 @@ export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isStarted, r
             transition={{ duration: 0.8, ease: "easeOut"}}
         >
         <div className={styles.cardDiv}>
-            Id: {id}<br />
-            Quiz: {quiz?.title}<br />
-            Number Of Users: {roomParticipants.length}<br />
-            Room Participants:
+            {user && user.isAdmin ? 
+                <div>
+                    Id: {id}<br />
+                    Quiz: {quiz?.title}<br />
+                    Number Of Users: {roomParticipants.length}<br />
+                    Room Participants:
+                </div>
+                :
+                !isStarted &&
+                    <div>
+                        Id: {id}<br />
+                        Quiz: {quiz?.title}<br />
+                        Number Of Users: {roomParticipants.length}<br />
+                        Room Participants:
+                    </div>
+            }
             <div>
 
             {
-                roomParticipants.map(roomParticipant => (
+                !isStarted && roomParticipants.map(roomParticipant => (
                     <div key={roomParticipant.id} className={styles.participantProfile}>
                         <img
                             src={roomParticipant.userProfile?.profileImage ? `data:image/png;base64,${roomParticipant.userProfile?.profileImage}` : placeHolder}
@@ -62,9 +78,15 @@ export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isStarted, r
                     <ButtonWithLongText text="Start" onClick1={() => onStart(id)}/>    
                 :
                     isStarted ? 
-                    <div>Active</div>
+                        <>
+                            <LiveRangList />
+                            <OnlineQuizCard quizId={quizId}/>
+                        </>
                     :
-                    <ButtonWithLongText text="Join" onClick1={() => onJoin(id)}/>    
+                        isJoined ? 
+                        <div></div>
+                        :
+                        <ButtonWithLongText text="Join" onClick1={() => onJoin(id)}/>    
             }
         </div>
         </motion.div>
