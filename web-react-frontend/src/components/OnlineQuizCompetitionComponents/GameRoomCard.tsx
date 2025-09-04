@@ -80,7 +80,7 @@ export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, 
                     isStarted ? 
                         <>
                             <LiveRangList />
-                            <OnlineQuizCard quizId={quizId}/>
+                            <OnlineQuizCard quiz={quiz || null}/>
                         </>
                     :
                         isJoined ? 

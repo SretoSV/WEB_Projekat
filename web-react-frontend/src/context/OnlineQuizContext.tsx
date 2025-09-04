@@ -1,15 +1,17 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { ReactNode } from 'react';
 import type { UserQuizResult } from "../models/UserQuizResultModel";
 import type { GameRoom } from "../models/GameRoomModel";
 import { addGameRoom, fetchGameRooms } from "../services/OnlineQuizService";
 import { useUserContext } from "./UserContext";
 import type { RoomParticipant } from "../models/RoomParticipantModel";
+import type { Quiz } from "../models/QuizModel";
+import { useQuizContext } from "./QuizContext";
 
 interface OnlineQuizContextType {
   gameRooms: GameRoom[];
   setGameRooms: (gameRooms: GameRoom[]) => void;
-  startQuiz: (quizResult: UserQuizResult, gameRoomId: number) => void;
+  startQuiz: (quizResult: UserQuizResult, gameRoomId: number, quiz: Quiz) => void;
   finishQuiz: () => void;
   quizResult: UserQuizResult | null;
   currentUserAnswerIndex: number;
@@ -23,6 +25,10 @@ interface OnlineQuizContextType {
   finishedQuizResult: UserQuizResult | null;
   setFinishedQuizResult: React.Dispatch<React.SetStateAction<UserQuizResult | null>>;
   setQuizResult: React.Dispatch<React.SetStateAction<UserQuizResult | null>>;
+  timeLeft: number | null;
+  initializeTimer: (durationSeconds: number) => void;
+  restoreTimer: (durationSeconds: number) => void;
+  
 }
 
 const OnlineQuizContext = createContext<OnlineQuizContextType | undefined>(undefined);
@@ -33,8 +39,12 @@ export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
   const [currentUserAnswerIndex, setCurrentUserAnswerIndex] = useState<number>(0);
   const [gameRooms, setGameRooms] = useState<Array<GameRoom>>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [a, setA] = useState<number>(0);
   const [iDontKnowStates, setIDontKnowStates] = useState<boolean[]>([]);
   const { handleLogout } = useUserContext();
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const {quizzes} = useQuizContext();
 
   useEffect(() => {
 
@@ -59,7 +69,7 @@ export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
     if (savedQuizResult) {
       setQuizResult(JSON.parse(savedQuizResult));
     }
-    const savedCurrentUserAnswerIndex = localStorage.getItem('currentUserAnswerIndex');
+    const savedCurrentUserAnswerIndex = localStorage.getItem('onlineCurrentUserAnswerIndex');
     if (savedCurrentUserAnswerIndex) {
       setCurrentUserAnswerIndex(JSON.parse(savedCurrentUserAnswerIndex));
     }
@@ -90,7 +100,10 @@ export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [iDontKnowStates]);
 
-  const startQuiz = (quizResult: UserQuizResult, gameRoomId: number) => {
+  const startQuiz = (quizResult: UserQuizResult, gameRoomId: number, quiz: Quiz) => {
+    localStorage.setItem('eachQuestionTime', JSON.stringify(quiz.timeLimitSeconds / quiz.questions.length));
+    localStorage.setItem('numberOfQuestions', JSON.stringify(quiz.questions.length));
+
     setQuizResult(quizResult);
     setCurrentUserAnswerIndex(0);
     setGameRooms(prevRooms => {
@@ -103,24 +116,38 @@ export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
           };
       });
     });
+    initializeTimer(quiz.timeLimitSeconds / quiz.questions.length);
     localStorage.setItem('onlineQuizResult', JSON.stringify(quizResult));
-    localStorage.setItem('currentUserAnswerIndex', JSON.stringify(0));
+    localStorage.setItem('onlineCurrentUserAnswerIndex', JSON.stringify(0));
   };
 
   const finishQuiz = async () => {
     //setFinishedQuizResult(returnedQuizResult);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
     setQuizResult(null);
     setCurrentUserAnswerIndex(0);
     setIDontKnowStates([] as boolean[]);
     localStorage.removeItem('onlineQuizResult');
-    localStorage.removeItem('currentUserAnswerIndex');
+    localStorage.removeItem('onlineCurrentUserAnswerIndex');
     localStorage.removeItem('iDontKnowStates');
+    localStorage.removeItem('onlineQuizStartTime');
+    localStorage.removeItem('eachQuestionTime');
+    localStorage.removeItem('numberOfQuestions');
   };
 
   const incrementIndex = () => {
       setCurrentUserAnswerIndex(current => {
         const newValue = current + 1;
-        localStorage.setItem('currentUserAnswerIndex', JSON.stringify(newValue));
+        const savedQuestionsNumber = localStorage.getItem('numberOfQuestions');
+        const savedCurrentUserAnswerIndex = localStorage.getItem('onlineCurrentUserAnswerIndex');
+        if (savedQuestionsNumber && savedCurrentUserAnswerIndex) {
+          if(JSON.parse(savedQuestionsNumber) !== JSON.parse(savedCurrentUserAnswerIndex)){
+            localStorage.setItem('onlineCurrentUserAnswerIndex', JSON.stringify(newValue));
+          }
+        }
         return newValue;
       });
   };
@@ -166,6 +193,104 @@ export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
       });
     });
   };
+
+  const initializeTimer = (durationSeconds: number) => {
+    if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+    }
+
+    const startTimestamp = Date.now();
+    localStorage.setItem('onlineQuizStartTime', startTimestamp.toString());
+
+    const updateTime = () => {
+        const now = Date.now();
+        const elapsed = Math.floor((now - startTimestamp) / 1000);
+        const remaining = durationSeconds - elapsed;
+
+        if (remaining <= 0) {
+            setTimeLeft(0);
+            clearInterval(timerRef.current!);
+            nextQuestion();
+        } else {
+            setTimeLeft(remaining);
+        }
+    };
+
+    updateTime();
+    timerRef.current = setInterval(updateTime, 1000);
+};
+
+const restoreTimer = (durationSeconds: number) => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+
+    const startTimestamp = parseInt(localStorage.getItem("onlineQuizStartTime") || "0");
+    if (!startTimestamp) return;
+
+    const now = Date.now();
+    const elapsed = Math.floor((now - startTimestamp) / 1000);
+    const remaining = durationSeconds - elapsed;
+
+    if (remaining <= 0) {
+        setTimeLeft(0);
+        if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+        }
+        nextQuestion();
+        localStorage.removeItem("onlineQuizStartTime");
+    } else {
+        setTimeLeft(remaining);
+        timerRef.current = setInterval(() => {
+            const newElapsed = Math.floor((Date.now() - startTimestamp) / 1000);
+            const newRemaining = durationSeconds - newElapsed;
+            if (newRemaining <= 0) {
+                setTimeLeft(0);
+                if (timerRef.current) {
+                  clearInterval(timerRef.current);
+                  timerRef.current = null;
+                }
+                nextQuestion();
+            } else {
+                setTimeLeft(newRemaining);
+            }
+        }, 1000);
+    }
+  };
+
+  const nextQuestion = () => {
+    incrementIndex();
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    const savedQuestionTime = localStorage.getItem('eachQuestionTime');
+    if (savedQuestionTime) {
+      initializeTimer(JSON.parse(savedQuestionTime));
+    }
+
+    //posalji na backend odgovor na trenutno pitanje
+    
+    const savedQuestionsNumber = localStorage.getItem('numberOfQuestions');
+    const savedCurrentUserAnswerIndex = localStorage.getItem('onlineCurrentUserAnswerIndex');
+    if (savedQuestionsNumber && savedCurrentUserAnswerIndex) {
+      if(JSON.parse(savedQuestionsNumber) === JSON.parse(savedCurrentUserAnswerIndex) + 1){
+        console.log("AJMOOOO");
+        finishQuiz();
+      }
+    }
+  
+  }
+
+  useEffect(() => {
+      return () => {
+          if (timerRef.current) clearInterval(timerRef.current);
+      };
+  }, []);
+
   return (
     <OnlineQuizContext.Provider value={{ 
       gameRooms,
@@ -184,6 +309,9 @@ export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
       finishedQuizResult,
       setFinishedQuizResult,
       setQuizResult,
+      timeLeft,
+      initializeTimer,
+      restoreTimer,
       }}>
       {children}
     </OnlineQuizContext.Provider>

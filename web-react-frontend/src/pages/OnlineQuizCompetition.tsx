@@ -9,6 +9,7 @@ import { AddGameRoomModal } from "../components/OnlineQuizCompetitionComponents/
 import type { RoomParticipant } from "../models/RoomParticipantModel";
 import type { UserQuizResult } from "../models/UserQuizResultModel";
 import { useOnlineQuizContext } from "../context/OnlineQuizContext";
+import type { Quiz } from "../models/QuizModel";
 
 export function OnlineQuizCompetition(){
     const { user } = useUserContext();
@@ -20,10 +21,10 @@ export function OnlineQuizCompetition(){
         socket.start().then(() => {
             console.log("Connected to WebSocket");
 
-            socket.on("start_message", (gameRoomId: number, userQuizResult: UserQuizResult) => {
+            socket.on("start_message", (gameRoomId: number, userQuizResult: UserQuizResult, quiz: Quiz) => {
                 console.log("Working received data:", gameRoomId);
-                console.log(userQuizResult);
-                startQuiz(userQuizResult, gameRoomId);
+                console.log("AA" + userQuizResult);
+                startQuiz(userQuizResult, gameRoomId, quiz);
             });
 
             socket.on("join_message", (data: RoomParticipant) => {

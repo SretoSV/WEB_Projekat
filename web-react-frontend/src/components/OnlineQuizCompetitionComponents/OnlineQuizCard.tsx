@@ -1,4 +1,3 @@
-import { useQuizContext } from "../../context/QuizContext";
 import styles from "../../styles/AllQuizzesPagesStyles/StartQuizPageStyle.module.css";
 import { useState, useEffect } from "react";
 import { setQuizDifficultyText } from "../../services/QuizService";
@@ -11,15 +10,14 @@ import { OnlineMultipleChoice } from "../OnlineUserAnswerOptionsComponents/Onlin
 import { OnlineMultipleCorrectAnswers } from "../OnlineUserAnswerOptionsComponents/OnlineMultipleCorrectAnswers";
 import { OnlineTrueFalse } from "../OnlineUserAnswerOptionsComponents/OnlineTrueFalse";
 import { OnlineFillInTheBlank } from "../OnlineUserAnswerOptionsComponents/OnlineFillInTheBlank";
+import type { Quiz } from "../../models/QuizModel";
 interface OnlineQuizCardProps{
-    quizId: number;
+    quiz: Quiz | null;
 }
-export function OnlineQuizCard({quizId}: OnlineQuizCardProps) {
-    const { quizzes, timeLeft } = useQuizContext();
-    const { quizResult, setFinishedQuizResult, iDontKnowStates, setIDontKnowStates, currentUserAnswerIndex } = useOnlineQuizContext();
+export function OnlineQuizCard({quiz}: OnlineQuizCardProps) {
+    const { quizResult, setFinishedQuizResult, iDontKnowStates, setIDontKnowStates, currentUserAnswerIndex, timeLeft, restoreTimer } = useOnlineQuizContext();
 
     const [fillInAnswer, setFillInAnswer] = useState<string>("");
-    const quiz = quizzes.find(q => q.id === quizId);
 
     useEffect(() => {
         setFinishedQuizResult(null);
@@ -32,6 +30,12 @@ export function OnlineQuizCard({quizId}: OnlineQuizCardProps) {
         setFillInAnswer(answerText);
     },[currentUserAnswerIndex, quizResult]);
 
+    useEffect(() => {
+        if (quizResult && quiz?.timeLimitSeconds && timeLeft === null) {
+            restoreTimer(quiz.timeLimitSeconds / quiz.questions.length);
+        }
+    }, [quizResult, quiz?.timeLimitSeconds]);
+
     if(!quiz) return <div>Quiz not found</div>
 
     return (
@@ -40,7 +44,7 @@ export function OnlineQuizCard({quizId}: OnlineQuizCardProps) {
             { quizResult === null ? 
             <>
                 {   
-                    <FinishedQuizResult selectedQuizId={quizId}/>
+                    <FinishedQuizResult selectedQuizId={quiz.id}/>
                 }
             </>
             :
@@ -49,12 +53,12 @@ export function OnlineQuizCard({quizId}: OnlineQuizCardProps) {
                     {timeLeft !== null ? formatTime(timeLeft) : "00:00"}
                 </div>
                 {
-                currentUserAnswerIndex === quiz.questions.length ? 
+                /*currentUserAnswerIndex === quiz.questions.length ? 
                 
                 <div className={styles.finishQuizDiv}>
                     Finish quiz?
                 </div>
-                : 
+                : */
                 <>
                 <div className={styles.questionDiv}>
                     <div>Difficulty: {setQuizDifficultyText(quiz.questions[currentUserAnswerIndex].questionDifficultyId)}</div>
