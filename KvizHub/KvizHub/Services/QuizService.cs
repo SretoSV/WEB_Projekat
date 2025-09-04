@@ -89,6 +89,13 @@ namespace KvizHub.Services
             var quizDtos = _mapper.Map<List<QuizDto>>(quizzes);
             return quizDtos;
         }
+        public async Task<QuizDto> GetQuizById(int quizId)
+        {
+            Quiz quiz = await _quizDao.GetQuizByIdAsync(quizId);
+            var quizDto = _mapper.Map<QuizDto>(quiz);
+            return quizDto;
+        }
+
         public async Task<UserQuizResultDto> StartQuiz(int quizId) 
         {
             int userId = GetUserId();

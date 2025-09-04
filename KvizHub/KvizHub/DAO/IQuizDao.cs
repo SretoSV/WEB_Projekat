@@ -9,6 +9,7 @@ namespace KvizHub.DAO
 
         Task<List<Quiz>> GetAllQuizzesAsync();
         Task<List<Quiz>> GetAllUserQuizzesAsync(int id);
+        Task<Quiz> GetQuizByIdAsync(int id);
 
         Task<Quiz> AddQuizAsync(Quiz quiz);
         Task<Quiz> SaveAllQuizCategoriesAsync(Quiz quiz);

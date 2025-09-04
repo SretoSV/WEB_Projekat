@@ -43,6 +43,11 @@ namespace KvizHub.DAO.Implementations
                 .Distinct()
                 .ToListAsync();
         }
+        public async Task<Quiz> GetQuizByIdAsync(int id)
+        {
+            return await _context.Quizzes
+                .FirstOrDefaultAsync(q => q.Id == id);
+        }
 
         #endregion
 

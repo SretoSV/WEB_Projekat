@@ -10,11 +10,13 @@ namespace KvizHub.Hubs
     {
         private readonly IGameRoomService _gameRoomService;
         private readonly IUserService _userService;
+        private readonly IQuizService _quizService;
 
-        public SignalRHub(IGameRoomService gameRoomService, IUserService userService)
+        public SignalRHub(IGameRoomService gameRoomService, IUserService userService, IQuizService quizService)
         {
             _gameRoomService = gameRoomService;
             _userService = userService;
+            _quizService = quizService;
         }
 
         [Authorize(Roles = "admin")]
@@ -27,10 +29,10 @@ namespace KvizHub.Hubs
                 foreach (var userId in userIds)
                 {
                     UserQuizResultDto userQuizResultDto = await _gameRoomService.StartQuiz(quizId, userId);
-                    await Clients.User(userId.ToString()).SendAsync(eventName, gameRoomId, userQuizResultDto);
+                    await Clients.User(userId.ToString()).SendAsync(eventName, gameRoomId, userQuizResultDto, await _quizService.GetQuizById(quizId));
                 }
 
-                await Clients.User(("1").ToString()).SendAsync(eventName, gameRoomId, null);
+                await Clients.User(("1").ToString()).SendAsync(eventName, gameRoomId, null, await _quizService.GetQuizById(quizId));
             }
 
             //await Clients.Group(gameRoomId.ToString()).SendAsync(eventName, gameRoomId);
