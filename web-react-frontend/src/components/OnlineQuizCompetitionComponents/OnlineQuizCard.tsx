@@ -44,7 +44,7 @@ export function OnlineQuizCard({quiz}: OnlineQuizCardProps) {
             { quizResult === null ? 
             <>
                 {   
-                    <FinishedQuizResult selectedQuizId={quiz.id}/>
+                    <FinishedQuizResult selectedQuizId={quiz.id}/> //kreirati OnlineFinishedQuizResult koji ce koristiti finishedQuizResult iz OnlineQuizContext-a 
                 }
             </>
             :

@@ -6,6 +6,7 @@ import { addGameRoom, fetchGameRooms } from "../services/OnlineQuizService";
 import { useUserContext } from "./UserContext";
 import type { RoomParticipant } from "../models/RoomParticipantModel";
 import type { Quiz } from "../models/QuizModel";
+import socket from "../sockets/socket";
 
 interface OnlineQuizContextType {
   gameRooms: GameRoom[];
@@ -93,7 +94,7 @@ export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
   const startQuiz = (quizResult: UserQuizResult, gameRoomId: number, quiz: Quiz) => {
     localStorage.setItem('eachQuestionTime', JSON.stringify(quiz.timeLimitSeconds / quiz.questions.length));
     localStorage.setItem('numberOfQuestions', JSON.stringify(quiz.questions.length));
-
+    localStorage.setItem('gameRoomId', JSON.stringify(gameRoomId));
     setQuizResult(quizResult);
     setCurrentUserAnswerIndex(0);
     initializeTimer(quiz.timeLimitSeconds / quiz.questions.length);
@@ -107,6 +108,7 @@ export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
+
     setQuizResult(null);
     setCurrentUserAnswerIndex(0);
     setIDontKnowStates([] as boolean[]);
@@ -116,6 +118,7 @@ export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('onlineQuizStartTime');
     localStorage.removeItem('eachQuestionTime');
     localStorage.removeItem('numberOfQuestions');
+    localStorage.removeItem('gameRoomId');
   };
 
   const incrementIndex = () => {
@@ -252,11 +255,19 @@ const restoreTimer = (durationSeconds: number) => {
       initializeTimer(JSON.parse(savedQuestionTime));
     }
 
-    //posalji na backend odgovor na trenutno pitanje
-    
     const savedQuestionsNumber = localStorage.getItem('numberOfQuestions');
     const savedCurrentUserAnswerIndex = localStorage.getItem('onlineCurrentUserAnswerIndex');
-    if (savedQuestionsNumber && savedCurrentUserAnswerIndex) {
+    const storedQuizResult = localStorage.getItem("onlineQuizResult");
+    const storedGameRoomId = localStorage.getItem("gameRoomId");
+
+    //posalji na backend odgovor na trenutno pitanje
+
+    if (savedQuestionsNumber && savedCurrentUserAnswerIndex && storedQuizResult && storedGameRoomId) {
+      const index = JSON.parse(savedCurrentUserAnswerIndex);
+      const result = JSON.parse(storedQuizResult);
+      const id = JSON.parse(storedGameRoomId);
+      socket.invoke("SubmitAnswer", "submit_answer_message", id, result, index);
+      
       if(JSON.parse(savedQuestionsNumber) === JSON.parse(savedCurrentUserAnswerIndex) + 1){
         console.log("AJMOOOO");
         finishQuiz();

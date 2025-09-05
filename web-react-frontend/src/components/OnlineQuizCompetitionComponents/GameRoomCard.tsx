@@ -7,7 +7,8 @@ import type { RoomParticipant } from '../../models/RoomParticipantModel';
 import placeHolder from '../../images/placeHolder.png';
 import ButtonWithText from '../ButtonWithText';
 import { OnlineQuizCard } from './OnlineQuizCard';
-import { LiveRangList } from './LiveRangList';
+import type { LiveRangList } from '../../models/LiveRangListModel';
+import { LiveRangListCard } from './LiveRangListCard';
 
 interface GameRoomCardProps{
     id: number;
@@ -21,9 +22,10 @@ interface GameRoomCardProps{
     roomParticipants: Array<RoomParticipant>;
     isJoined: boolean | undefined;
     joinedThatRoom: boolean | undefined;
+    liveRangList: LiveRangList | null;
 }
 
-export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, isStarted, roomParticipants, isJoined, joinedThatRoom}: GameRoomCardProps){
+export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, isStarted, roomParticipants, isJoined, joinedThatRoom, liveRangList }: GameRoomCardProps){
     const { user } = useUserContext();
     const { quizzes } = useQuizContext();
 
@@ -45,7 +47,7 @@ export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, 
                     Room Participants:
                 </div>
             }
-            
+
             <div>
             {
                 (!isStarted || !joinedThatRoom) && roomParticipants.map(roomParticipant => (
@@ -74,7 +76,7 @@ export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, 
                     isStarted ? 
                         joinedThatRoom ?
                         <>
-                            <LiveRangList />
+                            <LiveRangListCard liveRangList={liveRangList}/>
                             <OnlineQuizCard quiz={quiz || null}/>
                         </>
                         :

@@ -10,22 +10,27 @@ import type { RoomParticipant } from "../models/RoomParticipantModel";
 import type { UserQuizResult } from "../models/UserQuizResultModel";
 import { useOnlineQuizContext } from "../context/OnlineQuizContext";
 import type { Quiz } from "../models/QuizModel";
+import type { LiveRangList } from "../models/LiveRangListModel";
 
 export function OnlineQuizCompetition(){
     const { user } = useUserContext();
     const { startQuiz, gameRooms, handleAddParticipantToGameRoom, handleRemoveParticipantToGameRoom, loading, setGameRooms } = useOnlineQuizContext();
     const [addGameRoomState, setAddGameRoomState] = useState<boolean>(false);
     const [isJoined, setIsJoined] = useState<boolean>(false);
+    const [liveRangList, setLiveRangList] = useState<LiveRangList | null>(null);
+    
     useEffect(() => {
         socket.start().then(() => {
             console.log("Connected to WebSocket");
 
-            socket.on("start_message", (gameRoomId: number, userQuizResult: UserQuizResult, quiz: Quiz) => {
+            socket.on("start_message", (gameRoomId: number, userQuizResult: UserQuizResult, quiz: Quiz, liveRangList: LiveRangList) => {
                 console.log("Working received data:", gameRoomId);
                 console.log("AA" + userQuizResult);
                 if(userQuizResult !== null){                    
                     startQuiz(userQuizResult, gameRoomId, quiz);
                 }
+                setLiveRangList(liveRangList);
+                console.log(liveRangList);
                 setGameRooms(prevRooms => {
                     return prevRooms.map(room => {
                         if (room.id !== gameRoomId) return room;
@@ -48,12 +53,16 @@ export function OnlineQuizCompetition(){
                 handleRemoveParticipantToGameRoom(participantId);
             });
 
+            socket.on("submit_answer_message", (data: number) => {
+                console.log("LiveRangList" + data);
+            });
         });
     
         return () => {
             socket.off("start_message");
             socket.off("join_message");
             socket.off("leave_message");
+            socket.off("submit_answer_message");
         };
     }, []);
 
@@ -123,6 +132,7 @@ export function OnlineQuizCompetition(){
                         isJoined={isJoined}
                         joinedThatRoom={joinedThatRoom}
                         roomParticipants={gameRoom.roomParticipants || []}
+                        liveRangList={liveRangList}
                     />
                 }
                 )
