@@ -1,4 +1,5 @@
 ﻿using KvizHub.DTO;
+using KvizHub.Models;
 using KvizHub.Services;
 using KvizHub.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -31,13 +32,9 @@ namespace KvizHub.Hubs
                     UserQuizResultDto userQuizResultDto = await _gameRoomService.StartQuiz(quizId, userId);
                     await Clients.User(userId.ToString()).SendAsync(eventName, gameRoomId, userQuizResultDto, await _quizService.GetQuizById(quizId));
                 }
-
-                await Clients.User(("1").ToString()).SendAsync(eventName, gameRoomId, null, await _quizService.GetQuizById(quizId));
             }
 
-            //await Clients.Group(gameRoomId.ToString()).SendAsync(eventName, gameRoomId);
-
-            //await Groups.AddToGroupAsync(Context.ConnectionId, gameRoomId.ToString()); //dodajem admina u grupu da i on dobije signal da je startovao taj room
+            await Clients.All.SendAsync(eventName, gameRoomId, null, null);
         }
 
         [Authorize(Roles = "user")]
