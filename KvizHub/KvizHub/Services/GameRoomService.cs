@@ -127,5 +127,11 @@ namespace KvizHub.Services
             LiveRangList liveRangList = await _gameRoomDao.GenerateLiveRangList(gameRoomId, userIds);
             return _mapper.Map<LiveRangListDto>(liveRangList);
         }
+
+        public async Task<LiveRangListDto> GetLiveRangList(int gameRoomId)
+        {
+            LiveRangList liveRangList = await _gameRoomDao.GetLiveRangList(gameRoomId);
+            return _mapper.Map<LiveRangListDto>(liveRangList);
+        }
     }
 }

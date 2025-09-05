@@ -13,5 +13,6 @@ namespace KvizHub.Services.Interfaces
         Task<UserQuizResultDto> StartQuiz(int quizId, int userId);
         Task<bool> SetIsStartedToTrue(int gameRoomId);
         Task<LiveRangListDto> GenerateLiveRangList(int gameRoomId, List<int> userIds);
+        Task<LiveRangListDto> GetLiveRangList(int gameRoomId);
     }
 }

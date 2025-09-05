@@ -13,5 +13,6 @@ namespace KvizHub.DAO
         Task<bool> RemoveUserFromGameRoom(int id);
         Task<bool> SetIsStartedToTrue(int gameRoomId);
         Task<LiveRangList> GenerateLiveRangList(int gameRoomId, List<int> userIds);
+        Task<LiveRangList> GetLiveRangList(int gameRoomId);
     }
 }

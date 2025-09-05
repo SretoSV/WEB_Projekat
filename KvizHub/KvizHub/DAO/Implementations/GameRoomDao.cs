@@ -1,4 +1,5 @@
-﻿using KvizHub.Context;
+﻿using System.Diagnostics;
+using KvizHub.Context;
 using KvizHub.DTO;
 using KvizHub.Models;
 using Microsoft.EntityFrameworkCore;
@@ -97,6 +98,10 @@ namespace KvizHub.DAO.Implementations
                 .Include(r => r.LiveRangListParticipants)
                 .FirstAsync(r => r.Id == rangList.Id);
         }
-
+        public async Task<LiveRangList> GetLiveRangList(int gameRoomId) {
+            return await _context.LiveRangLists
+                .Include(r => r.LiveRangListParticipants)
+                .FirstAsync(r => r.GameRoomId == gameRoomId);
+        }
     }
 }

@@ -58,5 +58,25 @@ namespace KvizHub.Controllers
             }
         }
 
+        [Authorize(Roles = "user")]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetLiveRangList(int id)
+        {
+            try
+            {
+                LiveRangListDto liveRangListDto = await _gameRoomService.GetLiveRangList(id);
+                if (liveRangListDto == null)
+                {
+                    return StatusCode(500, new { message = "Internal server error while fetching live rang list." });
+                }
+
+                return Ok(liveRangListDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+            }
+        }
+
     }
 }
