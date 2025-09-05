@@ -73,5 +73,30 @@ namespace KvizHub.DAO.Implementations
             return true;
         }
 
+        public async Task<LiveRangList> GenerateLiveRangList(int gameRoomId, List<int> userIds)
+        {
+            var rangList = new LiveRangList
+            {
+                GameRoomId = gameRoomId,
+                LiveRangListParticipants = new List<LiveRangListParticipant>()
+            };
+
+            foreach (var userId in userIds)
+            {
+                rangList.LiveRangListParticipants.Add(new LiveRangListParticipant
+                {
+                    UserId = userId,
+                    Points = 0
+                });
+            }
+
+            _context.LiveRangLists.Add(rangList);
+            await _context.SaveChangesAsync();
+
+            return await _context.LiveRangLists
+                .Include(r => r.LiveRangListParticipants)
+                .FirstAsync(r => r.Id == rangList.Id);
+        }
+
     }
 }

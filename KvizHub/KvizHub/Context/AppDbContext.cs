@@ -25,7 +25,8 @@ namespace KvizHub.Context
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<GameRoom> GameRooms { get; set; }
         public DbSet<RoomParticipant> RoomParticipants { get; set; }
-
+        public DbSet<LiveRangList> LiveRangLists { get; set; }
+        public DbSet<LiveRangListParticipant> LiveRangListParticipants { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -45,6 +46,8 @@ namespace KvizHub.Context
             modelBuilder.Entity<RefreshToken>().ToTable("refresh_tokens");
             modelBuilder.Entity<GameRoom>().ToTable("game_rooms");
             modelBuilder.Entity<RoomParticipant>().ToTable("room_participants");
+            modelBuilder.Entity<LiveRangList>().ToTable("live_rang_lists");
+            modelBuilder.Entity<LiveRangListParticipant>().ToTable("live_rang_list_participants");
 
             modelBuilder.Entity<Question>()
                 .HasOne(q => q.Quiz)
@@ -71,6 +74,10 @@ namespace KvizHub.Context
             modelBuilder.Entity<UserAnswer>()
                 .Property(q => q.IsTrue)
                 .HasDefaultValue(false);
+
+            modelBuilder.Entity<LiveRangListParticipant>()
+                .Property(p => p.Points)
+                .HasDefaultValue(0);
 
             //Seed Users
             var seededUser = new User

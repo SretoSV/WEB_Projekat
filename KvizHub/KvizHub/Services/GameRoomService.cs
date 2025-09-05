@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using AutoMapper;
 using KvizHub.DAO;
 using KvizHub.DAO.Implementations;
@@ -116,10 +117,15 @@ namespace KvizHub.Services
 
             return userQuizResultDto;
         }
-
         public async Task<bool> SetIsStartedToTrue(int gameRoomId)
         {
             return await _gameRoomDao.SetIsStartedToTrue(gameRoomId);
+        }
+
+        public async Task<LiveRangListDto> GenerateLiveRangList(int gameRoomId, List<int> userIds)
+        {
+            LiveRangList liveRangList = await _gameRoomDao.GenerateLiveRangList(gameRoomId, userIds);
+            return _mapper.Map<LiveRangListDto>(liveRangList);
         }
     }
 }

@@ -26,15 +26,16 @@ namespace KvizHub.Hubs
             //upisati u bazi isStarted na true
             if (await _gameRoomService.SetIsStartedToTrue(gameRoomId)) {
                 var userIds = await _gameRoomService.GetUserIdsForGameRoom(gameRoomId);
+                var liveRangList = await _gameRoomService.GenerateLiveRangList(gameRoomId, userIds);
 
                 foreach (var userId in userIds)
                 {
                     UserQuizResultDto userQuizResultDto = await _gameRoomService.StartQuiz(quizId, userId);
-                    await Clients.User(userId.ToString()).SendAsync(eventName, gameRoomId, userQuizResultDto, await _quizService.GetQuizById(quizId));
+                    await Clients.User(userId.ToString()).SendAsync(eventName, gameRoomId, userQuizResultDto, await _quizService.GetQuizById(quizId), liveRangList);
                 }
             }
 
-            await Clients.All.SendAsync(eventName, gameRoomId, null, null);
+            await Clients.All.SendAsync(eventName, gameRoomId, null, null, null);
         }
 
         [Authorize(Roles = "user")]
@@ -53,5 +54,18 @@ namespace KvizHub.Hubs
             await Clients.All.SendAsync(eventName, roomParticipantId);
         }
 
+        [Authorize(Roles = "user")]
+        public async Task SubmitAnswer(string eventName, int gameRoomId, UserQuizResultDto userQuizResultDto, int currentAnswerIndex)
+        {
+            Console.WriteLine("GameRoomId: " + gameRoomId);
+            Console.WriteLine("userQuizResultDto: " + userQuizResultDto);
+            Console.WriteLine("currentAnswerIndex: " + currentAnswerIndex);
+
+            var userIds = await _gameRoomService.GetUserIdsForGameRoom(gameRoomId);
+            foreach (var userId in userIds)
+            {
+                await Clients.User(userId.ToString()).SendAsync(eventName, 125);
+            }
+        }
     }
 }

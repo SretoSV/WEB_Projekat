@@ -14,6 +14,10 @@ namespace KvizHub.Profiles
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
 
             CreateMap<RoomParticipant, RoomParticipantDto>();
+
+            CreateMap<LiveRangList, LiveRangListDto>();
+
+            CreateMap<LiveRangListParticipant, LiveRangListParticipantDto>();
         }
     }
 }
