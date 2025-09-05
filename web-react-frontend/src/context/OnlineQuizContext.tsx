@@ -2,15 +2,18 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { ReactNode } from 'react';
 import type { UserQuizResult } from "../models/UserQuizResultModel";
 import type { GameRoom } from "../models/GameRoomModel";
-import { addGameRoom, fetchGameRooms } from "../services/OnlineQuizService";
+import { addGameRoom, fetchGameRooms, fetchLiveRangList } from "../services/OnlineQuizService";
 import { useUserContext } from "./UserContext";
 import type { RoomParticipant } from "../models/RoomParticipantModel";
 import type { Quiz } from "../models/QuizModel";
 import socket from "../sockets/socket";
+import type { LiveRangList } from "../models/LiveRangListModel";
 
 interface OnlineQuizContextType {
   gameRooms: GameRoom[];
   setGameRooms: React.Dispatch<React.SetStateAction<GameRoom[]>>;
+  liveRangList: LiveRangList | null;
+  setLiveRangList: React.Dispatch<React.SetStateAction<LiveRangList | null>>;
   startQuiz: (quizResult: UserQuizResult, gameRoomId: number, quiz: Quiz) => void;
   finishQuiz: () => void;
   quizResult: UserQuizResult | null;
@@ -35,6 +38,7 @@ const OnlineQuizContext = createContext<OnlineQuizContextType | undefined>(undef
 
 export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
   const [quizResult, setQuizResult] = useState<UserQuizResult | null>(null);
+  const [liveRangList, setLiveRangList] = useState<LiveRangList | null>(null);
   const [finishedQuizResult, setFinishedQuizResult] = useState<UserQuizResult | null>(null);
   const [currentUserAnswerIndex, setCurrentUserAnswerIndex] = useState<number>(0);
   const [gameRooms, setGameRooms] = useState<Array<GameRoom>>([]);
@@ -63,6 +67,28 @@ export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
+
+      const getLiveRangList = async () => {
+        const storedGameRoomId = localStorage.getItem("gameRoomId");
+        if(storedGameRoomId){
+          const id = JSON.parse(storedGameRoomId);
+          try {
+              setLoading(true);
+              const { fetchedLiveRangList } = await fetchLiveRangList(id, handleLogout);
+              setLiveRangList(fetchedLiveRangList);
+          } catch (err: any) {
+              throw new Error(err);
+          }
+          finally {
+              setLoading(false);
+          }
+        }
+      };
+      getLiveRangList();
+      
+  }, []);
+
+  useEffect(() => {
     const savedQuizResult = localStorage.getItem('onlineQuizResult');
     if (savedQuizResult) {
       setQuizResult(JSON.parse(savedQuizResult));
@@ -73,7 +99,7 @@ export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
     }
     const savedIDontKnowStates = localStorage.getItem('iDontKnowStates');
     if (savedIDontKnowStates) {
-        setIDontKnowStates(JSON.parse(savedIDontKnowStates));
+      setIDontKnowStates(JSON.parse(savedIDontKnowStates));
     }
   }, []);
 
@@ -286,6 +312,8 @@ const restoreTimer = (durationSeconds: number) => {
     <OnlineQuizContext.Provider value={{ 
       gameRooms,
       setGameRooms,
+      liveRangList,
+      setLiveRangList,
       startQuiz,
       quizResult,
       finishQuiz,

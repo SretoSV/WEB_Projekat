@@ -7,7 +7,6 @@ import type { RoomParticipant } from '../../models/RoomParticipantModel';
 import placeHolder from '../../images/placeHolder.png';
 import ButtonWithText from '../ButtonWithText';
 import { OnlineQuizCard } from './OnlineQuizCard';
-import type { LiveRangList } from '../../models/LiveRangListModel';
 import { LiveRangListCard } from './LiveRangListCard';
 
 interface GameRoomCardProps{
@@ -22,10 +21,9 @@ interface GameRoomCardProps{
     roomParticipants: Array<RoomParticipant>;
     isJoined: boolean | undefined;
     joinedThatRoom: boolean | undefined;
-    liveRangList: LiveRangList | null;
 }
 
-export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, isStarted, roomParticipants, isJoined, joinedThatRoom, liveRangList }: GameRoomCardProps){
+export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, isStarted, roomParticipants, isJoined, joinedThatRoom }: GameRoomCardProps){
     const { user } = useUserContext();
     const { quizzes } = useQuizContext();
 
@@ -71,12 +69,12 @@ export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, 
                     isStarted ? 
                     <div>Active</div>
                     :
-                    <ButtonWithLongText text="Start" onClick1={() => onStart(id)}/>    
+                    roomParticipants.length > 0 && <ButtonWithLongText text="Start" onClick1={() => onStart(id)}/>    
                 :
                     isStarted ? 
                         joinedThatRoom ?
                         <>
-                            <LiveRangListCard liveRangList={liveRangList}/>
+                            <LiveRangListCard />
                             <OnlineQuizCard quiz={quiz || null}/>
                         </>
                         :

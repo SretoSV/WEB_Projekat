@@ -14,10 +14,9 @@ import type { LiveRangList } from "../models/LiveRangListModel";
 
 export function OnlineQuizCompetition(){
     const { user } = useUserContext();
-    const { startQuiz, gameRooms, handleAddParticipantToGameRoom, handleRemoveParticipantToGameRoom, loading, setGameRooms } = useOnlineQuizContext();
+    const { startQuiz, gameRooms, handleAddParticipantToGameRoom, handleRemoveParticipantToGameRoom, loading, setGameRooms, setLiveRangList } = useOnlineQuizContext();
     const [addGameRoomState, setAddGameRoomState] = useState<boolean>(false);
     const [isJoined, setIsJoined] = useState<boolean>(false);
-    const [liveRangList, setLiveRangList] = useState<LiveRangList | null>(null);
     
     useEffect(() => {
         socket.start().then(() => {
@@ -28,9 +27,8 @@ export function OnlineQuizCompetition(){
                 console.log("AA" + userQuizResult);
                 if(userQuizResult !== null){                    
                     startQuiz(userQuizResult, gameRoomId, quiz);
+                    setLiveRangList(liveRangList);
                 }
-                setLiveRangList(liveRangList);
-                console.log(liveRangList);
                 setGameRooms(prevRooms => {
                     return prevRooms.map(room => {
                         if (room.id !== gameRoomId) return room;
@@ -53,8 +51,9 @@ export function OnlineQuizCompetition(){
                 handleRemoveParticipantToGameRoom(participantId);
             });
 
-            socket.on("submit_answer_message", (data: number) => {
+            socket.on("submit_answer_message", (data: number/*newLiveRangList: LiveRangList*/) => {
                 console.log("LiveRangList" + data);
+                //setLiveRangList(newLiveRangList);
             });
         });
     
@@ -132,7 +131,6 @@ export function OnlineQuizCompetition(){
                         isJoined={isJoined}
                         joinedThatRoom={joinedThatRoom}
                         roomParticipants={gameRoom.roomParticipants || []}
-                        liveRangList={liveRangList}
                     />
                 }
                 )

@@ -1,10 +1,8 @@
-import type { LiveRangList } from "../../models/LiveRangListModel";
+import { useOnlineQuizContext } from "../../context/OnlineQuizContext";
 
-interface LiveRangListCardProps{
-    liveRangList: LiveRangList | null;
-}
-export function LiveRangListCard({ liveRangList }: LiveRangListCardProps){
-     console.log("LiveRangListCard props:", liveRangList);
+export function LiveRangListCard(){
+    const { liveRangList } = useOnlineQuizContext();
+
     return <>
         LiveRangList
         <div>

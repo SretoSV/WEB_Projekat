@@ -1,4 +1,5 @@
 import type { GameRoom } from "../models/GameRoomModel";
+import type { LiveRangList } from "../models/LiveRangListModel";
 import { serverPath } from "../serverPath";
 import { authFetch } from "./RefreshTokenService";
 
@@ -20,4 +21,13 @@ export async function addGameRoom(gameRoom: GameRoom, onLogout: () => void): Pro
     const res = await authFetch(`${serverPath()}/api/rooms`, { method: "POST", body: JSON.stringify(gameRoom) }, onLogout);
     if (!res.ok) throw new Error(await res.text() || "Failed to add game room");
     return { addedGameRoom: await res.json() };
+}
+
+export interface GetLiveRangListResponse {
+    fetchedLiveRangList: LiveRangList;
+}
+export async function fetchLiveRangList(gameRoomId: number, onLogout: () => void): Promise<GetLiveRangListResponse> {
+    const res = await authFetch(`${serverPath()}/api/rooms/${gameRoomId}`, { method: "GET" }, onLogout);
+    if (!res.ok) throw new Error(await res.text() || "Failed to get live rang list");
+    return { fetchedLiveRangList: await res.json() };
 }
