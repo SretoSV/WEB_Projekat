@@ -63,7 +63,6 @@ export function UserProvider({ children }: UserProviderProps) {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('iDontKnowStates');
-    localStorage.removeItem('gameRooms');
   };
 
   return (

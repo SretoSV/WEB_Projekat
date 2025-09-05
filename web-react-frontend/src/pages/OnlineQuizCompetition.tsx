@@ -13,10 +13,9 @@ import type { Quiz } from "../models/QuizModel";
 
 export function OnlineQuizCompetition(){
     const { user } = useUserContext();
-    const { startQuiz, gameRooms, handleAddParticipantToGameRoom, handleRemoveParticipantToGameRoom, loading } = useOnlineQuizContext();
+    const { startQuiz, gameRooms, handleAddParticipantToGameRoom, handleRemoveParticipantToGameRoom, loading, setGameRooms } = useOnlineQuizContext();
     const [addGameRoomState, setAddGameRoomState] = useState<boolean>(false);
     const [isJoined, setIsJoined] = useState<boolean>(false);
-
     useEffect(() => {
         socket.start().then(() => {
             console.log("Connected to WebSocket");
@@ -24,7 +23,19 @@ export function OnlineQuizCompetition(){
             socket.on("start_message", (gameRoomId: number, userQuizResult: UserQuizResult, quiz: Quiz) => {
                 console.log("Working received data:", gameRoomId);
                 console.log("AA" + userQuizResult);
-                startQuiz(userQuizResult, gameRoomId, quiz);
+                if(userQuizResult !== null){                    
+                    startQuiz(userQuizResult, gameRoomId, quiz);
+                }
+                setGameRooms(prevRooms => {
+                    return prevRooms.map(room => {
+                        if (room.id !== gameRoomId) return room;
+
+                        return {
+                            ...room,
+                            isStarted: true
+                        };
+                    });
+                });
             });
 
             socket.on("join_message", (data: RoomParticipant) => {
@@ -46,6 +57,18 @@ export function OnlineQuizCompetition(){
         };
     }, []);
 
+    useEffect(() => {
+        const joinedRoom = gameRooms.find(room =>
+            room?.roomParticipants?.some(p => p.userProfile?.username === user?.username)
+        );
+
+        if (joinedRoom) {
+            setIsJoined(true);
+        } else {
+            setIsJoined(false);
+        }
+    }, [gameRooms, user]);
+
     const handleStart = async (gameRoomId: number) => {
         const gameRoom = gameRooms.find(room => room.id === gameRoomId);
         if (!gameRoom) {
@@ -57,13 +80,12 @@ export function OnlineQuizCompetition(){
 
     const handleJoin = async (gameRoomId: number) => {
         socket.invoke("JoinGameRoom", "join_message", gameRoomId, user?.username);
-        setIsJoined(true);
     }
 
     const handleLeave = async (gameRoomId: number) => {
         socket.invoke("LeaveGameRoom", "leave_message", gameRoomId, user?.username);
-        setIsJoined(false);
     }
+
 
     return <>
         {user && user.isAdmin && <Navigation />}
@@ -86,7 +108,8 @@ export function OnlineQuizCompetition(){
             {
                 loading ? <div>Loading...</div> : 
                 gameRooms.map((gameRoom) => {
-                    
+                    const joinedThatRoom = gameRoom?.roomParticipants?.some(p => p.userProfile?.username === user?.username);
+
                     return <GameRoomCard 
                         key={gameRoom.id}
                         id={gameRoom.id}
@@ -98,6 +121,7 @@ export function OnlineQuizCompetition(){
                         onStart={handleStart}
                         onLeave={handleLeave}
                         isJoined={isJoined}
+                        joinedThatRoom={joinedThatRoom}
                         roomParticipants={gameRoom.roomParticipants || []}
                     />
                 }

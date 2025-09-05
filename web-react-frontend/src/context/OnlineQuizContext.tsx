@@ -6,11 +6,10 @@ import { addGameRoom, fetchGameRooms } from "../services/OnlineQuizService";
 import { useUserContext } from "./UserContext";
 import type { RoomParticipant } from "../models/RoomParticipantModel";
 import type { Quiz } from "../models/QuizModel";
-import { useQuizContext } from "./QuizContext";
 
 interface OnlineQuizContextType {
   gameRooms: GameRoom[];
-  setGameRooms: (gameRooms: GameRoom[]) => void;
+  setGameRooms: React.Dispatch<React.SetStateAction<GameRoom[]>>;
   startQuiz: (quizResult: UserQuizResult, gameRoomId: number, quiz: Quiz) => void;
   finishQuiz: () => void;
   quizResult: UserQuizResult | null;
@@ -39,12 +38,10 @@ export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
   const [currentUserAnswerIndex, setCurrentUserAnswerIndex] = useState<number>(0);
   const [gameRooms, setGameRooms] = useState<Array<GameRoom>>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [a, setA] = useState<number>(0);
   const [iDontKnowStates, setIDontKnowStates] = useState<boolean[]>([]);
   const { handleLogout } = useUserContext();
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const {quizzes} = useQuizContext();
 
   useEffect(() => {
 
@@ -88,13 +85,6 @@ export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     //ucitati tu promenu u localStroage
-    if (gameRooms !== null) {
-      localStorage.setItem('gameRooms', JSON.stringify(gameRooms));
-    }
-  }, [gameRooms]);
-
-  useEffect(() => {
-    //ucitati tu promenu u localStroage
     if (iDontKnowStates.length !== 0) {
       localStorage.setItem('iDontKnowStates', JSON.stringify(iDontKnowStates));
     }
@@ -106,16 +96,6 @@ export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
 
     setQuizResult(quizResult);
     setCurrentUserAnswerIndex(0);
-    setGameRooms(prevRooms => {
-      return prevRooms.map(room => {
-          if (room.id !== gameRoomId) return room;
-
-          return {
-              ...room,
-              isStarted: true
-          };
-      });
-    });
     initializeTimer(quiz.timeLimitSeconds / quiz.questions.length);
     localStorage.setItem('onlineQuizResult', JSON.stringify(quizResult));
     localStorage.setItem('onlineCurrentUserAnswerIndex', JSON.stringify(0));

@@ -19,10 +19,11 @@ interface GameRoomCardProps{
     onStart: (gameRoomId: number) => void;
     onLeave: (gameRoomId: number) => void;
     roomParticipants: Array<RoomParticipant>;
-    isJoined: boolean;
+    isJoined: boolean | undefined;
+    joinedThatRoom: boolean | undefined;
 }
 
-export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, isStarted, roomParticipants, isJoined}: GameRoomCardProps){
+export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, isStarted, roomParticipants, isJoined, joinedThatRoom}: GameRoomCardProps){
     const { user } = useUserContext();
     const { quizzes } = useQuizContext();
 
@@ -35,26 +36,19 @@ export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, 
             transition={{ duration: 0.8, ease: "easeOut"}}
         >
         <div className={styles.cardDiv}>
-            {user && user.isAdmin ? 
+            {
+                (!isStarted || !joinedThatRoom) &&
                 <div>
                     Id: {id}<br />
                     Quiz: {quiz?.title}<br />
                     Number Of Users: {roomParticipants.length}<br />
                     Room Participants:
                 </div>
-                :
-                !isStarted &&
-                    <div>
-                        Id: {id}<br />
-                        Quiz: {quiz?.title}<br />
-                        Number Of Users: {roomParticipants.length}<br />
-                        Room Participants:
-                    </div>
             }
+            
             <div>
-
             {
-                !isStarted && roomParticipants.map(roomParticipant => (
+                (!isStarted || !joinedThatRoom) && roomParticipants.map(roomParticipant => (
                     <div key={roomParticipant.id} className={styles.participantProfile}>
                         <img
                             src={roomParticipant.userProfile?.profileImage ? `data:image/png;base64,${roomParticipant.userProfile?.profileImage}` : placeHolder}
@@ -78,10 +72,13 @@ export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, 
                     <ButtonWithLongText text="Start" onClick1={() => onStart(id)}/>    
                 :
                     isStarted ? 
+                        joinedThatRoom ?
                         <>
                             <LiveRangList />
                             <OnlineQuizCard quiz={quiz || null}/>
                         </>
+                        :
+                        <div>Active room</div>
                     :
                         isJoined ? 
                         <div></div>
