@@ -12,7 +12,10 @@ namespace KvizHub.DAO
         Task<RoomParticipant> IsUserExistsInGameRoom(int gameRoomId, int userId);
         Task<bool> RemoveUserFromGameRoom(int id);
         Task<bool> SetIsStartedToTrue(int gameRoomId);
+        Task<bool> SetIsStartedToFalse(int gameRoomId);
         Task<LiveRangList> GenerateLiveRangList(int gameRoomId, List<int> userIds);
         Task<LiveRangList> GetLiveRangList(int gameRoomId);
+        Task<bool> GivePointToUserIfAnswerIsTrue(int gameRoomId, int userId);
+        Task<bool> RemoveGameRoomParticipantsAndLiveRangList(int gameRoomId);
     }
 }

@@ -13,6 +13,7 @@ namespace KvizHub.DTO
         public DateTime StartedAt { get; set; }
         public DateTime? SubmittedAt { get; set; }
         public bool IsStarted { get; set; }
+        public int? GameRoomId { get; set; }
 
         public ICollection<UserAnswerDto> Answers { get; set; }
     }

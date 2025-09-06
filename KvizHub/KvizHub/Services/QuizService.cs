@@ -99,7 +99,7 @@ namespace KvizHub.Services
         public async Task<UserQuizResultDto> StartQuiz(int quizId) 
         {
             int userId = GetUserId();
-            UserQuizResult userQuizResult = await _quizDao.StartQuiz(quizId, userId);
+            UserQuizResult userQuizResult = await _quizDao.StartQuiz(quizId, userId, null);
             UserQuizResultDto userQuizResultDto = _mapper.Map<UserQuizResultDto>(userQuizResult);
             List<Question> questions = await _questionDao.GetQuestionsByQuizId(quizId);
 

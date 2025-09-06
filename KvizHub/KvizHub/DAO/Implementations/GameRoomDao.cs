@@ -73,6 +73,18 @@ namespace KvizHub.DAO.Implementations
 
             return true;
         }
+        public async Task<bool> SetIsStartedToFalse(int gameRoomId)
+        {
+            var gameRoom = await _context.GameRooms.FindAsync(gameRoomId);
+
+            if (gameRoom == null)
+                return false;
+
+            gameRoom.IsStarted = false;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
 
         public async Task<LiveRangList> GenerateLiveRangList(int gameRoomId, List<int> userIds)
         {
@@ -103,5 +115,82 @@ namespace KvizHub.DAO.Implementations
                 .Include(r => r.LiveRangListParticipants)
                 .FirstAsync(r => r.GameRoomId == gameRoomId);
         }
+        public async Task<bool> GivePointToUserIfAnswerIsTrue(int gameRoomId, int userId)
+        {
+            try
+            {
+                var liveRangList = await _context.LiveRangLists
+                    .Include(lr => lr.LiveRangListParticipants)
+                    .FirstOrDefaultAsync(lr => lr.GameRoomId == gameRoomId);
+
+                if (liveRangList == null)
+                    return false;
+
+                var participant = liveRangList.LiveRangListParticipants
+                    .FirstOrDefault(p => p.UserId == userId);
+
+                if (participant == null)
+                    return false;
+
+                participant.Points += 1;
+
+                var result = await _context.SaveChangesAsync();
+                return result > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> RemoveGameRoomParticipantsAndLiveRangList(int gameRoomId)
+        {
+            //Proverim da li svi UserQuizResults imaju SubmittedAt postavljen
+            bool allSubmitted = await _context.UserQuizResults
+                .Where(uqr => uqr.GameRoomId == gameRoomId)
+                .AllAsync(uqr => uqr.SubmittedAt != null);
+
+            if (!allSubmitted)
+            {
+                //Ako neki korisnik nije zavrsio quiz vrati false
+                return false;
+            }
+
+            //koristim transakciju da ukoliko nesto pukne od brisanja mogu vratiti bazu u prethodno stanje
+            using var tx = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                //Obrisem sve RoomParticipants
+                await _context.RoomParticipants
+                    .Where(rp => rp.GameRoomId == gameRoomId)
+                    .ExecuteDeleteAsync();
+
+                //Pronadjem live rang listu
+                var liveRangList = await _context.LiveRangLists
+                    .FirstOrDefaultAsync(lr => lr.GameRoomId == gameRoomId);
+
+                if (liveRangList != null)
+                {
+                    //Obrisem sve njegove participante
+                    await _context.LiveRangListParticipants
+                        .Where(p => p.LiveRangListId == liveRangList.Id)
+                        .ExecuteDeleteAsync();
+
+                    //Obrisem samu rang listu
+                    await _context.LiveRangLists
+                        .Where(lr => lr.Id == liveRangList.Id)
+                        .ExecuteDeleteAsync();
+                }
+
+                await tx.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                await tx.RollbackAsync();
+                return false;
+            }
+        }
+
     }
 }

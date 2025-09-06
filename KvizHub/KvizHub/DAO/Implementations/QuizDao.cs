@@ -73,6 +73,68 @@ namespace KvizHub.DAO.Implementations
             return quiz;
         }
 
+        public async Task<bool> SaveUserAnswerToDatabase(UserAnswer updatedAnswer)
+        {
+            var existingAnswer = await _context.UserAnswers
+                .Include(a => a.UserAnswerOptions)
+                .FirstOrDefaultAsync(a => a.Id == updatedAnswer.Id);
+
+            if (existingAnswer == null)
+                return false;
+
+            existingAnswer.IsTrue = updatedAnswer.IsTrue;
+            existingAnswer.QuizId = updatedAnswer.QuizId;
+            existingAnswer.ResultId = updatedAnswer.ResultId;
+            existingAnswer.QuestionId = updatedAnswer.QuestionId;
+            existingAnswer.UserId = updatedAnswer.UserId;
+
+            foreach (var updatedOption in updatedAnswer.UserAnswerOptions)
+            {
+                var existingOption = existingAnswer.UserAnswerOptions
+                    .FirstOrDefault(o => o.Id == updatedOption.Id);
+
+                if (existingOption != null)
+                {
+                    existingOption.IsCorrect = updatedOption.IsCorrect;
+                    existingOption.FieldAnswerText = updatedOption.FieldAnswerText;
+                }
+                else
+                {
+                    //Dodaj novi option, ako ne postoji
+                    existingAnswer.UserAnswerOptions.Add(new UserAnswerOption
+                    {
+                        IsCorrect = updatedOption.IsCorrect,
+                        FieldAnswerText = updatedOption.FieldAnswerText,
+                        UserAnswerId = existingAnswer.Id,
+                    });
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> SaveUserQuizResultToDatabase(UserQuizResult updatedResult)
+        {
+            var existingResult = await _context.UserQuizResults
+                .FirstOrDefaultAsync(r => r.Id == updatedResult.Id);
+
+            if (existingResult == null)
+                return false;
+
+            existingResult.UserId = updatedResult.UserId;
+            existingResult.QuizId = updatedResult.QuizId;
+            existingResult.TotalQuestions = updatedResult.TotalQuestions;
+            existingResult.CorrectAnswers = updatedResult.CorrectAnswers;
+            existingResult.ScorePercentage = updatedResult.ScorePercentage;
+            existingResult.StartedAt = updatedResult.StartedAt;
+            existingResult.SubmittedAt = updatedResult.SubmittedAt;
+            existingResult.IsStarted = updatedResult.IsStarted;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         #endregion
 
         #region Edit
@@ -137,7 +199,7 @@ namespace KvizHub.DAO.Implementations
         #endregion
 
         #region Start/Finish
-        public async Task<UserQuizResult> StartQuiz(int quizId, int userId) 
+        public async Task<UserQuizResult> StartQuiz(int quizId, int userId, int? gameRoomId) 
         {
 
             var newResult = new UserQuizResult
@@ -145,7 +207,8 @@ namespace KvizHub.DAO.Implementations
                 UserId = userId,
                 QuizId = quizId,
                 StartedAt = DateTime.UtcNow,
-                IsStarted = true
+                IsStarted = true,
+                GameRoomId = gameRoomId,
             };
 
             _context.UserQuizResults.Add(newResult);

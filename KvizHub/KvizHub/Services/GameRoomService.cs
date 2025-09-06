@@ -17,8 +17,9 @@ namespace KvizHub.Services
         private readonly IQuizDao _quizDao;
         private readonly IQuestionDao _questionDao;
         private readonly IAnswerDao _answerDao;
+        private readonly IResultDao _resultDao;
 
-        public GameRoomService(IGameRoomDao gameRoomDao, IUserDao userDao, IMapper mapper, IQuizDao quizDao, IQuestionDao questionDao, IAnswerDao answerDao)
+        public GameRoomService(IGameRoomDao gameRoomDao, IUserDao userDao, IMapper mapper, IQuizDao quizDao, IQuestionDao questionDao, IAnswerDao answerDao, IResultDao resultDao)
         {
             _gameRoomDao = gameRoomDao;
             _userDao = userDao;
@@ -26,6 +27,7 @@ namespace KvizHub.Services
             _quizDao = quizDao;
             _questionDao = questionDao;
             _answerDao = answerDao;
+            _resultDao = resultDao;
         }
 
         public async Task<List<GameRoomDto>> GetAllGameRooms()
@@ -106,20 +108,24 @@ namespace KvizHub.Services
 
             return -1;
         }
-        public async Task<UserQuizResultDto> StartQuiz(int quizId, int userId)
+        public async Task<UserQuizResultDto> StartQuiz(int quizId, int userId, int gameRoomId)
         {
-            UserQuizResult userQuizResult = await _quizDao.StartQuiz(quizId, userId);
+            UserQuizResult userQuizResult = await _quizDao.StartQuiz(quizId, userId, gameRoomId);
             UserQuizResultDto userQuizResultDto = _mapper.Map<UserQuizResultDto>(userQuizResult);
             List<Question> questions = await _questionDao.GetQuestionsByQuizId(quizId);
 
             List<UserAnswer> userAnswers = await _answerDao.CreateUserAnswers(quizId, userQuizResult.Id, questions, userId);
             userQuizResultDto.Answers = _mapper.Map<List<UserAnswerDto>>(userAnswers);
-
+            userQuizResultDto.GameRoomId = gameRoomId;
             return userQuizResultDto;
         }
         public async Task<bool> SetIsStartedToTrue(int gameRoomId)
         {
             return await _gameRoomDao.SetIsStartedToTrue(gameRoomId);
+        }
+        public async Task<bool> SetIsStartedToFalse(int gameRoomId)
+        {
+            return await _gameRoomDao.SetIsStartedToFalse(gameRoomId);
         }
 
         public async Task<LiveRangListDto> GenerateLiveRangList(int gameRoomId, List<int> userIds)
@@ -127,11 +133,103 @@ namespace KvizHub.Services
             LiveRangList liveRangList = await _gameRoomDao.GenerateLiveRangList(gameRoomId, userIds);
             return _mapper.Map<LiveRangListDto>(liveRangList);
         }
-
         public async Task<LiveRangListDto> GetLiveRangList(int gameRoomId)
         {
             LiveRangList liveRangList = await _gameRoomDao.GetLiveRangList(gameRoomId);
+            if (liveRangList == null)
+                return null;
+
+            liveRangList.LiveRangListParticipants = liveRangList.LiveRangListParticipants
+                .OrderByDescending(p => p.Points)
+                .ToList();
             return _mapper.Map<LiveRangListDto>(liveRangList);
+        }
+        
+        public async Task<bool> CompareAnswer(int gameRoomId, UserQuizResultDto userQuizResultDto, int currentAnswerIndex)
+        {
+
+            List<Question> questions = await _questionDao.GetQuestionsByQuizId(userQuizResultDto.QuizId);
+            List<UserAnswerDto> userAnswerDtos = userQuizResultDto.Answers.ToList();
+
+            //------------------------------------------------------------------------
+            #region Comapration
+            bool isTrue = true;
+            List<AnswerOption> questionAnswerOptions = questions[currentAnswerIndex].AnswerOptions.ToList();
+            List<UserAnswerOptionDto> userAnswerOptions = userAnswerDtos[currentAnswerIndex].UserAnswerOptions.ToList();
+
+            for (int j = 0; j < questionAnswerOptions.Count; j++)
+            {
+                bool isMultiple = await _questionDao.IsQuestionTypeMultipleCorrectAnswers(userAnswerDtos[currentAnswerIndex].QuestionId);
+                if (isMultiple)
+                {
+                    if (userAnswerOptions[j].IsCorrect == null) { userAnswerOptions[j].IsCorrect = false; }
+                }
+
+                if (questionAnswerOptions[j].FieldAnswerText != null)
+                {
+                    if (!questionAnswerOptions[j].FieldAnswerText.Equals(userAnswerOptions[j].FieldAnswerText, StringComparison.OrdinalIgnoreCase))
+                    {
+                        isTrue = false;
+                        userAnswerDtos[currentAnswerIndex].IsTrue = false;
+                        break;
+                    }
+                    else
+                    {
+                        userAnswerOptions[j].IsCorrect = true;
+                        break;
+                    }
+                }
+                else if (questionAnswerOptions[j].IsCorrect != userAnswerOptions[j].IsCorrect)
+                { //ako je neki od optiona razlicit pitanje postaje netacno
+                    isTrue = false;
+                    userAnswerDtos[currentAnswerIndex].IsTrue = false;
+                }
+            }
+            if (isTrue)
+            {
+                userAnswerDtos[currentAnswerIndex].IsTrue = true;
+            }
+            #endregion
+            //------------------------------------------------------------------------
+
+            UserAnswer userAnswer = _mapper.Map<UserAnswer>(userAnswerDtos[currentAnswerIndex]);
+            bool save = await _quizDao.SaveUserAnswerToDatabase(userAnswer);
+            bool give = true;
+            if (userAnswerDtos[currentAnswerIndex].IsTrue && save)
+            {
+                //daj bod tom korisniku za tu rang listu 
+                give = await _gameRoomDao.GivePointToUserIfAnswerIsTrue(gameRoomId, userQuizResultDto.UserId);
+            }
+
+            return save && give;
+        }
+
+        public async Task<UserQuizResultDto> GetUserQuizResultById(UserQuizResultDto userQuizResultDto)
+        {
+            userQuizResultDto.SubmittedAt = DateTime.UtcNow;
+
+            UserQuizResult userQuizResult = await _resultDao.GetUserQuizResultById(userQuizResultDto.Id);
+
+            userQuizResult.SubmittedAt = userQuizResultDto.SubmittedAt;
+            userQuizResult.TotalQuestions = userQuizResultDto.Answers.Count;
+            userQuizResult.CorrectAnswers = userQuizResult.Answers.Count(a => a.IsTrue);
+            userQuizResult.ScorePercentage = 0;
+            userQuizResult.IsStarted = false;
+            if (userQuizResult.CorrectAnswers != 0)
+            {
+                userQuizResult.ScorePercentage = (double.Parse(userQuizResult.CorrectAnswers.ToString()) / userQuizResult.TotalQuestions) * 100;
+            }
+            if (await _quizDao.SaveUserQuizResultToDatabase(userQuizResult)) 
+            {
+                return _mapper.Map<UserQuizResultDto>(userQuizResult);
+            }
+            return null;
+        }
+
+        public async Task<bool> RemoveGameRoomParticipantsAndLiveRangList(int gameRoomId)
+        {
+
+            return await _gameRoomDao.RemoveGameRoomParticipantsAndLiveRangList(gameRoomId);
         }
     }
 }

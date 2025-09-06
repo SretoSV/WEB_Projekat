@@ -1,4 +1,5 @@
 ﻿using KvizHub.Context;
+using KvizHub.DTO;
 using KvizHub.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,5 +31,14 @@ namespace KvizHub.DAO.Implementations
                 .ThenInclude(a => a.UserAnswerOptions)
             .ToListAsync();
         }
+
+        public async Task<UserQuizResult?> GetUserQuizResultById(int userQuizResultId)
+        {
+            return await _context.UserQuizResults
+                .Include(uqr => uqr.Answers)
+                    .ThenInclude(a => a.UserAnswerOptions)
+                .FirstOrDefaultAsync(uqr => uqr.Id == userQuizResultId);
+        }
+
     }
 }

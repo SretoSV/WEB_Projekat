@@ -6,5 +6,6 @@ namespace KvizHub.DAO
     {
         Task<List<UserQuizResult>> GetAllUserResultsForQuiz(int quizId, int userId);
         Task<List<UserQuizResult>> GetAllResultsForQuiz(int quizId);
+        Task<UserQuizResult?> GetUserQuizResultById(int userQuizResultId);
     }
 }

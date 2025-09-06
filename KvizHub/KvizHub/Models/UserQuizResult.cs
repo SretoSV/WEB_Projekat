@@ -16,7 +16,8 @@
         public DateTime StartedAt { get; set; } //Not Null
         public DateTime? SubmittedAt { get; set; }
         public bool IsStarted { get; set; } //Not Null
-
+        public int? GameRoomId { get; set; }
+        public GameRoom GameRoom { get; set; }
         public ICollection<UserAnswer> Answers { get; set; }
         #endregion
 
