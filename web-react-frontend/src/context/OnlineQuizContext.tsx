@@ -15,7 +15,7 @@ interface OnlineQuizContextType {
   liveRangList: LiveRangList | null;
   setLiveRangList: React.Dispatch<React.SetStateAction<LiveRangList | null>>;
   startQuiz: (quizResult: UserQuizResult, gameRoomId: number, quiz: Quiz) => void;
-  finishQuiz: () => void;
+  //finishQuiz: (id: number, result: UserQuizResult) => void;
   quizResult: UserQuizResult | null;
   currentUserAnswerIndex: number;
   incrementIndex: () => void;
@@ -128,8 +128,10 @@ export const OnlineQuizProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('onlineCurrentUserAnswerIndex', JSON.stringify(0));
   };
 
-  const finishQuiz = async () => {
-    //setFinishedQuizResult(returnedQuizResult);
+  const finishQuiz = async (id: number, result: UserQuizResult) => {
+
+    socket.invoke("FinishRoomQuiz", "finish_room_quiz", id, result);
+
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
@@ -296,7 +298,7 @@ const restoreTimer = (durationSeconds: number) => {
       
       if(JSON.parse(savedQuestionsNumber) === JSON.parse(savedCurrentUserAnswerIndex) + 1){
         console.log("AJMOOOO");
-        finishQuiz();
+        finishQuiz(id, result);
       }
     }
   
@@ -316,7 +318,7 @@ const restoreTimer = (durationSeconds: number) => {
       setLiveRangList,
       startQuiz,
       quizResult,
-      finishQuiz,
+      //finishQuiz,
       currentUserAnswerIndex,
       incrementIndex,
       loading,

@@ -14,7 +14,7 @@ import type { LiveRangList } from "../models/LiveRangListModel";
 
 export function OnlineQuizCompetition(){
     const { user } = useUserContext();
-    const { startQuiz, gameRooms, handleAddParticipantToGameRoom, handleRemoveParticipantToGameRoom, loading, setGameRooms, setLiveRangList } = useOnlineQuizContext();
+    const { startQuiz, gameRooms, handleAddParticipantToGameRoom, handleRemoveParticipantToGameRoom, loading, setGameRooms, setLiveRangList, setFinishedQuizResult } = useOnlineQuizContext();
     const [addGameRoomState, setAddGameRoomState] = useState<boolean>(false);
     const [isJoined, setIsJoined] = useState<boolean>(false);
     
@@ -51,9 +51,27 @@ export function OnlineQuizCompetition(){
                 handleRemoveParticipantToGameRoom(participantId);
             });
 
-            socket.on("submit_answer_message", (data: number/*newLiveRangList: LiveRangList*/) => {
-                console.log("LiveRangList" + data);
-                //setLiveRangList(newLiveRangList);
+            socket.on("submit_answer_message", (newLiveRangList: LiveRangList) => {
+                setLiveRangList(newLiveRangList);
+            });
+
+            socket.on("finish_room_quiz", (gameRoomId: number, userQuizResult: UserQuizResult) => {
+                if(userQuizResult !== null){                    
+                    setFinishedQuizResult(userQuizResult);
+                }
+                else if(userQuizResult === null){
+                    setGameRooms(prevRooms => {
+                        return prevRooms.map(room => {
+                            if (room.id !== gameRoomId) return room;
+
+                            return {
+                                ...room,
+                                roomParticipants: [],
+                                isStarted: false
+                            };
+                        });
+                    });
+                }
             });
         });
     
@@ -62,6 +80,7 @@ export function OnlineQuizCompetition(){
             socket.off("join_message");
             socket.off("leave_message");
             socket.off("submit_answer_message");
+            socket.off("finish_room_quiz");
         };
     }, []);
 

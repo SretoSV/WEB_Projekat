@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { setQuizDifficultyText } from "../../services/QuizService";
 
 import { formatTime } from "../../functions/formatTimeFunction";
-import { FinishedQuizResult } from "../../components/FinishedQuizResults";
 import { useOnlineQuizContext } from "../../context/OnlineQuizContext";
 import { OnlineIDontKnow } from "../OnlineUserAnswerOptionsComponents/OnlineIDontKnow";
 import { OnlineMultipleChoice } from "../OnlineUserAnswerOptionsComponents/OnlineMultipleChoice";
@@ -11,6 +10,7 @@ import { OnlineMultipleCorrectAnswers } from "../OnlineUserAnswerOptionsComponen
 import { OnlineTrueFalse } from "../OnlineUserAnswerOptionsComponents/OnlineTrueFalse";
 import { OnlineFillInTheBlank } from "../OnlineUserAnswerOptionsComponents/OnlineFillInTheBlank";
 import type { Quiz } from "../../models/QuizModel";
+import { OnlineFinishedQuizResult } from "../OnlineUserAnswerOptionsComponents/OnlineFinishedQuizResult";
 interface OnlineQuizCardProps{
     quiz: Quiz | null;
 }
@@ -44,7 +44,7 @@ export function OnlineQuizCard({quiz}: OnlineQuizCardProps) {
             { quizResult === null ? 
             <>
                 {   
-                    <FinishedQuizResult selectedQuizId={quiz.id}/> //kreirati OnlineFinishedQuizResult koji ce koristiti finishedQuizResult iz OnlineQuizContext-a 
+                    <OnlineFinishedQuizResult selectedQuizId={quiz.id}/> //kreirati OnlineFinishedQuizResult koji ce koristiti finishedQuizResult iz OnlineQuizContext-a 
                 }
             </>
             :

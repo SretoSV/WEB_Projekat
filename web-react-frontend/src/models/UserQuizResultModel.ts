@@ -11,4 +11,5 @@ export interface UserQuizResult{
     submittedAt?: Date,
     isStarted: boolean,
     answers?: Array<UserAnswer>,
+    gameRoomId?: number,
 }
