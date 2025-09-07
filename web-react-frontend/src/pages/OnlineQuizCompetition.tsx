@@ -52,6 +52,12 @@ export function OnlineQuizCompetition(){
                 handleRemoveParticipantToGameRoom(participantId);
             });
 
+            socket.on("delete_message", (gameRoomId: number) => {
+                setGameRooms((prevGameRooms) =>
+                    prevGameRooms.filter((room) => room.id !== gameRoomId)
+                );
+            });
+
             socket.on("submit_answer_message", (newLiveRangList: LiveRangList) => {
                 setLiveRangList(newLiveRangList);
             });
@@ -87,6 +93,7 @@ export function OnlineQuizCompetition(){
             socket.off("leave_message");
             socket.off("submit_answer_message");
             socket.off("finish_room_quiz");
+            socket.off("delete_message");
         };
     }, []);
 
@@ -119,6 +126,11 @@ export function OnlineQuizCompetition(){
         socket.invoke("LeaveGameRoom", "leave_message", gameRoomId, user?.username);
     }
 
+    const handleDelete = async (gameRoomId: number) => {
+        if (window.confirm(`Are you sure you want to delete this room?`)){
+            socket.invoke("DeleteGameRoom", "delete_message", gameRoomId);
+        }
+    }
 
     return <>
         {user && user.isAdmin && <Navigation />}
@@ -156,6 +168,7 @@ export function OnlineQuizCompetition(){
                         isJoined={isJoined}
                         joinedThatRoom={joinedThatRoom}
                         roomParticipants={gameRoom.roomParticipants || []}
+                        onDelete={handleDelete}
                     />
                 }
                 )

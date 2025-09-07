@@ -22,9 +22,10 @@ interface GameRoomCardProps{
     roomParticipants: Array<RoomParticipant>;
     isJoined: boolean | undefined;
     joinedThatRoom: boolean | undefined;
+    onDelete: (gameRoomId: number) => void;
 }
 
-export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, isStarted, roomParticipants, isJoined, joinedThatRoom }: GameRoomCardProps){
+export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, isStarted, roomParticipants, isJoined, joinedThatRoom, onDelete }: GameRoomCardProps){
     const { user } = useUserContext();
     const { quizzes } = useQuizContext();
 
@@ -73,7 +74,7 @@ export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, 
                     roomParticipants.length > 0 ? 
                     <ButtonWithText text="Start" onClick1={() => onStart(id)}/>
                     :
-                    <ButtonWithImage title="Delete" image={rejectImage} widthImage={"30px"} heightImage={"30px"} alt={"Delete"}/>
+                    <ButtonWithImage title="Delete" onClick1={() => onDelete(id)} image={rejectImage} widthImage={"30px"} heightImage={"30px"} alt={"Delete"}/>
                 :
                     isStarted ? 
                         joinedThatRoom ?
