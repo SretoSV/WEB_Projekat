@@ -248,11 +248,7 @@ namespace KvizHub.Services
         public async Task<List<UserProfileForRanglistDto>> GetUsersProfilesByRangListId(int liveRangListId)
         {
             List<User> users = await _gameRoomDao.GetUsersByRangListId(liveRangListId);
-            Console.WriteLine("*-------------------------");
 
-            foreach (var u in users) {
-                Console.WriteLine(u);
-            }
             List<UserProfileForRanglistDto> roomParticipantDtos = users
                 .Select(u => new UserProfileForRanglistDto
                 {
@@ -263,6 +259,11 @@ namespace KvizHub.Services
                 .ToList();
 
             return roomParticipantDtos;
+        }
+
+        public async Task<bool> DeleteGameRoom(int gameRoomId)
+        {
+            return await _gameRoomDao.DeleteGameRoom(gameRoomId);
         }
     }
 }

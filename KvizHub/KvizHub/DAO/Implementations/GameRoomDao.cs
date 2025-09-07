@@ -213,20 +213,24 @@ namespace KvizHub.DAO.Implementations
                 .Include(p => p.User)
                 .Select(p => p.User)
                 .ToListAsync();
+        }
 
-            /*var rangList = await _context.LiveRangLists
-                .Include(r => r.LiveRangListParticipants)
-                .FirstAsync(r => r.Id == liveRangListId);
+        public async Task<bool> DeleteGameRoom(int gameRoomId)
+        {
+            try
+            {
+                var gameRoom = await _context.GameRooms.FindAsync(gameRoomId);
+                if (gameRoom == null)
+                    return false;
 
-            var userIds = rangList.LiveRangListParticipants
-                .Select(p => p.UserId)
-                .ToList();
-
-            var users = await _context.Users
-                .Where(u => userIds.Contains(u.Id))
-                .ToListAsync();
-
-            return users;*/
+                _context.GameRooms.Remove(gameRoom);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
     }

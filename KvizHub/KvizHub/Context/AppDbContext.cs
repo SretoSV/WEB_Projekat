@@ -79,6 +79,29 @@ namespace KvizHub.Context
                 .Property(p => p.Points)
                 .HasDefaultValue(0);
 
+
+            //GameRoom -> UserQuizResult
+            modelBuilder.Entity<UserQuizResult>()
+                .HasOne(r => r.GameRoom)
+                .WithMany(g => g.UserQuizResults)
+                .HasForeignKey(r => r.GameRoomId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            //UserQuizResult -> UserAnswer
+            modelBuilder.Entity<UserAnswer>()
+                .HasOne(a => a.Result)
+                .WithMany(r => r.Answers)
+                .HasForeignKey(a => a.ResultId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            //UserAnswer -> UserAnswerOption
+            modelBuilder.Entity<UserAnswerOption>()
+                .HasOne(o => o.UserAnswer)
+                .WithMany(a => a.UserAnswerOptions)
+                .HasForeignKey(o => o.UserAnswerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
             //Seed Users
             var seededUser = new User
             {

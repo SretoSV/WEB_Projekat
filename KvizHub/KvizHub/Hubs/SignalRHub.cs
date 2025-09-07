@@ -20,12 +20,6 @@ namespace KvizHub.Hubs
             _quizService = quizService;
         }
 
-        /* [Authorize]
-         public async Task JoinLiveCompetiton(string eventName)
-         {
-             await Groups.AddToGroupAsync(Context.ConnectionId, "LiveCompetitonGroup");
-         }*/
-
         [Authorize(Roles = "admin")]
         public async Task StartCompetition(string eventName, int gameRoomId, int quizId)
         {
@@ -91,7 +85,6 @@ namespace KvizHub.Hubs
             }
 
             UserQuizResultDto returnedUserQuizResultDto2 = await _gameRoomService.GETUserQuizResultById(userQuizResultDto);
-            Console.WriteLine("\n\n\nSUMBITEEEEEDD: " + returnedUserQuizResultDto2.SubmittedAt + "\n\n\n");
 
             var userIds = await _gameRoomService.GetUserIdsForGameRoom(gameRoomId);
             var userUsernames = await _userService.GetUserUsernamesByUserIds(userIds);
@@ -103,6 +96,14 @@ namespace KvizHub.Hubs
             //ukloni sve participants za taj gameRoom
             //Ukloni rang listu za taj gameRoomId
 
+        }
+
+        [Authorize(Roles = "admin")]
+        public async Task DeleteGameRoom(string eventName, int gameRoomId)
+        {
+            if (await _gameRoomService.DeleteGameRoom(gameRoomId)) { 
+                await Clients.All.SendAsync(eventName, gameRoomId);
+            }
         }
 
     }

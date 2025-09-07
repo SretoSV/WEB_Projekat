@@ -19,5 +19,6 @@ namespace KvizHub.DAO
         Task<bool> RemoveGameRoomParticipantsAndLiveRangList(int gameRoomId);
         Task<bool> HaveAllUsersInGameRoomFinishedQuiz(int gameRoomId);
         Task<List<User>> GetUsersByRangListId(int liveRangListId);
+        Task<bool> DeleteGameRoom(int gameRoomId);
     }
 }

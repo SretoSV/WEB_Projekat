@@ -12,5 +12,6 @@ namespace KvizHub.Models
         public bool IsFinished { get; set; }
 
         public ICollection<RoomParticipant> RoomParticipants { get; set; }
+        public ICollection<UserQuizResult> UserQuizResults { get; set; }
     }
 }
