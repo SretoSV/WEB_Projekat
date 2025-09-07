@@ -1,6 +1,5 @@
 import styles from '../../styles/OnlineQuizCompetitionStyles/OnlineQuizCompetitionStyle.module.css';
 import { motion } from "framer-motion";
-import ButtonWithLongText from '../ButtonWithLongText';
 import { useUserContext } from '../../context/UserContext';
 import { useQuizContext } from '../../context/QuizContext';
 import type { RoomParticipant } from '../../models/RoomParticipantModel';
@@ -8,6 +7,8 @@ import placeHolder from '../../images/placeHolder.png';
 import ButtonWithText from '../ButtonWithText';
 import { OnlineQuizCard } from './OnlineQuizCard';
 import { LiveRangListCard } from './LiveRangListCard';
+import ButtonWithImage from '../ButtonWithImage';
+import rejectImage from '../../images/reject.png';
 
 interface GameRoomCardProps{
     id: number;
@@ -69,7 +70,10 @@ export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, 
                     isStarted ? 
                     <div>Active</div>
                     :
-                    roomParticipants.length > 0 && <ButtonWithLongText text="Start" onClick1={() => onStart(id)}/>    
+                    roomParticipants.length > 0 ? 
+                    <ButtonWithText text="Start" onClick1={() => onStart(id)}/>
+                    :
+                    <ButtonWithImage title="Delete" image={rejectImage} widthImage={"30px"} heightImage={"30px"} alt={"Delete"}/>
                 :
                     isStarted ? 
                         joinedThatRoom ?
@@ -83,7 +87,7 @@ export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, 
                         isJoined ? 
                         <div></div>
                         :
-                        <ButtonWithLongText text="Join" onClick1={() => onJoin(id)}/>    
+                        <ButtonWithText text="Join" onClick1={() => onJoin(id)}/>    
             }
         </div>
         </motion.div>

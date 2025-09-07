@@ -9,7 +9,7 @@ interface FinishedQuizResultProps{
     selectedQuizId: number;
 }
 export function OnlineFinishedQuizResult({selectedQuizId}: FinishedQuizResultProps){
-    const { finishedQuizResult, setFinishedQuizResult } = useOnlineQuizContext(); 
+    const { finishedQuizResult, setFinishedQuizResult, setGameRooms } = useOnlineQuizContext(); 
     const navigate = useNavigate();
 
     useEffect(()=>{
@@ -19,6 +19,17 @@ export function OnlineFinishedQuizResult({selectedQuizId}: FinishedQuizResultPro
 
     const handleNavigate = () => {
         setFinishedQuizResult(null);
+        setGameRooms(prevRooms => {
+            return prevRooms.map(room => {
+                if (room.id !== finishedQuizResult?.gameRoomId) return room;
+
+                return {
+                    ...room,
+                    roomParticipants: [],
+                    isStarted: false
+                };
+            });
+        });
         navigate('../OnlineQuizCompetition');
     }
     return <>

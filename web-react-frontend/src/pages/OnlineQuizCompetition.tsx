@@ -17,6 +17,7 @@ export function OnlineQuizCompetition(){
     const { startQuiz, gameRooms, handleAddParticipantToGameRoom, handleRemoveParticipantToGameRoom, loading, setGameRooms, setLiveRangList, setFinishedQuizResult } = useOnlineQuizContext();
     const [addGameRoomState, setAddGameRoomState] = useState<boolean>(false);
     const [isJoined, setIsJoined] = useState<boolean>(false);
+    //const [brojMoj, setBrojMoj] = useState<number>(1);
     
     useEffect(() => {
         socket.start().then(() => {
@@ -55,26 +56,31 @@ export function OnlineQuizCompetition(){
                 setLiveRangList(newLiveRangList);
             });
 
-            socket.on("finish_room_quiz", (gameRoomId: number, userQuizResult: UserQuizResult) => {
-                if(userQuizResult !== null){                    
+            socket.on("finish_room_quiz", (gameRoomId: number, userQuizResult: UserQuizResult, usernames: Array<string>) => {
+                console.log(usernames);
+                if(usernames === null){                    
                     setFinishedQuizResult(userQuizResult);
                 }
-                else if(userQuizResult === null){
-                    setGameRooms(prevRooms => {
-                        return prevRooms.map(room => {
-                            if (room.id !== gameRoomId) return room;
-
-                            return {
-                                ...room,
-                                roomParticipants: [],
-                                isStarted: false
-                            };
+                else{
+                    const storedUser = localStorage.getItem("user");
+                    if(storedUser && !usernames.includes(JSON.parse(storedUser).username)){
+                        setGameRooms(prevRooms => {
+                            return prevRooms.map(room => {
+                                if (room.id !== gameRoomId) return room;
+    
+                                return {
+                                    ...room,
+                                    roomParticipants: [],
+                                    isStarted: false
+                                };
+                            });
                         });
-                    });
+                    }
+                        
                 }
             });
         });
-    
+
         return () => {
             socket.off("start_message");
             socket.off("join_message");
