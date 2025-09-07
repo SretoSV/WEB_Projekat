@@ -21,6 +21,7 @@ namespace KvizHub.Services.Interfaces
         Task<bool> HaveAllUsersInGameRoomFinishedQuiz(int gameRoomId);
 
         Task<UserQuizResultDto> GETUserQuizResultById(UserQuizResultDto userQuizResultDto);
+        Task<List<UserProfileForRanglistDto>> GetUsersProfilesByRangListId(int liveRangListId);
 
     }
 }

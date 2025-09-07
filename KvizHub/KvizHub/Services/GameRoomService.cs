@@ -245,5 +245,24 @@ namespace KvizHub.Services
             return await _gameRoomDao.HaveAllUsersInGameRoomFinishedQuiz(gameRoomId); 
         }
 
+        public async Task<List<UserProfileForRanglistDto>> GetUsersProfilesByRangListId(int liveRangListId)
+        {
+            List<User> users = await _gameRoomDao.GetUsersByRangListId(liveRangListId);
+            Console.WriteLine("*-------------------------");
+
+            foreach (var u in users) {
+                Console.WriteLine(u);
+            }
+            List<UserProfileForRanglistDto> roomParticipantDtos = users
+                .Select(u => new UserProfileForRanglistDto
+                {
+                    Id = u.Id,
+                    Username = u.Username,
+                    ProfileImage = u.ProfileImage
+                })
+                .ToList();
+
+            return roomParticipantDtos;
+        }
     }
 }

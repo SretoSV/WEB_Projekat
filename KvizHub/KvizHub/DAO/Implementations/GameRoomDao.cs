@@ -205,5 +205,29 @@ namespace KvizHub.DAO.Implementations
                 return true;
             }
         }
+
+        public async Task<List<User>> GetUsersByRangListId(int liveRangListId)
+        {
+            return await _context.LiveRangListParticipants
+                .Where(p => p.LiveRangListId == liveRangListId)
+                .Include(p => p.User)
+                .Select(p => p.User)
+                .ToListAsync();
+
+            /*var rangList = await _context.LiveRangLists
+                .Include(r => r.LiveRangListParticipants)
+                .FirstAsync(r => r.Id == liveRangListId);
+
+            var userIds = rangList.LiveRangListParticipants
+                .Select(p => p.UserId)
+                .ToList();
+
+            var users = await _context.Users
+                .Where(u => userIds.Contains(u.Id))
+                .ToListAsync();
+
+            return users;*/
+        }
+
     }
 }

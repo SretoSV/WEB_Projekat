@@ -29,7 +29,7 @@ namespace KvizHub.Controllers
                 return BadRequest(new { message = "Email(Username) and password are required." });
             }
 
-            if (dto.Password.Length > 15 || dto.Password.Length < 3) 
+            if (dto.Password.Length > 15 || dto.Password.Length < 3)
             {
                 return BadRequest(new { Message = "Password length must be between 3 and 15 characters!" });
             }
@@ -111,13 +111,13 @@ namespace KvizHub.Controllers
                 return BadRequest(new { message = "No refresh token." });
             }
 
-            if (!await _userService.IsTokenActive(dto.RefreshTokenHash)) 
+            if (!await _userService.IsTokenActive(dto.RefreshTokenHash))
             {
                 await _userService.LogoutAsync(dto.RefreshTokenHash);
                 return Unauthorized();
             }
             else {
-                try 
+                try
                 {
                     AccessTokenDto result = await _userService.GetNewAccessToken(dto.RefreshTokenHash);
 

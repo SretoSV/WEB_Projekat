@@ -1,4 +1,5 @@
 ﻿using KvizHub.DTO;
+using KvizHub.Models;
 using KvizHub.Services;
 using KvizHub.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -71,6 +72,29 @@ namespace KvizHub.Controllers
                 }
 
                 return Ok(liveRangListDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", detail = ex.Message });
+            }
+        }
+
+
+        [Authorize]
+        [HttpGet("profiles/{id}")]
+        public async Task<IActionResult> GetUsersProfiles(int id)
+        {
+            Console.WriteLine("AAAAAAAAAA: " + id);
+
+            try
+            {
+                List<UserProfileForRanglistDto> userProfileForRanglistDtos = await _gameRoomService.GetUsersProfilesByRangListId(id);
+                if (userProfileForRanglistDtos == null)
+                {
+                    return StatusCode(500, new { message = "Internal server error while fetching user profiles." });
+                }
+                Console.WriteLine(userProfileForRanglistDtos.Count);
+                return Ok(userProfileForRanglistDtos);
             }
             catch (Exception ex)
             {
