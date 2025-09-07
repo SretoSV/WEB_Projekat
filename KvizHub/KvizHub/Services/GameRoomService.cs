@@ -225,11 +225,25 @@ namespace KvizHub.Services
             }
             return null;
         }
+        public async Task<UserQuizResultDto> GETUserQuizResultById(UserQuizResultDto userQuizResultDto)
+        {
+
+            UserQuizResult userQuizResult = await _resultDao.GetUserQuizResultById(userQuizResultDto.Id);
+            return _mapper.Map<UserQuizResultDto>(userQuizResult);
+
+        }
 
         public async Task<bool> RemoveGameRoomParticipantsAndLiveRangList(int gameRoomId)
         {
-
-            return await _gameRoomDao.RemoveGameRoomParticipantsAndLiveRangList(gameRoomId);
+            var d = await _gameRoomDao.RemoveGameRoomParticipantsAndLiveRangList(gameRoomId);
+            Console.WriteLine("x1Dd: " + d);
+            return d;
         }
+
+        public async Task<bool> HaveAllUsersInGameRoomFinishedQuiz(int gameRoomId) 
+        {
+            return await _gameRoomDao.HaveAllUsersInGameRoomFinishedQuiz(gameRoomId); 
+        }
+
     }
 }

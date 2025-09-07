@@ -17,5 +17,6 @@ namespace KvizHub.DAO
         Task<LiveRangList> GetLiveRangList(int gameRoomId);
         Task<bool> GivePointToUserIfAnswerIsTrue(int gameRoomId, int userId);
         Task<bool> RemoveGameRoomParticipantsAndLiveRangList(int gameRoomId);
+        Task<bool> HaveAllUsersInGameRoomFinishedQuiz(int gameRoomId);
     }
 }

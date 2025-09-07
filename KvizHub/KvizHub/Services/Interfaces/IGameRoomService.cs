@@ -18,5 +18,9 @@ namespace KvizHub.Services.Interfaces
         Task<bool> CompareAnswer(int gameRoomId, UserQuizResultDto userQuizResultDto, int currentAnswerIndex);
         Task<UserQuizResultDto> GetUserQuizResultById(UserQuizResultDto userQuizResultDto);
         Task<bool> RemoveGameRoomParticipantsAndLiveRangList(int gameRoomId);
+        Task<bool> HaveAllUsersInGameRoomFinishedQuiz(int gameRoomId);
+
+        Task<UserQuizResultDto> GETUserQuizResultById(UserQuizResultDto userQuizResultDto);
+
     }
 }

@@ -20,11 +20,18 @@ namespace KvizHub.Hubs
             _quizService = quizService;
         }
 
+        /* [Authorize]
+         public async Task JoinLiveCompetiton(string eventName)
+         {
+             await Groups.AddToGroupAsync(Context.ConnectionId, "LiveCompetitonGroup");
+         }*/
+
         [Authorize(Roles = "admin")]
         public async Task StartCompetition(string eventName, int gameRoomId, int quizId)
         {
             //upisati u bazi isStarted na true
-            if (await _gameRoomService.SetIsStartedToTrue(gameRoomId)) {
+            if (await _gameRoomService.SetIsStartedToTrue(gameRoomId))
+            {
                 var userIds = await _gameRoomService.GetUserIdsForGameRoom(gameRoomId);
                 var liveRangList = await _gameRoomService.GenerateLiveRangList(gameRoomId, userIds);
 
@@ -57,8 +64,9 @@ namespace KvizHub.Hubs
         [Authorize(Roles = "user")]
         public async Task SubmitAnswer(string eventName, int gameRoomId, UserQuizResultDto userQuizResultDto, int currentAnswerIndex)
         {
-            if (await _gameRoomService.CompareAnswer(gameRoomId, userQuizResultDto, currentAnswerIndex)) { 
-                
+            if (await _gameRoomService.CompareAnswer(gameRoomId, userQuizResultDto, currentAnswerIndex))
+            {
+
                 var liveRangList = await _gameRoomService.GetLiveRangList(gameRoomId);
 
                 var userIds = await _gameRoomService.GetUserIdsForGameRoom(gameRoomId);
@@ -75,25 +83,26 @@ namespace KvizHub.Hubs
         {
             //postavi isStarted za gameRoomId na false
             //vratiti svakom user-u njegov userQuizResultDto
-            Console.WriteLine("M: " + userQuizResultDto.Id);
 
             if (await _gameRoomService.SetIsStartedToFalse(gameRoomId))
             {
-                Console.WriteLine("BBBBBBBBB: " );
                 UserQuizResultDto returnedUserQuizResultDto = await _gameRoomService.GetUserQuizResultById(userQuizResultDto);
-                Console.WriteLine("A: " + returnedUserQuizResultDto.Id);
-                await Clients.User(userQuizResultDto.UserId.ToString()).SendAsync(eventName, gameRoomId, returnedUserQuizResultDto);
+                await Clients.User(userQuizResultDto.UserId.ToString()).SendAsync(eventName, gameRoomId, returnedUserQuizResultDto, null);
             }
 
-            var userIds = await _gameRoomService.GetUserIdsForGameRoom(gameRoomId);
-            var excludedConnections = userIds.Select(id => id.ToString()).ToList();
+            UserQuizResultDto returnedUserQuizResultDto2 = await _gameRoomService.GETUserQuizResultById(userQuizResultDto);
+            Console.WriteLine("\n\n\nSUMBITEEEEEDD: " + returnedUserQuizResultDto2.SubmittedAt + "\n\n\n");
 
-            await Clients.AllExcept(excludedConnections).SendAsync(eventName, gameRoomId, null);
+            var userIds = await _gameRoomService.GetUserIdsForGameRoom(gameRoomId);
+            var userUsernames = await _userService.GetUserUsernamesByUserIds(userIds);
+            await Clients.All.SendAsync(eventName, gameRoomId, null, userUsernames);
+
+            await _gameRoomService.RemoveGameRoomParticipantsAndLiveRangList(gameRoomId);
+
 
             //ukloni sve participants za taj gameRoom
             //Ukloni rang listu za taj gameRoomId
-            //obrisi sve samo kad svi imaju submitedAt u bazi
-            await _gameRoomService.RemoveGameRoomParticipantsAndLiveRangList(gameRoomId);
+
         }
 
     }

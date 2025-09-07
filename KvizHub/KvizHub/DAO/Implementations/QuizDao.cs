@@ -51,7 +51,7 @@ namespace KvizHub.DAO.Implementations
 
         #endregion
 
-        #region Add
+        #region Add/Save
         public async Task<Quiz> AddQuizAsync(Quiz quiz)
         {
             _context.Quizzes.Add(quiz);

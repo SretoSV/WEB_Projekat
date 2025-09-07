@@ -191,6 +191,19 @@ namespace KvizHub.DAO.Implementations
                 return false;
             }
         }
+        public async Task<bool> HaveAllUsersInGameRoomFinishedQuiz(int gameRoomId) 
+        {
+            bool allSubmitted = await _context.UserQuizResults
+                .Where(uqr => uqr.GameRoomId == gameRoomId)
+                .AllAsync(uqr => uqr.SubmittedAt != null);
 
+            if (!allSubmitted)
+            {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
     }
 }

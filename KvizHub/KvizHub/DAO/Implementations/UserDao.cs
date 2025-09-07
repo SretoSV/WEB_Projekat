@@ -107,7 +107,20 @@ namespace KvizHub.DAO.Implementations
                 .Select(u => u.Username)
                 .ToListAsync();
         }
+        public async Task<List<string>> GetUserUsernamesByUserIds(List<int> ids)
+        {
+            if (ids == null || ids.Count == 0)
+            {
+                return new List<string>();
+            }
 
+            var usernames = await _context.Users
+                .Where(u => ids.Contains(u.Id))
+                .Select(u => u.Username)
+                .ToListAsync();
+
+            return usernames;
+        }
         public async Task<List<User>> GetAllUsersByUsersIds(List<int> userIds)
         {
             return await _context.Users

@@ -92,6 +92,10 @@ namespace KvizHub.Services
             List<string> usernames = await _userDao.GetAllUsersUsernames();
             return usernames;
         }
+        public async Task<List<string>> GetUserUsernamesByUserIds(List<int> ids)
+        {
+            return await _userDao.GetUserUsernamesByUserIds(ids);
+        }
 
         public async Task LogoutAsync(string refreshTokenHash)
         {
