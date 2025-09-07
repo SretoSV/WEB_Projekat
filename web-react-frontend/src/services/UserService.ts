@@ -7,7 +7,6 @@ export interface LoginResponse {
     userToken: string;
     refreshToken: string;
 }
-
 export async function loginUser(loginForm: { usernameOrEmail: string; password: string }): Promise<LoginResponse> {
     try {
         const response = await fetch(`${serverPath()}/api/users/login`, {
@@ -44,7 +43,6 @@ export async function loginUser(loginForm: { usernameOrEmail: string; password: 
 export interface LogoutResponse {
     message: string;
 }
-
 export async function logoutUser(): Promise<LogoutResponse> {
     const token = localStorage.getItem('token');
     const refreshTokenHash = localStorage.getItem('refreshToken');
@@ -76,7 +74,6 @@ export async function logoutUser(): Promise<LogoutResponse> {
 export interface RegisterResponse {
     message: string;
 }
-
 export async function registerUser(formData: FormData): Promise<RegisterResponse> {
     try {
     const response = await fetch(`${serverPath()}/api/users/register`, {
@@ -98,11 +95,9 @@ export async function registerUser(formData: FormData): Promise<RegisterResponse
     }
 }
 
-
 export interface FetchUsersUsernamesResponse {
     allUserUsernames: Array<string>;
 }
-
 export async function fetchAllUsers(onLogout: () => void): Promise<FetchUsersUsernamesResponse> {
     const response = await authFetch(`${serverPath()}/api/users`, { method: "GET" }, onLogout);
 
