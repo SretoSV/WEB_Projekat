@@ -27,6 +27,7 @@ namespace KvizHub.Context
         public DbSet<RoomParticipant> RoomParticipants { get; set; }
         public DbSet<LiveRangList> LiveRangLists { get; set; }
         public DbSet<LiveRangListParticipant> LiveRangListParticipants { get; set; }
+        public DbSet<AnswerInteraction> AnswerInteractions { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -48,6 +49,7 @@ namespace KvizHub.Context
             modelBuilder.Entity<RoomParticipant>().ToTable("room_participants");
             modelBuilder.Entity<LiveRangList>().ToTable("live_rang_lists");
             modelBuilder.Entity<LiveRangListParticipant>().ToTable("live_rang_list_participants");
+            modelBuilder.Entity<AnswerInteraction>().ToTable("answer_interactions");
 
             modelBuilder.Entity<Question>()
                 .HasOne(q => q.Quiz)

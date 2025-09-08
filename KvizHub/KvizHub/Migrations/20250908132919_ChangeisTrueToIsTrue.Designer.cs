@@ -4,6 +4,7 @@ using KvizHub.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KvizHub.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250908132919_ChangeisTrueToIsTrue")]
+    partial class ChangeisTrueToIsTrue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,8 +62,8 @@ namespace KvizHub.Migrations
                     b.Property<int>("GameRoomId")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("IsTrue")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<DateTime?>("IsTrue")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -457,7 +460,7 @@ namespace KvizHub.Migrations
                             Id = 1,
                             Email = "anaanic@gmail.com",
                             IsAdmin = true,
-                            PasswordHash = "AQAAAAIAAYagAAAAEJFecz/3qaqGk+SEkaRlqnt60/v5O8idA9SULU/aLBXEaPJlFyKqCH5rfysX+aDpJA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELKY4sA/I9oT+Qh1va961f+AjtRrRqYg//TKJap+wSrhIJGhCq0zGDV3DNx1L/+xXg==",
                             Username = "Ana123"
                         });
                 });

@@ -175,6 +175,11 @@ namespace KvizHub.DAO.Implementations
                     .Where(rp => rp.GameRoomId == gameRoomId)
                     .ExecuteDeleteAsync();
 
+                //Obirsem sve AnswerInteraction-e
+                await _context.AnswerInteractions
+                    .Where(rp => rp.GameRoomId == gameRoomId)
+                    .ExecuteDeleteAsync();
+
                 //Pronadjem live rang listu
                 var liveRangList = await _context.LiveRangLists
                     .FirstOrDefaultAsync(lr => lr.GameRoomId == gameRoomId);
@@ -242,6 +247,93 @@ namespace KvizHub.DAO.Implementations
                 return false;
             }
         }
+
+        public async Task SaveEmptyAnswerInteraction(int gameRoomId, int userId)
+        {
+            var interaction = new AnswerInteraction
+            {
+                GameRoomId = gameRoomId,
+                UserId = userId,
+                ClickedAt = null,
+                IsTrue = null,
+            };
+
+            _context.AnswerInteractions.Add(interaction);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SaveAnswerInteraction(int gameRoomId, int userId, DateTime clickedAt) 
+        {
+            var existing = await _context.AnswerInteractions
+                .FirstOrDefaultAsync(ai => ai.GameRoomId == gameRoomId && ai.UserId == userId);
+
+            if (existing != null)
+            {
+                existing.ClickedAt = clickedAt;
+                _context.AnswerInteractions.Update(existing);
+            }
+            else
+            {
+                var interaction = new AnswerInteraction
+                {
+                    GameRoomId = gameRoomId,
+                    UserId = userId,
+                    ClickedAt = clickedAt,
+                    IsTrue = null,
+                };
+
+                _context.AnswerInteractions.Add(interaction);
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<AnswerInteraction>> GetAllAnswerInteractionsForGameRoom(int gameRoomId)
+        {
+            return await _context.AnswerInteractions
+                .Where(ai => ai.GameRoomId == gameRoomId)
+                .ToListAsync();
+        }
+
+        public async Task SetIsTrueToAnswerInteraction(int gameRoomId, int userId, bool isTrue)
+        {
+            var existing = await _context.AnswerInteractions
+                .FirstOrDefaultAsync(ai => ai.GameRoomId == gameRoomId && ai.UserId == userId);
+
+            if (existing != null)
+            {
+                existing.IsTrue = isTrue;
+                _context.AnswerInteractions.Update(existing);
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> CheckAllAnswerInteractionsIsTrueFiled(int gameRoomId)
+        {
+            return await _context.AnswerInteractions
+                .Where(ai => ai.GameRoomId == gameRoomId)
+                .AllAsync(ai => ai.IsTrue != null);
+        }
+
+        public async Task<int?> GetFastestCorrectUserId(int gameRoomId)
+        {
+            return await _context.AnswerInteractions
+                .Where(ai => ai.GameRoomId == gameRoomId && ai.IsTrue == true && ai.ClickedAt != null)
+                .OrderBy(ai => ai.ClickedAt)
+                .Select(ai => (int?)ai.UserId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task SetIsTrueAndClickedAtToNull(int gameRoomId)
+        {
+            await _context.AnswerInteractions
+                .Where(ai => ai.GameRoomId == gameRoomId)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(ai => ai.IsTrue, ai => null)
+                    .SetProperty(ai => ai.ClickedAt, ai => null));
+        }
+
 
     }
 }

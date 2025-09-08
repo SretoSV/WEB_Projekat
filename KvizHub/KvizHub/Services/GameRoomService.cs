@@ -110,6 +110,7 @@ namespace KvizHub.Services
         }
         public async Task<UserQuizResultDto> StartQuiz(int quizId, int userId, int gameRoomId)
         {
+            await _gameRoomDao.SaveEmptyAnswerInteraction(gameRoomId, userId);
             UserQuizResult userQuizResult = await _quizDao.StartQuiz(quizId, userId, gameRoomId);
             UserQuizResultDto userQuizResultDto = _mapper.Map<UserQuizResultDto>(userQuizResult);
             List<Question> questions = await _questionDao.GetQuestionsByQuizId(quizId);
@@ -147,11 +148,10 @@ namespace KvizHub.Services
         
         public async Task<bool> CompareAnswer(int gameRoomId, UserQuizResultDto userQuizResultDto, int currentAnswerIndex)
         {
-
+            List<AnswerInteraction> answerInteractions = await _gameRoomDao.GetAllAnswerInteractionsForGameRoom(gameRoomId);
             List<Question> questions = await _questionDao.GetQuestionsByQuizId(userQuizResultDto.QuizId);
             List<UserAnswerDto> userAnswerDtos = userQuizResultDto.Answers.ToList();
 
-            //------------------------------------------------------------------------
             #region Comapration
             bool isTrue = true;
             List<AnswerOption> questionAnswerOptions = questions[currentAnswerIndex].AnswerOptions.ToList();
@@ -190,7 +190,6 @@ namespace KvizHub.Services
                 userAnswerDtos[currentAnswerIndex].IsTrue = true;
             }
             #endregion
-            //------------------------------------------------------------------------
 
             UserAnswer userAnswer = _mapper.Map<UserAnswer>(userAnswerDtos[currentAnswerIndex]);
             bool save = await _quizDao.SaveUserAnswerToDatabase(userAnswer);
@@ -201,7 +200,30 @@ namespace KvizHub.Services
                 give = await _gameRoomDao.GivePointToUserIfAnswerIsTrue(gameRoomId, userQuizResultDto.UserId);
             }
 
-            return save && give;
+            #region FastestAnswerPoint
+            if (userAnswerDtos[currentAnswerIndex].IsTrue)
+            {
+                await _gameRoomDao.SetIsTrueToAnswerInteraction(gameRoomId, userQuizResultDto.UserId, true);
+            }
+            else 
+            {
+                await _gameRoomDao.SetIsTrueToAnswerInteraction(gameRoomId, userQuizResultDto.UserId, false);
+            }
+
+            bool giveFastestPoint = true;
+            if (await _gameRoomDao.CheckAllAnswerInteractionsIsTrueFiled(gameRoomId)) 
+            {
+                var userId = await _gameRoomDao.GetFastestCorrectUserId(gameRoomId);
+                if (userId != null) 
+                { 
+                    giveFastestPoint = await _gameRoomDao.GivePointToUserIfAnswerIsTrue(gameRoomId, userId.Value);
+                }
+
+                await _gameRoomDao.SetIsTrueAndClickedAtToNull(gameRoomId);
+            }
+            #endregion
+
+            return save && give && giveFastestPoint;
         }
 
         public async Task<UserQuizResultDto> GetUserQuizResultById(UserQuizResultDto userQuizResultDto)
@@ -236,7 +258,6 @@ namespace KvizHub.Services
         public async Task<bool> RemoveGameRoomParticipantsAndLiveRangList(int gameRoomId)
         {
             var d = await _gameRoomDao.RemoveGameRoomParticipantsAndLiveRangList(gameRoomId);
-            Console.WriteLine("x1Dd: " + d);
             return d;
         }
 
@@ -264,6 +285,13 @@ namespace KvizHub.Services
         public async Task<bool> DeleteGameRoom(int gameRoomId)
         {
             return await _gameRoomDao.DeleteGameRoom(gameRoomId);
+        }
+
+        public async Task SaveAnswerInteraction(int gameRoomId, string username) 
+        {
+            var clickedAt = DateTime.UtcNow;
+            var userId = await _userDao.GetUserIdByUsername(username);
+            await _gameRoomDao.SaveAnswerInteraction(gameRoomId, userId, clickedAt);
         }
     }
 }

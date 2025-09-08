@@ -20,5 +20,12 @@ namespace KvizHub.DAO
         Task<bool> HaveAllUsersInGameRoomFinishedQuiz(int gameRoomId);
         Task<List<User>> GetUsersByRangListId(int liveRangListId);
         Task<bool> DeleteGameRoom(int gameRoomId);
+        Task SaveEmptyAnswerInteraction(int gameRoomId, int userId);
+        Task SaveAnswerInteraction(int gameRoomId, int userId, DateTime clickedAt);
+        Task<List<AnswerInteraction>> GetAllAnswerInteractionsForGameRoom(int gameRoomId);
+        Task SetIsTrueToAnswerInteraction(int gameRoomId, int userId, bool isTrue);
+        Task<bool> CheckAllAnswerInteractionsIsTrueFiled(int gameRoomId);
+        Task<int?> GetFastestCorrectUserId(int gameRoomId);
+        Task SetIsTrueAndClickedAtToNull(int gameRoomId);
     }
 }

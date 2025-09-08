@@ -106,5 +106,11 @@ namespace KvizHub.Hubs
             }
         }
 
+        [Authorize(Roles = "user")]
+        public async Task AnswerInteraction(string eventName, int gameRoomId, string username) 
+        {
+            await _gameRoomService.SaveAnswerInteraction(gameRoomId, username);
+        }
+
     }
 }
