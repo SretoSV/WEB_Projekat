@@ -145,14 +145,24 @@ namespace KvizHub.DAO.Implementations
 
         public async Task<bool> RemoveGameRoomParticipantsAndLiveRangList(int gameRoomId)
         {
-            //Proverim da li svi UserQuizResults imaju SubmittedAt postavljen
-            bool allSubmitted = await _context.UserQuizResults
-                .Where(uqr => uqr.GameRoomId == gameRoomId)
-                .AllAsync(uqr => uqr.SubmittedAt != null);
+            //Nadji sve ucesnike sobe
+            var participantIds = await _context.RoomParticipants
+                .Where(rp => rp.GameRoomId == gameRoomId)
+                .Select(rp => rp.UserId)
+                .ToListAsync();
+
+            //Nadji poslednji UserQuizResult za svakog ucesnika u toj sobi
+            var latestResults = await _context.UserQuizResults
+                .Where(uqr => uqr.GameRoomId == gameRoomId && participantIds.Contains(uqr.UserId))
+                .GroupBy(uqr => uqr.UserId)
+                .Select(g => g.OrderByDescending(x => x.StartedAt).FirstOrDefault())
+                .ToListAsync();
+
+            //Proveri da li svi imaju SubmittedAt
+            bool allSubmitted = latestResults.All(r => r.SubmittedAt != null);
 
             if (!allSubmitted)
             {
-                //Ako neki korisnik nije zavrsio quiz vrati false
                 return false;
             }
 
