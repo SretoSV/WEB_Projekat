@@ -44,7 +44,7 @@ export function OnlineQuizCard({quiz}: OnlineQuizCardProps) {
             { quizResult === null ? 
             <>
                 {   
-                    <OnlineFinishedQuizResult selectedQuizId={quiz.id}/> //kreirati OnlineFinishedQuizResult koji ce koristiti finishedQuizResult iz OnlineQuizContext-a 
+                    <OnlineFinishedQuizResult selectedQuizId={quiz.id}/>
                 }
             </>
             :
@@ -53,12 +53,6 @@ export function OnlineQuizCard({quiz}: OnlineQuizCardProps) {
                     {timeLeft !== null ? formatTime(timeLeft) : "00:00"}
                 </div>
                 {
-                /*currentUserAnswerIndex === quiz.questions.length ? 
-                
-                <div className={styles.finishQuizDiv}>
-                    Finish quiz?
-                </div>
-                : */
                 <>
                 <div className={styles.questionDiv}>
                     <div>Difficulty: {setQuizDifficultyText(quiz.questions[currentUserAnswerIndex].questionDifficultyId)}</div>
@@ -88,7 +82,7 @@ export function OnlineQuizCard({quiz}: OnlineQuizCardProps) {
                             {
                                 quiz.questions[currentUserAnswerIndex].questionTypeId === 4
                                 && 
-                                <OnlineFillInTheBlank fillInAnswer={fillInAnswer} setFillInAnswer={setFillInAnswer}/>
+                                <OnlineFillInTheBlank gameRoomId={quizResult.gameRoomId} fillInAnswer={fillInAnswer} setFillInAnswer={setFillInAnswer}/>
                             }
                         </div>
                     }

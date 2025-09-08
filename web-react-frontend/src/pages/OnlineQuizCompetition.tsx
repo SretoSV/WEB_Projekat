@@ -94,6 +94,7 @@ export function OnlineQuizCompetition(){
             socket.off("submit_answer_message");
             socket.off("finish_room_quiz");
             socket.off("delete_message");
+            socket.off("answer_interaction");
         };
     }, []);
 
