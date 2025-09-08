@@ -15,7 +15,6 @@ interface GameRoomCardProps{
     quizId: number;
     numberOfUsers: number;
     isStarted: boolean;
-    isFinished: boolean;
     onJoin: (gameRoomId: number) => void;
     onStart: (gameRoomId: number) => void;
     onLeave: (gameRoomId: number) => void;
@@ -25,7 +24,7 @@ interface GameRoomCardProps{
     onDelete: (gameRoomId: number) => void;
 }
 
-export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isFinished, isStarted, roomParticipants, isJoined, joinedThatRoom, onDelete }: GameRoomCardProps){
+export function GameRoomCard({id, quizId, onJoin, onStart, onLeave, isStarted, roomParticipants, isJoined, joinedThatRoom, onDelete }: GameRoomCardProps){
     const { user } = useUserContext();
     const { quizzes } = useQuizContext();
 

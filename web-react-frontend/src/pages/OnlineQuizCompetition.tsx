@@ -17,7 +17,6 @@ export function OnlineQuizCompetition(){
     const { startQuiz, gameRooms, handleAddParticipantToGameRoom, handleRemoveParticipantToGameRoom, loading, setGameRooms, setLiveRangList, setFinishedQuizResult } = useOnlineQuizContext();
     const [addGameRoomState, setAddGameRoomState] = useState<boolean>(false);
     const [isJoined, setIsJoined] = useState<boolean>(false);
-    //const [brojMoj, setBrojMoj] = useState<number>(1);
     
     useEffect(() => {
         socket.start().then(() => {
@@ -162,7 +161,6 @@ export function OnlineQuizCompetition(){
                         quizId={gameRoom.quizID}
                         numberOfUsers={gameRoom.numberOfUsers}
                         isStarted={gameRoom.isStarted}
-                        isFinished={gameRoom.isFinished}
                         onJoin={handleJoin}
                         onStart={handleStart}
                         onLeave={handleLeave}
