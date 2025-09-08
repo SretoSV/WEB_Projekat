@@ -137,7 +137,7 @@ export function OnlineQuizCompetition(){
         <div className={styles.mainDiv}>
 
             <div className={styles.filtersDiv}>
-                GAME ROOMS
+                {user && user.isAdmin && <div>GAME ROOMS</div>}
                 {user && user.isAdmin && 
                     <div className={styles.buttonAdd}>
                         <ButtonWithLongText text="Add Game Room" onClick={() => setAddGameRoomState(c => !c)}/>
@@ -149,29 +149,56 @@ export function OnlineQuizCompetition(){
                     <AddGameRoomModal />
                 }
             </div>
-
             {
-                loading ? <div>Loading...</div> : 
-                gameRooms.map((gameRoom) => {
-                    const joinedThatRoom = gameRoom?.roomParticipants?.some(p => p.userProfile?.username === user?.username);
+                loading ? 
+                (
+                    <div>Loading...</div>
+                ) : (
+                (() => {
+                    const activeRoom = gameRooms.find(
+                        (room) =>
+                        room.isStarted &&
+                        room.roomParticipants?.some(
+                            (p) => p.userProfile?.username === user?.username
+                        )
+                    );
 
-                    return <GameRoomCard 
-                        key={gameRoom.id}
-                        id={gameRoom.id}
-                        quizId={gameRoom.quizID}
-                        numberOfUsers={gameRoom.numberOfUsers}
-                        isStarted={gameRoom.isStarted}
-                        onJoin={handleJoin}
-                        onStart={handleStart}
-                        onLeave={handleLeave}
-                        isJoined={isJoined}
-                        joinedThatRoom={joinedThatRoom}
-                        roomParticipants={gameRoom.roomParticipants || []}
-                        onDelete={handleDelete}
-                    />
-                }
+                    const roomsToShow = activeRoom ? [activeRoom] : gameRooms;
+
+                    return (
+                        <>
+                        {!activeRoom && user && !user.isAdmin && 
+                            <div className={styles.filtersDiv}>GAME ROOMS</div>
+                        }
+
+                        {roomsToShow.map((gameRoom) => {
+                            const joinedThatRoom = gameRoom?.roomParticipants?.some(
+                                (p) => p.userProfile?.username === user?.username
+                            );
+
+                            return (
+                            <GameRoomCard
+                                key={gameRoom.id}
+                                id={gameRoom.id}
+                                quizId={gameRoom.quizID}
+                                numberOfUsers={gameRoom.numberOfUsers}
+                                isStarted={gameRoom.isStarted}
+                                onJoin={handleJoin}
+                                onStart={handleStart}
+                                onLeave={handleLeave}
+                                isJoined={isJoined}
+                                joinedThatRoom={joinedThatRoom}
+                                roomParticipants={gameRoom.roomParticipants || []}
+                                onDelete={handleDelete}
+                            />
+                            );
+                        })}
+                        </>
+                    );
+                })()
                 )
             }
+
         </div>
 
     </>

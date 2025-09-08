@@ -15,7 +15,6 @@ interface OnlineQuizContextType {
   liveRangList: LiveRangList | null;
   setLiveRangList: React.Dispatch<React.SetStateAction<LiveRangList | null>>;
   startQuiz: (quizResult: UserQuizResult, gameRoomId: number, quiz: Quiz) => void;
-  //finishQuiz: (id: number, result: UserQuizResult) => void;
   quizResult: UserQuizResult | null;
   currentUserAnswerIndex: number;
   incrementIndex: () => void;
@@ -318,7 +317,6 @@ const restoreTimer = (durationSeconds: number) => {
       setLiveRangList,
       startQuiz,
       quizResult,
-      //finishQuiz,
       currentUserAnswerIndex,
       incrementIndex,
       loading,
