@@ -5,12 +5,6 @@ import type { Question } from '../models/QuestionModel';
 import type { QuizCategory } from '../models/QuizCategoryModel';
 
 // MOCKS
-vi.mock('./ButtonWithImage', () => ({
-  default: ({ onClick, alt }: any) => (
-    <button onClick={onClick}>{alt}</button>
-  ),
-}));
-
 vi.mock('../services/QuestionService', () => ({
   setQuestionType: vi.fn((id: number) => `TYPE_${id}`),
   findQuizCategoryName: vi.fn(
