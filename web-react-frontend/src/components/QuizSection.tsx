@@ -80,7 +80,7 @@ export function QuizzesSection() {
           <input
               id="search"
               type="text"
-              placeholder="Pretraži..."
+              placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={styles.searchBox}
