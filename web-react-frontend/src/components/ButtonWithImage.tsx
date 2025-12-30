@@ -13,7 +13,7 @@ interface ButtonWithImageProps{
 export default function ButtonWithImage(props: ButtonWithImageProps){
     return <button 
                 className={styles.button}
-                type={props.type}
+                type={props.type ?? 'button'}
                 onClick={(e) => {
                     props.onClick?.();
                     props.onClick1?.(e);

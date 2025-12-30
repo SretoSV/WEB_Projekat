@@ -7,7 +7,7 @@ interface ButtonWithLongTextProps{
 }
 
 export default function ButtonWithLongText(props: ButtonWithLongTextProps){
-    return <button className={styles.buttonLong} onClick={props.onClick || props.onClick1} type={props.type}>
+    return <button className={styles.buttonLong} onClick={props.onClick || props.onClick1} type={props.type ?? 'button'}>
         {props.text}
     </button>
 }

@@ -7,7 +7,7 @@ interface ButtonWithTextProps{
 }
 
 export default function ButtonWithText(props: ButtonWithTextProps){
-    return <button className={styles.button} onClick={props.onClick || props.onClick1} type={props.type}>
+    return <button className={styles.button} onClick={props.onClick || props.onClick1} type={props.type ?? 'button'}>
         {props.text}
     </button>
 }
