@@ -22,6 +22,7 @@ export function SelectionArea({selectedUserUsername, onChangeUserUsername, users
                 <select
                     id="user"
                     name="user"
+                    data-testid="select-user"
                     className={styles.dropdownInput}
                     value={selectedUserUsername}
                     onChange={(e) => {
@@ -37,6 +38,7 @@ export function SelectionArea({selectedUserUsername, onChangeUserUsername, users
             <select
                 id="quiz"
                 name="quiz"
+                data-testid="select-quiz"
                 className={styles.dropdownInput}
                 value={selectedQuizId}
                 onChange={(e) => onChangeQuiz(e.target.value)}

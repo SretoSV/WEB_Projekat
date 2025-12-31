@@ -19,6 +19,7 @@ export function GlobalSelectionArea({selectedTimePeriod, onChangeTimePeriod, sel
             <select
                 id="quiz"
                 name="quiz"
+                data-testid="select-quiz"
                 className={styles.dropdownInput}
                 value={selectedQuizId}
                 onChange={(e) => onChangeQuiz(e.target.value)}
