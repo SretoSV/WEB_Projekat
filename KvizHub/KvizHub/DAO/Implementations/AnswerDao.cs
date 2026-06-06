@@ -31,7 +31,7 @@ namespace KvizHub.DAO.Implementations
                 };
 
                 // Za svaki AnswerOption iz pitanja, napravi UserAnswerOption
-                foreach (var option in question.AnswerOptions)
+                foreach (var option in question.AnswerOptions.OrderBy(x => x.Id))
                 {
                     var userAnswerOption = new UserAnswerOption
                     {

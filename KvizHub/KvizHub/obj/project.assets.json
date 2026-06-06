@@ -3035,23 +3035,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Sreto\\.nuget\\packages\\": {},
+    "C:\\Users\\sreto\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\xLOCAL DISC D\\FAKULTET\\8 semestar\\WEB\\WEB_Projekat\\KvizHub\\KvizHub\\KvizHub.csproj",
+      "projectUniqueName": "D:\\SretoProjects\\BACKENDS\\WEB_Projekat\\KvizHub\\KvizHub\\KvizHub.csproj",
       "projectName": "KvizHub",
-      "projectPath": "D:\\xLOCAL DISC D\\FAKULTET\\8 semestar\\WEB\\WEB_Projekat\\KvizHub\\KvizHub\\KvizHub.csproj",
-      "packagesPath": "C:\\Users\\Sreto\\.nuget\\packages\\",
-      "outputPath": "D:\\xLOCAL DISC D\\FAKULTET\\8 semestar\\WEB\\WEB_Projekat\\KvizHub\\KvizHub\\obj\\",
+      "projectPath": "D:\\SretoProjects\\BACKENDS\\WEB_Projekat\\KvizHub\\KvizHub\\KvizHub.csproj",
+      "packagesPath": "C:\\Users\\sreto\\.nuget\\packages\\",
+      "outputPath": "D:\\SretoProjects\\BACKENDS\\WEB_Projekat\\KvizHub\\KvizHub\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Sreto\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\sreto\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -3060,7 +3060,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\Microsoft SDKs\\Azure\\.NET SDK\\v2.9\\packages": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3079,7 +3078,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.100"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
@@ -3141,8 +3140,20 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.310/PortableRuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'AutoMapper' 12.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x",
+      "libraryId": "AutoMapper",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
 }
